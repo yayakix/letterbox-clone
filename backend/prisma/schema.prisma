@@ -18,14 +18,91 @@ datasource db {
 // user
 model User {
   // metadata
-  id                  String                @id @default(cuid())
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @default(now()) @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   // fields
-  email               String                @unique
-  name                String?
-  clerkId             String                @unique
+  clerkId   String   @unique
 
+  // relationships
+  profile Profile? @relation("Profile")
 
   @@map("user")
+}
+
+model Profile {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // relationships
+  user   User   @relation("Profile", fields: [userId], references: [id])
+  userId String @unique
+
+  watched Film[] @relation("Watched")
+  liked   Film[] @relation("Liked")
+  yapped  Film[] @relation("Yapped")
+
+  yaps Yap[] @relation("Yaps")
+
+  following Follow[] @relation("Following")
+  followers Follow[] @relation("Followers")
+
+  @@map("profile")
+}
+
+model Film {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  title       String
+  description String
+  year        Int
+  directedBy  String
+  rating      Int
+  genre       String[]
+  imageUrl    String
+
+  // relationships
+  watchedBy Profile[] @relation("Watched")
+  likedBy   Profile[] @relation("Liked")
+  yappedBy  Profile[] @relation("Yapped")
+
+  yaps Yap[] @relation("Yaps")
+
+  @@map("film")
+}
+
+model Yap {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  yap String
+
+  // relationships
+  filmId String
+  film   Film   @relation("Yaps", fields: [filmId], references: [id])
+
+  profileId String
+  profile   Profile @relation("Yaps", fields: [profileId], references: [id])
+
+  @@map("yap")
+}
+
+model Follow {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // relationships
+  followerId String // this is the profile that is initiating the follow
+  follower   Profile @relation("Followers", fields: [followerId], references: [id])
+
+  followingId String // this is the profile that is being followed
+  following   Profile @relation("Following", fields: [followingId], references: [id])
+
+  @@map("follow")
 }
