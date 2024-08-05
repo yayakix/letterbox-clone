@@ -1,3 +1,4 @@
+import MovieProfile from "./components/pages/MovieProfile";
 import Navbar from "./components/compound/Navbar";
 
 export default function App() {
@@ -6,6 +7,7 @@ export default function App() {
 
     <>
       <Navbar />
+      <MovieProfile />
     </>
 
   )
