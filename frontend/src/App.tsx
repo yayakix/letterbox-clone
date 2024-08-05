@@ -1,4 +1,5 @@
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import MovieProfile from "./components/pages/MovieProfile";
 
 export default function App() {
   return (
@@ -8,6 +9,7 @@ export default function App() {
       </SignedOut>
       <SignedIn>
         <UserButton />
+        <MovieProfile />
       </SignedIn>
     </header>
   )
