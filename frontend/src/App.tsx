@@ -1,14 +1,12 @@
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import Navbar from "./components/compound/Navbar";
 
 export default function App() {
   return (
-    <header>
-      <SignedOut>
-        <SignInButton />
-      </SignedOut>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
-    </header>
+
+
+    <>
+      <Navbar />
+    </>
+
   )
 }
