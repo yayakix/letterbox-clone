@@ -1,9 +1,9 @@
 import "dotenv/config"; // To read CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY
 import { clerkClient, LooseAuthProp } from "@clerk/clerk-sdk-node";
 import { NextFunction, Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import client from "../../utils/client";
 
-const prisma = new PrismaClient();
+const prisma = client;
 
 const optionalUser = async (
   req: Request,
