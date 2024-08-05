@@ -19,6 +19,28 @@ export const getYaps = async (userId: string) => {
   });
   return yaps;
 };
+// post a comment
+export const postYap = async (
+  userId: string,
+  content: string,
+  filmId: string
+) => {
+  const yap = await client.yap.create({
+    data: {
+      yap: content,
+      profile: {
+        connect: { userId },
+      },
+      film: {
+        connect: { id: filmId },
+      },
+    },
+    include: {
+      film: true, // Include the associated movie
+    },
+  });
+  return yap;
+};
 
 // Get users liked films
 export const getLikedFilms = async (userId: string) => {
@@ -89,6 +111,7 @@ export const addFilmToWatched = async (userId: string, filmId: string) => {
 const profileClient = {
   getProfile,
   getYaps,
+  postYap,
   getLikedFilms,
   addFilmToLiked,
   getFollowing,
