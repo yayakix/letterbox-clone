@@ -14,34 +14,31 @@ const optionalUser = async (
   if (!userId) {
     return next(new Error("User ID is null"));
   }
+  //   find clerk user
   const clerkUser = await clerkClient.users.getUser(userId);
   const clerkId = clerkUser.id;
-  const clerkUsername = clerkUser?.username || "";
-  const clerkEmail = clerkUser.emailAddresses[0].emailAddress;
 
   if (!clerkId) {
     console.log("no clerkId");
     return next();
   }
 
+  //   Does user exist in db?
   const user = await prisma.user.findUnique({
     where: {
       clerkId: clerkId,
     },
   });
 
+  //   Pass user into next() if it exists in DB
   if (user) {
     // append user to request context
     req.user = user;
   } else {
-    // otherwise create a new user and append to request context
+    // Else: Create a new user in DB and append to request context
     req.user = await prisma.user.create({
       data: {
         clerkId: clerkId,
-        email: clerkEmail,
-        username: clerkUsername,
-        name: clerkUsername,
-        avatar_url: clerkUser.imageUrl,
       },
     });
     console.log("user created");
