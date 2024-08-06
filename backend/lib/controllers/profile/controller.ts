@@ -5,10 +5,11 @@ import "dotenv/config";
 import profileClient from "./profileClient";
 
 const profileRouter = express.Router();
-profileRouter.use(ClerkExpressRequireAuth({}));
+profileRouter.use(ClerkExpressRequireAuth());
 profileRouter.use(optionalUser);
 
-profileRouter.get("/profile", async (req, res) => {
+// get user profile
+profileRouter.get("/", async (req, res) => {
   if (!req.user) {
     return res.status(401).json({ error: "Unauthorized" });
   }
@@ -20,6 +21,7 @@ profileRouter.get("/profile", async (req, res) => {
   }
 });
 
+// Get all comments a user has made
 profileRouter.get("/yaps", async (req, res) => {
   if (!req.user?.id) {
     return res.status(401).json({ error: "Unauthorized" });
@@ -31,7 +33,26 @@ profileRouter.get("/yaps", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+// post a comment to a film
+profileRouter.post("/yaps/:filmId", async (req, res) => {
+  console.log(req.body);
+  console.log("hit");
+  if (!req.user?.id) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  try {
+    const yap = await profileClient.postYap(
+      req.user.id,
+      req.body.content,
+      req.params.filmId
+    );
+    res.json(yap);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
+// get all films a user has liked
 profileRouter.get("/liked", async (req, res) => {
   if (!req.user?.id) {
     return res.status(401).json({ error: "Unauthorized" });
@@ -44,14 +65,15 @@ profileRouter.get("/liked", async (req, res) => {
   }
 });
 
-profileRouter.post("/liked", async (req, res) => {
+// like a film
+profileRouter.post("/liked/:filmId", async (req, res) => {
   if (!req.user?.id) {
     return res.status(401).json({ error: "Unauthorized" });
   }
   try {
     const likedFilm = await profileClient.addFilmToLiked(
       req.user.id,
-      req.body.filmId
+      req.params.filmId
     );
     res.json(likedFilm);
   } catch (error) {
@@ -83,6 +105,7 @@ profileRouter.get("/followers", async (req, res) => {
   }
 });
 
+// get all films a user has watched
 profileRouter.get("/watched", async (req, res) => {
   if (!req.user?.id) {
     return res.status(401).json({ error: "Unauthorized" });
@@ -95,14 +118,15 @@ profileRouter.get("/watched", async (req, res) => {
   }
 });
 
-profileRouter.post("/watched", async (req, res) => {
+// watch a film
+profileRouter.post("/watched/:filmId", async (req, res) => {
   if (!req.user?.id) {
     return res.status(401).json({ error: "Unauthorized" });
   }
   try {
     const watchedFilm = await profileClient.addFilmToWatched(
       req.user.id,
-      req.body.filmId
+      req.params.filmId
     );
     res.json(watchedFilm);
   } catch (error) {
