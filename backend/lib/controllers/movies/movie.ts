@@ -35,3 +35,5 @@ movieRouter.get("/movies/:id", ClerkExpressRequireAuth(), optionalUser, async (r
         console.log("Request processing completed");
     }
 });
+
+export default movieRouter

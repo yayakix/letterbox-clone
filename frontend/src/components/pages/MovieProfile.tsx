@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@clerk/clerk-react";
 
-interface movie {
-  id: number;
+interface Movie {
+  id: string;
   title: string;
-  posterURL: string;
-  director: string;
-  releaseYear: number;
+  imageUrl: string;
+  directedBy: string;
+  year: number;
   description: string;
   rating: number;
+  createdAt: string;
+  updatedAt: string;
+  genre: string[];
 }
 
 interface MovieProfileProps {
@@ -17,7 +20,7 @@ interface MovieProfileProps {
 
 
 const MovieProfile: React.FC<MovieProfileProps> = ({ movieId }) => {
-  const [movie, setMovie] = useState<movie | null>(null);
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [loading, setLoading] = useState(true);
   const { getToken } = useAuth();
 
@@ -47,6 +50,12 @@ const MovieProfile: React.FC<MovieProfileProps> = ({ movieId }) => {
     fetchMovie();
   }, [movieId, getToken]);
 
+  useEffect(() => {
+    if (movie) {
+      console.log("Movie data updated:", movie);
+    }
+  }, [movie]);
+
   if (loading) return <div>Loading...</div>;
   if (!movie) return <div>Movie not found</div>
 
@@ -55,7 +64,7 @@ const MovieProfile: React.FC<MovieProfileProps> = ({ movieId }) => {
     <div className="flex max-w-4xl mx-auto p-6">
       <div className="flex-shrink-0 mr-6">
         <img
-          src={movie.posterURL}
+          src={movie.imageUrl}
           alt={`${movie.title} movie poster`}
           className="w-56 rounded-lg shadow-md"
         />
@@ -63,11 +72,14 @@ const MovieProfile: React.FC<MovieProfileProps> = ({ movieId }) => {
       <div>
         <div className="flex items-center mb-2">
           <h1 className="text-2xl font-bold mr-3">{movie.title}</h1>
-          <span className="text-xl font-semibold text-yellow-500">{movie.rating.toFixed(1)}</span>
+          <span className="text-xl font-semibold text-yellow-500">{movie.rating?.toFixed(1)}</span>
         </div>
-        <p className="text-sm text-gray-600 mb-4">{movie.releaseYear} Directed by {movie.director}</p>
+        <p className="text-sm text-gray-600 mb-4">{movie.year} • Directed by {movie.directedBy}</p>
         <p className="text-base mb-6">
           {movie.description}
+        </p>
+        <p className="text-sm text-gray-600 mb-4">
+          Genres: {Array.isArray(movie.genre) ? movie.genre.join(', ') : 'Unknown'}
         </p>
         <div className="flex space-x-4">
           <button className="px-4 py-2 bg-green-500 text-white rounded">Watch</button>
