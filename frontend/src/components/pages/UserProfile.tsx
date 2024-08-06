@@ -7,6 +7,8 @@ import NetworkTab from "../base/Profile/NetworkTab";
 
 const UserProfile = () => {
     const [profileData, setProfileData] = useState<any>(null);
+    const [likedFilms, setLikedFilms] = useState<any>(null);
+    const [watchedFilms, setWatchedFilms] = useState<any>(null);
     const [currentTab, setCurrentTab] = useState<string>('Profile');
     const { getToken } = useAuth();
 
@@ -22,10 +24,36 @@ const UserProfile = () => {
             .then(data => setProfileData(data))
             .catch(error => console.error('Error fetching profile data:', error));
     }
-    console.log('hello data,', profileData);
+    const fetchWatchedFilms = async () => {
+        const token = await getToken();
+        fetch(`http://localhost:3009/api/profile/watched`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${await getToken()}`
+            }
+        })
+            .then(response => response.json())
+            .then(data => setWatchedFilms(data))
+            .catch(error => console.error('Error fetching profile data:', error));
+    }
+    const fetchLikedFilms = async () => {
+        const token = await getToken();
+        fetch(`http://localhost:3009/api/profile/liked`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${await getToken()}`
+            }
+        })
+            .then(response => response.json())
+            .then(data => setLikedFilms(data))
+            .catch(error => console.error('Error fetching profile data:', error));
+    }
+    // console.log('hello data,', profileData);
 
     useEffect(() => {
         fetchProfileData();
+        fetchWatchedFilms();
+        fetchLikedFilms();
     }, []);
 
     const handleTabChange = (tab: string) => {
@@ -37,9 +65,9 @@ const UserProfile = () => {
     const renderTabContent = () => {
         switch (currentTab) {
             case 'Profile':
-                return <ProfileProfileTab />;
+                return <ProfileProfileTab likedFilms={likedFilms} />;
             case 'Watchlist':
-                return <WatchedTab />;
+                return <WatchedTab watchedFilms={watchedFilms} />;
             case 'Likes':
                 // return <ProfileFollowersTab />;
                 return <div>Followers Tab Content</div>;

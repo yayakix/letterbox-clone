@@ -1,4 +1,4 @@
-const ProfileProfileTab = () => {
+const ProfileProfileTab = ({ likedFilms }) => {
     return (
         <div className="text-slate-200 m-8">
             <div className="text-sm text-slate-400 font-bold">FAVORITE FILMS</div>
@@ -11,13 +11,14 @@ const ProfileProfileTab = () => {
             <div className="text-sm text-slate-400 ">Recent likes</div>
 
             <div className="grid grid-cols-4 mt-2">
-                {/* show skeleton box */}
+                {likedFilms.map((film: any) => (
+                    <div className="w-40 h-56 border border-slate-700 rounded-lg">
+                        <img src={film.imageUrl} alt={film.title} className="w-full h-full object-cover rounded-lg" />
+                    </div>
+                ))}
                 <div className="w-40 h-56 border border-slate-700 rounded-lg"></div>
                 <div className="w-40 h-56 border border-slate-700 rounded-lg"></div>
                 <div className="w-40 h-56 border border-slate-700 rounded-lg"></div>
-                <div className="w-40 h-56 border border-slate-700 rounded-lg"></div>
-
-                {/* list of films using movie component? */}
             </div>
         </div>
     )
