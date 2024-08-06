@@ -24,8 +24,8 @@ declare global {
 
   interface MovieProfileProps {
     movieId: string;
+  } // Add this closing brace
 
-declare global {
   namespace Express {
     interface Request {
       user: {
@@ -35,4 +35,4 @@ declare global {
   }
 }
 
-export { };
+export {};
