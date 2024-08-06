@@ -11,6 +11,7 @@ const optionalUser = async (
   next: NextFunction
 ) => {
   const userId = (req as Request & LooseAuthProp).auth?.userId;
+  console.log('erm', userId)
   if (!userId) {
     return next(new Error("User ID is null"));
   }
@@ -22,6 +23,7 @@ const optionalUser = async (
     console.log("no clerkId");
     return next();
   }
+  console.log('clerkid', clerkId)
 
   //   Does user exist in db?
   const user = await prisma.user.findUnique({
@@ -29,12 +31,15 @@ const optionalUser = async (
       clerkId: clerkId,
     },
   });
+  console.log('db user', user)
 
   //   Pass user into next() if it exists in DB
   if (user) {
+    console.log('is this user real')
     // append user to request context
     req.user = user;
   } else {
+    console.log('this would be wrong')
     // Else: Create a new user in DB and append to request context
     req.user = await prisma.user.create({
       data: {
@@ -43,7 +48,7 @@ const optionalUser = async (
     });
     console.log("user created");
   }
-
+  console.log('end of this')
   next();
 };
 
