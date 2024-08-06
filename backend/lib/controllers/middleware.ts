@@ -44,7 +44,7 @@ const optionalUser = async (
         name: clerkUser.firstName || "User",
       },
     });
-    req.user = user;
+    req.user = { userId: user.id };
   } else {
     const newUser = await prisma.user.create({
       data: {
@@ -58,7 +58,7 @@ const optionalUser = async (
         name: clerkUser.firstName || "",
       },
     });
-    req.user = newUser;
+    req.user = { userId: newUser.id };
   }
   next();
 };

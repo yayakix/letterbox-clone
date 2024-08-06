@@ -1,3 +1,4 @@
+import express from "express";
 declare global {
   interface Movie {
     id: string;
@@ -23,6 +24,14 @@ declare global {
 
   interface MovieProfileProps {
     movieId: string;
+
+declare global {
+  namespace Express {
+    interface Request {
+      user: {
+        userId: string;
+      };
+    }
   }
 }
 
