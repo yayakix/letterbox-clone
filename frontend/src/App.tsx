@@ -7,6 +7,7 @@ export default function App() {
 
     <>
       <Navbar />
+      <MovieProfile movieId="clzit0vyx000011ayu3b2wuub" />
       {/* <MovieProfile movieId="clzhhaqku000147fatnwla93m" /> */}
     </>
 
