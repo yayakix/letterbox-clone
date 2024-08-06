@@ -5,9 +5,9 @@ interface ProfileTabsProps {
 }
 
 const ProfileTabs: React.FC<ProfileTabsProps> = ({ onTabChange }) => {
-    const [activeTab, setActiveTab] = useState('Dashboard');
+    const [activeTab, setActiveTab] = useState('Profile');
 
-    const tabs = ['Profile', 'Likes', 'Films', 'Watchlist'];
+    const tabs = ['Profile', 'Watchlist', 'Network', 'Films'];
 
     const handleTabClick = (tab: string) => {
         setActiveTab(tab);
@@ -16,7 +16,7 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ onTabChange }) => {
 
     return (
         <div className="text-sm font-medium text-center text-gray-500 border-b border-t border-gray-200 dark:text-gray-400 dark:border-gray-700">
-            <ul className="flex flex-wrap -mb-px">
+            <ul className="flex flex-wrap -mb-px ">
                 {tabs.map((tab) => (
                     <li key={tab} className="me-2">
                         <a
@@ -32,7 +32,18 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ onTabChange }) => {
                         </a>
                     </li>
                 ))}
-
+                <li>
+                    <a className="inline-block p-4 text-gray-400 rounded-t-lg cursor-not-allowed ">Lists</a>
+                </li>
+                <li>
+                    <a className="inline-block p-4 text-gray-400 rounded-t-lg cursor-not-allowed ">Network</a>
+                </li>
+                <li>
+                    <a className="inline-block p-4 text-gray-400 rounded-t-lg cursor-not-allowed ">Tags</a>
+                </li>
+                <li>
+                    <a className="inline-block p-4 text-gray-400 rounded-t-lg cursor-not-allowed ">Reviews</a>
+                </li>
             </ul>
         </div>
     );

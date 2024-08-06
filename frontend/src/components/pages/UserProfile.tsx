@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/clerk-react";
-import ProfileTabs from "../base/ProfileTabs";
-import ProfileProfileTab from "../base/ProfileProfileTab";
+import ProfileTabs from "../base/Profile/ProfileTabs";
+import ProfileProfileTab from "../base/Profile/ProfileProfileTab";
+import WatchedTab from "../base/Profile/WatchedTab";
+import NetworkTab from "../base/Profile/NetworkTab";
 
 const UserProfile = () => {
     const [profileData, setProfileData] = useState<any>(null);
@@ -36,12 +38,13 @@ const UserProfile = () => {
         switch (currentTab) {
             case 'Profile':
                 return <ProfileProfileTab />;
-            case 'Films':
-                // return <ProfileFilmsTab />;
-                return <div>Films Tab Content</div>;
-            case 'Followers':
+            case 'Watchlist':
+                return <WatchedTab />;
+            case 'Likes':
                 // return <ProfileFollowersTab />;
                 return <div>Followers Tab Content</div>;
+            case 'Network':
+                return <NetworkTab />;
             case 'Following':
                 // return <ProfileFollowingTab />;
                 return <div>Following Tab Content</div>;
@@ -68,7 +71,7 @@ const UserProfile = () => {
                                     <div className="flex items-center mb-2">
                                     </div>
                                     <div className="flex flex-wrap pr-2 mb-4 font-medium">
-                                        <span className="mr-4 text-lg text-white">
+                                        <span className="mr-4 text-2xl text-white font-bold">
                                             Username
                                         </span>
 
