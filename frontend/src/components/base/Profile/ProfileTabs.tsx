@@ -7,7 +7,7 @@ interface ProfileTabsProps {
 const ProfileTabs: React.FC<ProfileTabsProps> = ({ onTabChange }) => {
     const [activeTab, setActiveTab] = useState('Profile');
 
-    const tabs = ['Profile', 'Watchlist', 'Likes', 'Films'];
+    const tabs = ['Profile', 'Watchlist', 'Network', 'Films'];
 
     const handleTabClick = (tab: string) => {
         setActiveTab(tab);

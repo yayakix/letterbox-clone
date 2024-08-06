@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/clerk-react";
 
-const ProfileFilmTab = () => {
+const WatchedTab = () => {
     const { getToken } = useAuth();
     const [watchedFilms, setWatchedFilms] = useState([]);
 
@@ -9,7 +9,7 @@ const ProfileFilmTab = () => {
     const fetchWatchedFilms = async () => {
         try {
             const token = await getToken();
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/profile/watched`, {
+            const response = await fetch(`/api/profile/watched`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 }
@@ -55,4 +55,4 @@ const ProfileFilmTab = () => {
     );
 };
 
-export default ProfileFilmTab;
+export default WatchedTab;

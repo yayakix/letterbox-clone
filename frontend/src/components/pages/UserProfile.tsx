@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/clerk-react";
-import ProfileTabs from "../base/ProfileTabs";
-import ProfileProfileTab from "../base/ProfileProfileTab";
-import ProfileFilmTab from "../base/ProfileFilmTab";
+import ProfileTabs from "../base/Profile/ProfileTabs";
+import ProfileProfileTab from "../base/Profile/ProfileProfileTab";
+import WatchedTab from "../base/Profile/WatchedTab";
+import NetworkTab from "../base/Profile/NetworkTab";
 
 const UserProfile = () => {
     const [profileData, setProfileData] = useState<any>(null);
@@ -38,10 +39,12 @@ const UserProfile = () => {
             case 'Profile':
                 return <ProfileProfileTab />;
             case 'Watchlist':
-                return <ProfileFilmTab />;
+                return <WatchedTab />;
             case 'Likes':
                 // return <ProfileFollowersTab />;
                 return <div>Followers Tab Content</div>;
+            case 'Network':
+                return <NetworkTab />;
             case 'Following':
                 // return <ProfileFollowingTab />;
                 return <div>Following Tab Content</div>;
