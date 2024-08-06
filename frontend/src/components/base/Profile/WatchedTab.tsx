@@ -1,36 +1,8 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/clerk-react";
 
-const WatchedTab = () => {
-    const { getToken } = useAuth();
-    const [watchedFilms, setWatchedFilms] = useState([]);
-
-    // FETCHED PROFILE WATCHED FILMS
-    const fetchWatchedFilms = async () => {
-        try {
-            const token = await getToken();
-            const response = await fetch(`/api/profile/watched`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch watched films');
-            }
-
-            const data = await response.json();
-            setWatchedFilms(data);
-            console.log(data);
-        } catch (error) {
-            console.error('Error fetching watched films:', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchWatchedFilms();
-    }, []);
-
+const WatchedTab = ({ watchedFilms }) => {
+    console.log('watchedFilms', watchedFilms);
     return (
         <div className="text-slate-200 m-8">
             <div className="text-sm text-slate-400 font-bold">WATCHED</div>
@@ -40,6 +12,7 @@ const WatchedTab = () => {
                 {watchedFilms.length > 0 ? (
                     watchedFilms.map((film, index) => (
                         <div key={index} className="w-40 h-56 border border-slate-700 rounded-lg">
+                            <img src={film.poster} alt={film.title} className="w-full h-full object-cover rounded-lg" />
                             {/* Replace with actual film data */}
                             {film.title}
                         </div>

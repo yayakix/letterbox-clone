@@ -8,7 +8,6 @@ import Navbar from "./components/compound/Navbar.tsx";
 export default function App() {
 
   const { sessionId, actor, isSignedIn, isLoaded } = useAuth();
-
   console.log('isSignedIn', { sessionId, actor, isSignedIn, isLoaded })
 
   return (
