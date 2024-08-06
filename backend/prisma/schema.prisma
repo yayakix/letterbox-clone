@@ -37,8 +37,9 @@ model Profile {
   updatedAt DateTime @default(now()) @updatedAt
 
   // relationships
-  user   User   @relation("Profile", fields: [userId], references: [id])
-  userId String @unique
+  user     User    @relation("Profile", fields: [userId], references: [id])
+  userId   String  @unique
+  imageUrl String?
 
   watched Film[] @relation("Watched")
   liked   Film[] @relation("Liked")
