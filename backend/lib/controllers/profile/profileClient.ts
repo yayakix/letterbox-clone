@@ -61,7 +61,7 @@ export const toggleFilmLike = async (userId: string, filmId: string) => {
     select: { liked: { where: { id: filmId } } },
   });
 
-  const isLiked = profile?.liked?.length ?? 0 > 0;
+  const isLiked = (profile?.liked?.length ?? 0) > 0;
 
   // Toggle the like status
   const updatedProfile = await client.profile.update({
@@ -117,7 +117,7 @@ export const toggleFilmWatched = async (userId: string, filmId: string) => {
     select: { watched: { where: { id: filmId } } },
   });
 
-  const isWatched = profile?.watched?.length ?? 0 > 0;
+  const isWatched = (profile?.watched?.length ?? 0) > 0;
 
   // Toggle the watched status
   const updatedProfile = await client.profile.update({
@@ -152,8 +152,8 @@ export const isMovieWatchedOrLiked = async (userId: string, filmId: string) => {
   });
 
   return {
-    isWatched: result?.watched?.length ?? 0 > 0,
-    isLiked: result?.liked?.length ?? 0 > 0,
+    isWatched: (result?.watched?.length ?? 0) > 0,
+    isLiked: (result?.liked?.length ?? 0) > 0,
   };
 };
 
