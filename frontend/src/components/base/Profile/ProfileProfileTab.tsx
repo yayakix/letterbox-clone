@@ -20,9 +20,15 @@ const ProfileProfileTab = ({ likedFilms }: { likedFilms: Film[] }) => {
                         </a>
                     </div>
                 ))}
-                <div className="w-40 h-56 border border-slate-700 rounded-lg"></div>
-                <div className="w-40 h-56 border border-slate-700 rounded-lg"></div>
-                <div className="w-40 h-56 border border-slate-700 rounded-lg"></div>
+                {/* show empty boxes if there are no films */}
+                {likedFilms.length === 0 && (
+                    <>
+                        <div className="w-40 h-56 border border-slate-700 rounded-lg"></div>
+                        <div className="w-40 h-56 border border-slate-700 rounded-lg"></div>
+                        <div className="w-40 h-56 border border-slate-700 rounded-lg"></div>
+                    </>
+                )}
+
             </div>
         </div>
     )
