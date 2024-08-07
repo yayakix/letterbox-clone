@@ -3,7 +3,7 @@ import type { Film } from "../../../types";
 const WatchedTab = ({ watchedFilms }: { watchedFilms: Film[] }) => {
     console.log('watchedFilms', watchedFilms);
     return (
-        <div className="text-slate-200 m-8">
+        <div className="text-slate-200">
             <div className="text-sm text-slate-400 font-bold">WATCHED</div>
             <div className="border-b border-slate-700 my-2"></div>
 

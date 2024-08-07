@@ -2,7 +2,7 @@ import type { Film } from "../../../types";
 
 const ProfileProfileTab = ({ likedFilms }: { likedFilms: Film[] }) => {
     return (
-        <div className="text-slate-200 m-8">
+        <div className="text-slate-200 ">
             <div className="text-sm text-slate-400 font-bold">FAVORITE FILMS</div>
             <div className="border-b border-slate-700 my-2"></div>
             <div className="text-sm text-slate-400 mb-10">Don’t forget to select your

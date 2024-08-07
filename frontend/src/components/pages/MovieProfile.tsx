@@ -142,7 +142,7 @@ const MovieProfile: React.FC = () => {
 
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className=" p-6 lg:px-48">
       <div className="flex mb-6">
         <div className="flex-shrink-0 mr-6">
           <img src={movie.imageUrl || url} alt={movie.title} className="w-64 h-auto object-cover rounded-lg" />

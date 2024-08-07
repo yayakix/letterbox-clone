@@ -4,7 +4,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-reac
 const Navbar = () => {
     return (
         <div>
-            <nav className="bg-black border-gray-200 text-white">
+            <nav className="bg-black border-gray-200 text-white lg:px-48">
                 <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-2 bg-black">
                     <div className="flex items-center gap-2">
                         <img src="/box6.png" alt="Letterboxd Clone" className="w-16 h-16" />
