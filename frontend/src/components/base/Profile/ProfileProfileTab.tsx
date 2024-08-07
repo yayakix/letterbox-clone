@@ -1,4 +1,6 @@
-const ProfileProfileTab = ({ likedFilms }) => {
+import type { Film } from "../../../types";
+
+const ProfileProfileTab = ({ likedFilms }: { likedFilms: Film[] }) => {
     return (
         <div className="text-slate-200 m-8">
             <div className="text-sm text-slate-400 font-bold">FAVORITE FILMS</div>

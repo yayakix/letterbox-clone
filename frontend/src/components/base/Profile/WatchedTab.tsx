@@ -1,15 +1,4 @@
-export type Film = {
-    id: string,
-    createdAt: Date,
-    updatedAt: Date,
-    title: string,
-    description: string,
-    year: number,
-    directedBy: string,
-    rating: number,
-    genre: string[],
-    imageUrl: string,
-}
+import type { Film } from "../../../types";
 
 const WatchedTab = ({ watchedFilms }: { watchedFilms: Film[] }) => {
     console.log('watchedFilms', watchedFilms);
@@ -21,11 +10,13 @@ const WatchedTab = ({ watchedFilms }: { watchedFilms: Film[] }) => {
             <div className="grid grid-cols-4 gap-4 mt-2">
                 {watchedFilms.length > 0 ? (
                     watchedFilms.map((film, index) => (
-                        <div key={index} className="w-40 h-56 border border-slate-700 rounded-lg">
-                            <img src={film.imageUrl} alt={film.title} className="w-full h-full object-cover rounded-lg" />
-                            {/* Replace with actual film data */}
-                            {film.title}
-                        </div>
+                        <a href={`/movie/${film.id}`} key={index}>
+                            <div id={film.id} className="w-40 h-56 border border-slate-700 rounded-lg">
+                                <img src={film.imageUrl} alt={film.title} className="w-full h-full object-cover rounded-lg" />
+                                {/* Replace with actual film data */}
+                                {film.title}
+                            </div>
+                        </a>
                     ))
                 ) : (
                     // Skeleton loading state
