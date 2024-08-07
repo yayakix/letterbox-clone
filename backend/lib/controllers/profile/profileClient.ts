@@ -54,16 +54,30 @@ export const getLikedFilms = async (userId: string) => {
 };
 
 // Add film to users liked list
-export const addFilmToLiked = async (userId: string, filmId: string) => {
-  const likedFilm = await client.profile.update({
+export const toggleFilmLike = async (userId: string, filmId: string) => {
+  // Check if the film is already liked
+  const profile = await client.profile.findUnique({
+    where: { userId },
+    select: { liked: { where: { id: filmId } } },
+  });
+
+  const isLiked = (profile?.liked?.length ?? 0) > 0;
+
+  // Toggle the like status
+  const updatedProfile = await client.profile.update({
     where: { userId },
     data: {
-      liked: {
-        connect: { id: filmId },
-      },
+      liked: isLiked
+        ? { disconnect: { id: filmId } }
+        : { connect: { id: filmId } },
     },
+    include: { liked: true },
   });
-  return likedFilm;
+
+  return {
+    profile: updatedProfile,
+    action: isLiked ? "unliked" : "liked",
+  };
 };
 
 // Get users following
@@ -96,16 +110,51 @@ export const getWatchedFilms = async (userId: string) => {
 };
 
 // Add film to users watched list
-export const addFilmToWatched = async (userId: string, filmId: string) => {
-  const watchedFilm = await client.profile.update({
+export const toggleFilmWatched = async (userId: string, filmId: string) => {
+  // Check if the film is already in the watched list
+  const profile = await client.profile.findUnique({
+    where: { userId },
+    select: { watched: { where: { id: filmId } } },
+  });
+
+  const isWatched = (profile?.watched?.length ?? 0) > 0;
+
+  // Toggle the watched status
+  const updatedProfile = await client.profile.update({
     where: { userId },
     data: {
+      watched: isWatched
+        ? { disconnect: { id: filmId } }
+        : { connect: { id: filmId } },
+    },
+    include: { watched: true },
+  });
+
+  return {
+    profile: updatedProfile,
+    action: isWatched ? "removed from watched" : "added to watched",
+  };
+};
+
+export const isMovieWatchedOrLiked = async (userId: string, filmId: string) => {
+  const result = await client.profile.findUnique({
+    where: { userId },
+    select: {
       watched: {
-        connect: { id: filmId },
+        where: { id: filmId },
+        select: { id: true },
+      },
+      liked: {
+        where: { id: filmId },
+        select: { id: true },
       },
     },
   });
-  return watchedFilm;
+
+  return {
+    isWatched: (result?.watched?.length ?? 0) > 0,
+    isLiked: (result?.liked?.length ?? 0) > 0,
+  };
 };
 
 const profileClient = {
@@ -113,11 +162,12 @@ const profileClient = {
   getYaps,
   postYap,
   getLikedFilms,
-  addFilmToLiked,
+  toggleFilmLike,
   getFollowing,
   getFollowers,
   getWatchedFilms,
-  addFilmToWatched,
+  toggleFilmWatched,
+  isMovieWatchedOrLiked,
 };
 
 export default profileClient;
