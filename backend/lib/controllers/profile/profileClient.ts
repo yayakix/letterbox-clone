@@ -5,8 +5,28 @@ export const getProfile = async (userId: string) => {
   console.log("userId", userId);
   const profile = await client.profile.findUnique({
     where: { userId },
+    include: {
+      followers: true,
+      following: true,
+    },
   });
-  return profile;
+
+  // Transform the data to a more convenient format
+  return {
+    ...profile,
+  };
+};
+
+// get all profiles
+export const getAllProfiles = async (currentUserId: string) => {
+  const profiles = await client.profile.findMany({
+    where: {
+      userId: {
+        not: currentUserId,
+      },
+    },
+  });
+  return profiles;
 };
 
 // Get users yaps(comments)
@@ -98,6 +118,47 @@ export const getFollowers = async (userId: string) => {
   return followers.map((f) => f.follower);
 };
 
+// toggle follow a profile
+export const toggleFollow = async (followerId: string, followingId: string) => {
+  // Check if the follow relationship already exists
+  const existingFollow = await client.follow.findFirst({
+    where: {
+      followerId,
+      followingId,
+    },
+  });
+
+  if (existingFollow) {
+    // If the relationship exists, delete it (unfollow)
+    await client.follow.delete({
+      where: {
+        id: existingFollow.id,
+      },
+    });
+    return { action: "unfollowed" };
+  } else {
+    // If the relationship doesn't exist, create it (follow)
+    await client.follow.create({
+      data: {
+        followerId,
+        followingId,
+      },
+    });
+    return { action: "followed" };
+  }
+};
+
+// Check if a profile is following another
+export const isFollowing = async (followerId: string, followingId: string) => {
+  const follow = await client.follow.findFirst({
+    where: {
+      followerId,
+      followingId,
+    },
+  });
+  return !!follow;
+};
+
 // Get users watched films
 export const getWatchedFilms = async (userId: string) => {
   const watchedFilms = await client.profile.findUnique({
@@ -159,6 +220,7 @@ export const isMovieWatchedOrLiked = async (userId: string, filmId: string) => {
 
 const profileClient = {
   getProfile,
+  getAllProfiles,
   getYaps,
   postYap,
   getLikedFilms,
@@ -168,6 +230,8 @@ const profileClient = {
   getWatchedFilms,
   toggleFilmWatched,
   isMovieWatchedOrLiked,
+  toggleFollow,
+  isFollowing,
 };
 
 export default profileClient;

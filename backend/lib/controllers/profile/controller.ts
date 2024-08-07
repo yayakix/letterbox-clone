@@ -21,6 +21,19 @@ profileRouter.get("/", async (req, res) => {
   }
 });
 
+// get all profiles
+profileRouter.get("/all", async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  try {
+    const profiles = await profileClient.getAllProfiles(req.user.userId);
+    res.json(profiles);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // Get all comments a user has made
 profileRouter.get("/yaps", async (req, res) => {
   if (!req.user?.userId) {
@@ -82,13 +95,18 @@ profileRouter.post("/liked/:filmId", async (req, res) => {
   }
 });
 
+// get network
 profileRouter.get("/network", async (req, res) => {
   if (!req.user?.userId) {
     return res.status(401).json({ error: "Unauthorized" });
   }
+  const currentUser = await profileClient.getProfile(req.user.userId);
+  if (!currentUser.id) {
+    return res.status(401).json({ error: "Error getting current user" });
+  }
   try {
-    const following = await profileClient.getFollowing(req.user.id);
-    const followers = await profileClient.getFollowers(req.user.id);
+    const following = await profileClient.getFollowing(currentUser.id);
+    const followers = await profileClient.getFollowers(currentUser.id);
     console.log("following", following);
     console.log("followers", followers);
     const network = { following, followers };
@@ -96,6 +114,23 @@ profileRouter.get("/network", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
+});
+
+// toggle follow a profile
+profileRouter.post("/network/:followingId", async (req, res) => {
+  if (!req.user?.userId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  const currentUser = await profileClient.getProfile(req.user.userId);
+  if (!currentUser.id) {
+    return res.status(401).json({ error: "Error getting current user" });
+  }
+  const followingId = req.params.followingId;
+  const isFollowing = await profileClient.toggleFollow(
+    currentUser.id,
+    followingId
+  );
+  res.json(isFollowing);
 });
 
 // get all films a user has watched

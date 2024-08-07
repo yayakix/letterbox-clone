@@ -5,6 +5,9 @@ import ProfileProfileTab from "../base/Profile/ProfileProfileTab";
 import WatchedTab from "../base/Profile/WatchedTab";
 import NetworkTab from "../base/Profile/NetworkTab";
 
+
+
+
 const UserProfile = () => {
     const [profileData, setProfileData] = useState<any>(null);
     const [likedFilms, setLikedFilms] = useState<any>([]);
@@ -55,8 +58,6 @@ const UserProfile = () => {
 
     const handleTabChange = (tab: string) => {
         setCurrentTab(tab);
-
-        console.log('Tab changed to:', tab);
     }
 
     const renderTabContent = () => {
@@ -109,12 +110,12 @@ const UserProfile = () => {
                                     </div>
                                     <div className="w-px h-12 bg-gray-300 mx-4"></div>
                                     <div className="mr-4 flex flex-col justify-center items-center">
-                                        <span className="text-lg font-semibold">0</span>
+                                        <span className="text-lg font-semibold">{profileData?.following.length || 0}</span>
                                         <span className="text-sm text-slate-400 mr-0">followers</span>
                                     </div>
                                     <div className="w-px h-12 bg-gray-300 mr-4"></div>
                                     <div className="mr-4 flex flex-col justify-center items-center">
-                                        <span className="text-lg font-semibold">0</span>
+                                        <span className="text-lg font-semibold">{profileData?.followers.length || 0}</span>
                                         <span className="text-sm text-slate-400">following</span>
                                     </div>
                                 </div>
