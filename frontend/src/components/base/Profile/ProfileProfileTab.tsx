@@ -12,8 +12,10 @@ const ProfileProfileTab = ({ likedFilms }) => {
 
             <div className="grid grid-cols-4 mt-2">
                 {likedFilms.map((film: any) => (
-                    <div className="w-40 h-56 border border-slate-700 rounded-lg">
-                        <img src={film.imageUrl} alt={film.title} className="w-full h-full object-cover rounded-lg" />
+                    <div key={film.id} className="w-40 h-56 border border-slate-700 rounded-lg">
+                        <a href={`/movie/${film.id}`}>
+                            <img src={film.imageUrl} alt={film.title} className="w-full h-full object-cover rounded-lg" />
+                        </a>
                     </div>
                 ))}
                 <div className="w-40 h-56 border border-slate-700 rounded-lg"></div>

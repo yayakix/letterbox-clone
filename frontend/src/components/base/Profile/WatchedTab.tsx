@@ -1,7 +1,17 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "@clerk/clerk-react";
+export type Film = {
+    id: string,
+    createdAt: Date,
+    updatedAt: Date,
+    title: string,
+    description: string,
+    year: number,
+    directedBy: string,
+    rating: number,
+    genre: string[],
+    imageUrl: string,
+}
 
-const WatchedTab = ({ watchedFilms }) => {
+const WatchedTab = ({ watchedFilms }: { watchedFilms: Film[] }) => {
     console.log('watchedFilms', watchedFilms);
     return (
         <div className="text-slate-200 m-8">
@@ -12,7 +22,7 @@ const WatchedTab = ({ watchedFilms }) => {
                 {watchedFilms.length > 0 ? (
                     watchedFilms.map((film, index) => (
                         <div key={index} className="w-40 h-56 border border-slate-700 rounded-lg">
-                            <img src={film.poster} alt={film.title} className="w-full h-full object-cover rounded-lg" />
+                            <img src={film.imageUrl} alt={film.title} className="w-full h-full object-cover rounded-lg" />
                             {/* Replace with actual film data */}
                             {film.title}
                         </div>
