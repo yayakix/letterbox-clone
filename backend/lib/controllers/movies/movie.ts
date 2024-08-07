@@ -6,6 +6,18 @@ import optionalUser from "../middleware.ts";
 const movieRouter = express.Router();
 // const clerkAuth = ClerkExpressRequireAuth();
 
+movieRouter.get("/", async (req, res) => {
+    console.log("Request received for all movies");
+    try {
+        const movies = await client.film.findMany();
+        res.json(movies);
+        console.log("Sending movies data to client", movies);
+    } catch (error) {
+        console.error("Error fetching movies:", error);
+        res.status(500).json({ error: "Internal server error", details: error.message });
+    }
+});
+
 movieRouter.get("/:id", ClerkExpressRequireAuth(), optionalUser, async (req, res) => {
     console.log("Request received for movie ID:", req.params.id);
     try {
