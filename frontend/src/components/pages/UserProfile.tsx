@@ -26,7 +26,6 @@ const UserProfile = () => {
             .then(data => setProfileData(data))
             .catch(error => console.error('Error fetching profile data:', error));
     }
-    console.log('profileDataaa44aa', profileData);
     const fetchWatchedFilms = async () => {
         fetch(`${process.env.API_URL}/api/profile/watched`, {
             method: 'GET',
@@ -79,7 +78,6 @@ const UserProfile = () => {
                 return <div>Invalid tab</div>;
         }
     };
-    console.log('profileDataaaaa', profileData);
 
     return (
         <div className="lg:px-48">
