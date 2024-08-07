@@ -6,7 +6,7 @@ import optionalUser from "../middleware.ts";
 const movieRouter = express.Router();
 // const clerkAuth = ClerkExpressRequireAuth();
 
-movieRouter.get("/movies/:id", ClerkExpressRequireAuth(), optionalUser, async (req, res) => {
+movieRouter.get("/:id", ClerkExpressRequireAuth(), optionalUser, async (req, res) => {
     console.log("Request received for movie ID:", req.params.id);
     try {
         const movieId = req.params.id;
@@ -33,6 +33,35 @@ movieRouter.get("/movies/:id", ClerkExpressRequireAuth(), optionalUser, async (r
         res.status(500).json({ error: "Internal server error", details: error.message });
     } finally {
         console.log("Request processing completed");
+    }
+});
+
+movieRouter.get(`/yaps/:id/`, async (req, res) => {
+    console.log("Request received for movie yaps, ID:", req.params.id);
+    console.log('hellllooooo')
+    try {
+        const movieId = req.params.id;
+        console.log("Attempting to find yaps for movie with ID:", movieId);
+
+        const yaps = await client.yap.findMany({
+            where: { filmId: movieId },
+            include: {
+                profile: {
+                    select: {
+                        name: true,
+                        imageUrl: true
+                    }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        console.log(`Found ${yaps.length} yaps for movie`);
+
+        res.json(yaps);
+    } catch (error) {
+        console.error("Error fetching movie yaps:", error);
+        res.status(500).json({ error: "Internal server error", details: error.message });
     }
 });
 

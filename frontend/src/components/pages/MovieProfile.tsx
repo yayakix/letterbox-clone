@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@clerk/clerk-react";
-import YapList from "../base/Comment";
+import YapList from "../base/Comments/Comment";
 import { useParams } from "react-router-dom";
+import PostComment from "../base/Comments/PostComment";
 
 interface Movie {
   id: string;
@@ -25,6 +26,15 @@ interface Yap {
   profileId: string;
 }
 
+interface Comment {
+  id: string;
+  yap: string;
+  createdAt: Date;
+  updatedAt: Date;
+  filmId: string;
+  profileId: string;
+}
+
 const MovieProfile: React.FC = () => {
   const params = useParams();
   const movieId = params.id;
@@ -36,14 +46,6 @@ const MovieProfile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { getToken } = useAuth();
   const url = "https://a.ltrbxd.com/resized/sm/upload/7l/hn/46/uz/zGINvGjdlO6TJRu9wESQvWlOKVT-0-1000-0-1500-crop.jpg?v=8736d1c395"
-  const sampleYap: Yap = {
-    id: "clziiofpn003m918r1evgclj",
-    yap: "Mind-blowing visuals ...",
-    createdAt: new Date("2024-08-06T14:29:52.1"),
-    updatedAt: new Date("2024-08-06T14:29:52.1"),
-    filmId: "clzhhqku000147fatnwla93m",
-    profileId: "clziiofp0000m918s8p93rco"
-  };
 
   // Handle liking and watching movies
   const handleAction = async (action: 'watched' | 'liked') => {
@@ -65,6 +67,30 @@ const MovieProfile: React.FC = () => {
   };
 
 
+  const [comments, setComments] = useState<Comment[]>([]);
+
+  const fetchComments = async () => {
+    if (!movieId) return;
+    try {
+      const token = await getToken();
+      const response = await fetch(`http://localhost:3009/api/movies/yaps/${movieId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch comments");
+      }
+      const data = await response.json();
+      setComments(data);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchComments();
+  }, [movieId, getToken]);
 
   useEffect(() => {
     const fetchMovie = async () => {
@@ -182,7 +208,10 @@ const MovieProfile: React.FC = () => {
       </div>
       <div className="mt-8 border-t border-gray-700 pt-6">
         <h2 className="text-xl font-semibold text-gray-300 mb-4">Comments</h2>
-        <YapList yap={sampleYap} />
+        <PostComment filmId={movie.id} onCommentPosted={fetchComments} />
+        {comments.map((comment) => (
+          <YapList key={comment.id} yap={comment} />
+        ))}
       </div>
     </div>
   )
