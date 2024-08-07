@@ -10,11 +10,11 @@ const WatchedTab = ({ watchedFilms }: { watchedFilms: Film[] }) => {
             <div className="grid grid-cols-4 gap-4 mt-2">
                 {watchedFilms.length > 0 ? (
                     watchedFilms.map((film, index) => (
-                        <a href={`/movie/${film.id}`} key={index}>
+                        <a href={`/movie/${film.id}`} key={index} className="cursor-pointer my-1">
                             <div id={film.id} className="w-40 h-56 border border-slate-700 rounded-lg">
                                 <img src={film.imageUrl} alt={film.title} className="w-full h-full object-cover rounded-lg" />
                                 {/* Replace with actual film data */}
-                                {film.title}
+                                {/* {film.title}  */}
                             </div>
                         </a>
                     ))

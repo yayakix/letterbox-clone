@@ -4,6 +4,7 @@ import Home from "./components/pages/Home.tsx";
 import UserProfile from "./components/pages/UserProfile.tsx";
 import { useAuth } from "@clerk/clerk-react";
 import Navbar from "./components/compound/Navbar.tsx";
+import EditProfile from "./components/base/Profile/EditProfile.tsx";
 
 export type Film = {
   id: string,
@@ -31,6 +32,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/movie/:id" element={<MovieProfile />} />
           <Route path="/profile" element={<UserProfile />} />
+          <Route path="/profile/edit" element={<EditProfile />} />
+
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>

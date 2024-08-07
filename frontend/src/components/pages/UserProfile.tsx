@@ -100,7 +100,9 @@ const UserProfile = () => {
                                             Username
                                         </span>
 
-                                        <button className="bg-slate-600 border border-slate-700 text-slate-300 px-4 py-1 text-sm rounded-md">Edit Profile</button>
+                                        <a href="/profile/edit">
+                                            <button className="bg-slate-600 border border-slate-700 text-slate-300 px-4 py-1 text-sm rounded-md">Edit Profile</button>
+                                        </a>
                                     </div>
                                 </div>
                                 <div className="flex flex-wrap my-auto text-slate-200">
