@@ -51,7 +51,7 @@ const MovieProfile: React.FC = () => {
   const handleAction = async (action: 'watched' | 'liked') => {
     try {
       const token = await getToken();
-      const response = await fetch(`/api/profile/${action}/${movieId}`, {
+      const response = await fetch(`${process.env.API_URL}/api/profile/${action}/${movieId}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -73,7 +73,7 @@ const MovieProfile: React.FC = () => {
     if (!movieId) return;
     try {
       const token = await getToken();
-      const response = await fetch(`http://localhost:3009/api/movies/yaps/${movieId}`, {
+      const response = await fetch(`${process.env.API_URL}/api/movies/yaps/${movieId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -96,7 +96,7 @@ const MovieProfile: React.FC = () => {
     const fetchMovie = async () => {
       try {
         const token = await getToken();
-        const response = await fetch(`/api/movies/${movieId}`, {
+        const response = await fetch(`${process.env.API_URL}/api/movies/${movieId}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -116,7 +116,7 @@ const MovieProfile: React.FC = () => {
 
     const isMovieWatchedOrLiked = async () => {
       const token = await getToken();
-      const response = await fetch(`/api/profile/isWatchedOrLiked/${movieId}`, {
+      const response = await fetch(`${process.env.API_URL}/api/profile/isWatchedOrLiked/${movieId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
