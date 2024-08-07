@@ -7,14 +7,13 @@ import NetworkTab from "../base/Profile/NetworkTab";
 
 const UserProfile = () => {
     const [profileData, setProfileData] = useState<any>(null);
-    const [likedFilms, setLikedFilms] = useState<any>(null);
-    const [watchedFilms, setWatchedFilms] = useState<any>(null);
+    const [likedFilms, setLikedFilms] = useState<any>([]);
+    const [watchedFilms, setWatchedFilms] = useState<any>([]);
     const [currentTab, setCurrentTab] = useState<string>('Profile');
     const { getToken } = useAuth();
 
     const fetchProfileData = async () => {
-        const token = await getToken();
-        fetch(`http://localhost:3009/api/profile`, {
+        fetch(`${process.env.API_URL}/api/profile`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${await getToken()}`
@@ -25,8 +24,7 @@ const UserProfile = () => {
             .catch(error => console.error('Error fetching profile data:', error));
     }
     const fetchWatchedFilms = async () => {
-        const token = await getToken();
-        fetch(`http://localhost:3009/api/profile/watched`, {
+        fetch(`${process.env.API_URL}/api/profile/watched`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${await getToken()}`
@@ -37,8 +35,7 @@ const UserProfile = () => {
             .catch(error => console.error('Error fetching profile data:', error));
     }
     const fetchLikedFilms = async () => {
-        const token = await getToken();
-        fetch(`http://localhost:3009/api/profile/liked`, {
+        fetch(`${process.env.API_URL}/api/profile/liked`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${await getToken()}`

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@clerk/clerk-react";
 import YapList from "../base/Comment";
+import { useParams } from "react-router-dom";
 
 interface Movie {
   id: string;
@@ -15,10 +16,6 @@ interface Movie {
   genre: string[];
 }
 
-interface MovieProfileProps {
-  movieId: string
-}
-
 interface Yap {
   id: string;
   yap: string;
@@ -28,7 +25,9 @@ interface Yap {
   profileId: string;
 }
 
-const MovieProfile: React.FC<MovieProfileProps> = ({ movieId }) => {
+const MovieProfile: React.FC = () => {
+  const params = useParams();
+  const movieId = params.id;
   const [movie, setMovie] = useState<Movie | null>(null);
   const [loading, setLoading] = useState(true);
   const { getToken } = useAuth();

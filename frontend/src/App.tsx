@@ -13,10 +13,10 @@ export default function App() {
   return (
     <div>
       <BrowserRouter>
-        <Navbar/>
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/movie/:id" element={<MovieProfile movieId="clzhhaqku000147fatnwla93m" />} />
+          <Route path="/movie/:id" element={<MovieProfile />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
