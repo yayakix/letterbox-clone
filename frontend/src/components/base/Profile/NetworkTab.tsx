@@ -10,7 +10,7 @@ const NetworkTab = () => {
     ];
 
     return (
-        <div className="text-slate-200 m-8">
+        <div className="text-slate-200">
             <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-700 ">
                 <ul className="flex flex-wrap -mb-px">
                     {tabs.map((tab) => (

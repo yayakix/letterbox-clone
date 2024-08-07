@@ -79,10 +79,9 @@ const UserProfile = () => {
     };
 
     return (
-        <div>
-
-            <div className="relative flex flex-col w-full min-w-0 mb-6 break-words rounded-2xl">
-                <div className="px-9 pt-9 flex-auto min-h-[70px] pb-0 bg-transparent">
+        <div className="lg:px-48">
+            <div className="relative flex flex-col w-full min-w-0 mb-6 break-words rounded-2xl ">
+                <div className="pt-9 flex-auto min-h-[70px] pb-0 bg-transparent">
                     <div className="flex flex-wrap mb-6 xl:flex-nowrap">
                         <div className="mb-5 mr-5">
                             <div className="relative inline-block shrink-0 rounded-2xl">
@@ -105,7 +104,7 @@ const UserProfile = () => {
                                 </div>
                                 <div className="flex flex-wrap my-auto text-slate-200">
                                     <div className="flex flex-col justify-center items-center">
-                                        <span className="text-lg font-semibold">0</span>
+                                        <span className="text-lg font-semibold">{watchedFilms.length || 0}</span>
                                         <span className="text-sm text-slate-400">films</span>
                                     </div>
                                     <div className="w-px h-12 bg-gray-300 mx-4"></div>
