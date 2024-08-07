@@ -1,13 +1,41 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAuth } from "@clerk/clerk-react";
+
 
 const NetworkTab = () => {
+    const { getToken } = useAuth();
     const [activeTab, setActiveTab] = useState('followers');
+    const [followers, setFollowers] = useState<any>(null);
+    const [following, setFollowing] = useState<any>(null);
 
     const tabs = [
         { id: 'following', label: 'Following' },
         { id: 'followers', label: 'Followers' },
         { id: 'blocked', label: 'Blocked' },
     ];
+    // fetch current followers/following
+
+    const fetchNetworkData = async () => {
+        fetch(`${process.env.API_URL}/api/profile/network`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${await getToken()}`
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                setFollowers(data.followers);
+                setFollowing(data.following);
+            })
+            .catch(error => console.error('Error fetching profile data:', error));
+    }
+    console.log('followers', followers);
+    console.log('following', following);
+
+    useEffect(() => {
+        fetchNetworkData();
+    }, []);
+
 
     return (
         <div className="text-slate-200">

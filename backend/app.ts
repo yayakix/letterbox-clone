@@ -13,8 +13,7 @@ app.use(cors({ allowedHeaders: ["Authorization", "Content-Type"] }));
 app.use(express.json());
 
 // app.use("/api", userRouter);
-app.use('/api/movie', movieRouter)
+app.use("/api/movies", movieRouter);
 app.use("/api/profile", profileRouter);
-
 
 export default app;

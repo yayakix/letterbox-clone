@@ -82,25 +82,17 @@ profileRouter.post("/liked/:filmId", async (req, res) => {
   }
 });
 
-profileRouter.get("/following", async (req, res) => {
+profileRouter.get("/network", async (req, res) => {
   if (!req.user?.userId) {
     return res.status(401).json({ error: "Unauthorized" });
   }
   try {
-    const following = await profileClient.getFollowing(req.user.userId);
-    res.json(following);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-profileRouter.get("/followers", async (req, res) => {
-  if (!req.user?.userId) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  try {
-    const followers = await profileClient.getFollowers(req.user.userId);
-    res.json(followers);
+    const following = await profileClient.getFollowing(req.user.id);
+    const followers = await profileClient.getFollowers(req.user.id);
+    console.log("following", following);
+    console.log("followers", followers);
+    const network = { following, followers };
+    res.json(network);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
