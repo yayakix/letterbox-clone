@@ -1,17 +1,25 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from "@clerk/clerk-react";
-
+// import { useNavigate } from 'react-router'
 
 const NetworkTab = () => {
     const { getToken } = useAuth();
-    const [activeTab, setActiveTab] = useState('followers');
-    const [followers, setFollowers] = useState<any>(null);
-    const [following, setFollowing] = useState<any>(null);
+    const [activeTab, setActiveTab] = useState('following');
+    const [followers, setFollowers] = useState<any>([]);
+    const [following, setFollowing] = useState<any>([]);
+    const [everyone, setEveryone] = useState<any>([]);
+    // const navigate = useNavigate()
+
+    const [refresh, setRefresh] = useState(false);
+    const handleRefresh = () => {
+        setRefresh(prev => !prev); // Toggle refresh state
+    };
 
     const tabs = [
         { id: 'following', label: 'Following' },
         { id: 'followers', label: 'Followers' },
         { id: 'blocked', label: 'Blocked' },
+        { id: 'everyone', label: 'Everyone' },
     ];
     // fetch current followers/following
 
@@ -28,13 +36,43 @@ const NetworkTab = () => {
                 setFollowing(data.following);
             })
             .catch(error => console.error('Error fetching profile data:', error));
+
+        // fetch everyone
+        fetch(`${process.env.API_URL}/api/profile/all`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${await getToken()}`
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                setEveryone(data);
+            })
+            .catch(error => console.error('Error fetching everyone:', error));
     }
-    console.log('followers', followers);
-    console.log('following', following);
 
     useEffect(() => {
         fetchNetworkData();
-    }, []);
+
+    }, [refresh]);
+
+
+
+    const toggleFollow = async (unfollowUserId: string) => {
+        fetch(`${process.env.API_URL}/api/profile/network/${unfollowUserId}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${await getToken()}`
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('data', data);
+            })
+        handleRefresh()
+    }
+
+
 
 
     return (
@@ -61,10 +99,40 @@ const NetworkTab = () => {
                 </ul>
             </div>
 
-            <div className="mt-4 border border-gray-700 h-96 w-full flex justify-center items-center text-slate-500">
-                {activeTab === 'following' && <div>You are not following anyone</div>}
-                {activeTab === 'followers' && <div>You are not followed by anyone</div>}
+            <div className="mt-4 border border-gray-700 h-96 w-full overflow-y-auto">
+                {activeTab === 'following' && <div>{following.map((user: any) => (
+                    <div key={user.id} className='border border-gray-700 p-2 rounded-md w-full'>
+                        <div className='flex justify-between items-center'>
+                            <div className='flex items-center gap-2'>
+                                <img src={user.imageUrl} className='w-10 h-10 rounded-full'></img>
+                                {user.name}
+                            </div>
+                            <button className='bg-red-500 text-white p-2 rounded-md' onClick={() => toggleFollow(user.id)}>Unfollow</button>
+                        </div>
+                    </div>
+                ))}</div>}
+                {activeTab === 'followers' && <div>{followers.map((user: any) => (
+                    <div key={user.id} className='border border-gray-700 p-2 rounded-md w-full'>
+                        <div className='flex justify-between items-center'>
+                            <div className='flex items-center gap-2'>
+                                <img src={user.imageUrl} className='w-10 h-10 rounded-full'></img>
+                                {user.name}
+                            </div>
+                        </div>
+                    </div>
+                ))}</div>}
                 {activeTab === 'blocked' && <div>You have not blocked anyone</div>}
+                {activeTab === 'everyone' && <div>{everyone.map((user: any) => (
+                    <div key={user.id} className='border border-gray-700 p-2 rounded-md w-full'>
+                        <div className='flex justify-between items-center'>
+                            <div className='flex items-center gap-2'>
+                                <img src={user.imageUrl} className='w-10 h-10 rounded-full'></img>
+                                {user.name}
+                            </div>
+                            <button className='bg-green-500 text-white p-2 rounded-md' onClick={() => toggleFollow(user.id)}>Follow</button>
+                        </div>
+                    </div>
+                ))}</div>}
             </div>
         </div>
     );
