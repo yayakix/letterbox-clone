@@ -65,14 +65,14 @@ profileRouter.get("/liked", async (req, res) => {
   }
 });
 
-// like a film
+// toggle liking a film
 profileRouter.post("/liked/:filmId", async (req, res) => {
   if (!req.user?.userId) {
     return res.status(401).json({ error: "Unauthorized" });
   }
   console.log("filmid:", req.params.filmId);
   try {
-    const likedFilm = await profileClient.addFilmToLiked(
+    const likedFilm = await profileClient.toggleFilmLike(
       req.user.userId,
       req.params.filmId
     );
@@ -125,7 +125,7 @@ profileRouter.post("/watched/:filmId", async (req, res) => {
     return res.status(401).json({ error: "Unauthorized" });
   }
   try {
-    const watchedFilm = await profileClient.addFilmToWatched(
+    const watchedFilm = await profileClient.toggleFilmWatched(
       req.user.userId,
       req.params.filmId
     );
@@ -133,6 +133,17 @@ profileRouter.post("/watched/:filmId", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
+});
+
+profileRouter.get("/isWatchedOrLiked/:filmId", async (req, res) => {
+  if (!req.user?.userId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  const isWatchedOrLiked = await profileClient.isMovieWatchedOrLiked(
+    req.user.userId,
+    req.params.filmId
+  );
+  res.json(isWatchedOrLiked);
 });
 
 export default profileRouter;

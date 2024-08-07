@@ -1,15 +1,4 @@
-export type Film = {
-    id: string,
-    createdAt: Date,
-    updatedAt: Date,
-    title: string,
-    description: string,
-    year: number,
-    directedBy: string,
-    rating: number,
-    genre: string[],
-    imageUrl: string,
-}
+import type { Film } from "../../../types";
 
 const WatchedTab = ({ watchedFilms }: { watchedFilms: Film[] }) => {
     console.log('watchedFilms', watchedFilms);
