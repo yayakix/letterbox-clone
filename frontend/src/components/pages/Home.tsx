@@ -79,8 +79,9 @@ export default function Home() {
 					/>
 				</div>
 			</div>
-			<div className="flex flex-col items-center h-screen w-8/12">
-				<h1>popular movies</h1>
+			<div className="flex flex-col items-center h-screen w-8/12 mt-10">
+				<h1 className="text-md font-Inter uppercase">popular movies</h1>
+				<hr className="my-4 border-t border-gray-600 w-full" />
 				<div className="flex flex-row">
 					<div className="w-1/4 flex flex-col items-center">
 						<img src="https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg" alt="movie" />
