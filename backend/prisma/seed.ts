@@ -53,7 +53,7 @@ const initialMovies = [
     year: 1993,
     directedBy: "Steven Spielberg",
     rating: 9,
-    genre: ["Biography", "Drama", "History"],
+    genre: ["Documentary", "Drama", "History"],
     imageUrl:
       "https://a.ltrbxd.com/resized/sm/upload/bz/1x/em/jr/yPisjyLweCl1tbgwgtzBCNCBle-0-1000-0-1500-crop.jpg?v=ca5215c5a9",
   },
@@ -119,7 +119,7 @@ const initialMovies = [
     year: 2010,
     directedBy: "Christopher Nolan",
     rating: 8,
-    genre: ["Action", "Adventure", "Sci-Fi"],
+    genre: ["Action", "Adventure", "Science Fiction"],
     imageUrl:
       "https://a.ltrbxd.com/resized/sm/upload/sv/95/s9/4j/inception-0-1000-0-1500-crop.jpg?v=30d7224316",
   },
@@ -130,7 +130,7 @@ const initialMovies = [
     year: 1999,
     directedBy: "Lana Wachowski, Lilly Wachowski",
     rating: 8,
-    genre: ["Action", "Sci-Fi"],
+    genre: ["Action", "Science Fiction"],
     imageUrl:
       "https://a.ltrbxd.com/resized/film-poster/5/1/5/1/8/51518-the-matrix-0-1000-0-1500-crop.jpg?v=fc7c366afe",
   },
@@ -141,7 +141,7 @@ const initialMovies = [
     year: 1990,
     directedBy: "Martin Scorsese",
     rating: 8,
-    genre: ["Biography", "Crime", "Drama"],
+    genre: ["Documentary", "Crime", "Drama"],
     imageUrl:
       "https://a.ltrbxd.com/resized/film-poster/5/1/3/8/3/51383-goodfellas-0-1000-0-1500-crop.jpg?v=c6c265f228",
   },
@@ -259,7 +259,10 @@ async function main() {
   for (const movie of initialMovies) {
     await prisma.film.updateMany({
       where: { title: movie.title },
-      data: { imageUrl: movie.imageUrl },
+      data: {
+        imageUrl: movie.imageUrl,
+        genre: movie.genre,
+      },
     });
   }
   console.log("Movies updated with imageUrl.");
