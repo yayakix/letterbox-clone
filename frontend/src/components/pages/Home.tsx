@@ -97,7 +97,7 @@ export default function Home() {
 							<option value="All">All</option>
 							<option value="Highest Rated">Highest Rated</option>
 							<option value="Lowest Rated">Lowest Rated</option>
-						</select>
+						</select >
 						<select
 							name="genre"
 							id="genre-select"
@@ -129,8 +129,8 @@ export default function Home() {
 							<option value="war">War</option>
 							<option value="western">Western</option>
 						</select>
-					</div>
-				</div>
+					</div >
+				</div >
 				<div className="flex flex-row items-center gap-2">
 					<h1 className="text-md font-Inter uppercase">Find A Film</h1>
 					<input
@@ -153,7 +153,7 @@ export default function Home() {
 						}}
 					/>
 				</div>
-			</div>
+			</div >
 			<div className="flex flex-col items-center h-full w-full mt-12">
 				<div className="flex flex-col items-center w-7/12">
 					<div className="flex flex-row items-end justify-between w-full">
@@ -197,7 +197,7 @@ export default function Home() {
 										</svg>
 									</button>
 								</div>
-							</div>
+							</div >
 						))
 					) : (
 						movies.map((movie) => (
@@ -233,11 +233,12 @@ export default function Home() {
 										</svg>
 									</button>
 								</div>
-							</div>
+							</div >
 						))
-					)}
-				</div>
-			</div>
+					)
+					}
+				</div >
+			</div >
 		</div >
 	);
 }

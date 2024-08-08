@@ -19,6 +19,26 @@ movieRouter.get("/", async (req, res) => {
   }
 });
 
+movieRouter.get("/search", ClerkExpressRequireAuth(), optionalUser, async (req, res) => {
+  const search = req.query.search;
+  try {
+    const movies = await client.film.findMany({
+      where: {
+        title: {
+          contains: search as string,
+          mode: "insensitive",
+        },
+      },
+    });
+    res.status(200).json(movies);
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
+
 movieRouter.get(
   "/search",
   ClerkExpressRequireAuth(),
