@@ -3,6 +3,7 @@ import { useAuth } from "@clerk/clerk-react";
 import YapList from "../base/Comments/Comment";
 import { useParams } from "react-router-dom";
 import PostComment from "../base/Comments/PostComment";
+import Rating from "../base/Rating/Rating";
 
 
 
@@ -121,7 +122,7 @@ const MovieProfile: React.FC = () => {
         <div className="flex-grow">
           <h1 className="text-gray-300 text-2xl font-bold mb-2">{movie.title}</h1>
           <p className="text-sm text-gray-600 mb-2">{movie.year} • Directed by {movie.directedBy}</p>
-          <span className="text-xl font-semibold text-yellow-500">{movie.rating?.toFixed(1)}</span>
+          <span className="text-xl font-semibold text-yellow-500 flex flex-row items-center gap-2"> {movie.rating?.toFixed(1)} <Rating totalStars={10} rating={movie.rating} readOnly={true} readOnlyValue={movie.rating} disabled={true} /></span>
           <p className="text-gray-500 mt-4">
             {movie.description}
           </p>
@@ -129,7 +130,12 @@ const MovieProfile: React.FC = () => {
             Genres: {Array.isArray(movie.genre) ? movie.genre.join(', ') : 'Unknown'}
           </p>
         </div>
-        <div className="flex-shrink-0 ml-6 bg-gray-500 p-4 rounded-lg flex flex-col justify-center items-center">
+        <div className="flex-shrink-0 ml-6 bg-gray-500 p-2 rounded-lg flex flex-col justify-center items-center w-1/6">
+          <span className="text-xl font-semibold text-slate-400 mb-2">Rate</span>
+          <div className="flex flex-col items-center relative h-6 w-24">
+
+            <Rating totalStars={5} />
+          </div>
           <button
             className={`flex flex-col items-center transition-colors mb-4 ${isWatched ? 'text-yellow-500 hover:text-yellow-400' : 'text-slate-400 hover:text-slate-200'
               }`}
