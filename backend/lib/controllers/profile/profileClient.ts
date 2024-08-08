@@ -53,6 +53,12 @@ export const getYaps = async (userId: string) => {
     where: { profile: { userId } },
     include: {
       film: true, // Include the associated movie
+      profile: {
+        select: {
+          name: true,
+          imageUrl: true,
+        },
+      },
     },
   });
   return yaps;

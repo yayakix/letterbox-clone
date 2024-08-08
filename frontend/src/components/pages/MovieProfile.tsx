@@ -4,36 +4,7 @@ import YapList from "../base/Comments/Comment";
 import { useParams } from "react-router-dom";
 import PostComment from "../base/Comments/PostComment";
 
-interface Movie {
-  id: string;
-  title: string;
-  imageUrl: string;
-  directedBy: string;
-  year: number;
-  description: string;
-  rating: number;
-  createdAt: string;
-  updatedAt: string;
-  genre: string[];
-}
 
-interface Yap {
-  id: string;
-  yap: string;
-  createdAt: Date;
-  updatedAt: Date;
-  filmId: string;
-  profileId: string;
-}
-
-interface Comment {
-  id: string;
-  yap: string;
-  createdAt: Date;
-  updatedAt: Date;
-  filmId: string;
-  profileId: string;
-}
 
 const MovieProfile: React.FC = () => {
   const params = useParams();
@@ -67,7 +38,7 @@ const MovieProfile: React.FC = () => {
   };
 
 
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [yaps, setYaps] = useState<Yap[]>([]);
 
   const fetchComments = async () => {
     if (!movieId) return;
@@ -82,7 +53,7 @@ const MovieProfile: React.FC = () => {
         throw new Error("Failed to fetch comments");
       }
       const data = await response.json();
-      setComments(data);
+      setYaps(data);
     } catch (error) {
       console.error("Error fetching comments:", error);
     }
@@ -209,8 +180,8 @@ const MovieProfile: React.FC = () => {
       <div className="mt-8 border-t border-gray-700 pt-6">
         <h2 className="text-xl font-semibold text-gray-300 mb-4">Comments</h2>
         <PostComment filmId={movie.id} onCommentPosted={fetchComments} />
-        {comments.map((comment) => (
-          <YapList key={comment.id} yap={comment} />
+        {yaps.map((yap) => (
+          <YapList key={yap.id} yap={yap} />
         ))}
       </div>
     </div>

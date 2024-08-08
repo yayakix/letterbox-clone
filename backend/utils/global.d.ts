@@ -20,11 +20,15 @@ declare global {
     updatedAt: Date;
     filmId: string;
     profileId: string;
+    profile: {
+      name: string;
+      imageUrl: string;
+    };
   }
 
   interface MovieProfileProps {
     movieId: string;
-  } // Add this closing brace
+  }
 
   namespace Express {
     interface Request {
@@ -35,4 +39,4 @@ declare global {
   }
 }
 
-export {};
+export { };
