@@ -19,14 +19,32 @@ export const getProfile = async (userId: string) => {
 
 // get all profiles
 export const getAllProfiles = async (currentUserId: string) => {
+  // get profile id
+  const profile = await client.profile.findUnique({
+    where: {
+      userId: currentUserId,
+    },
+  });
+  // get all profiles
   const profiles = await client.profile.findMany({
     where: {
       userId: {
         not: currentUserId,
       },
     },
+    include: {
+      following: {
+        where: {
+          followerId: profile?.id,
+        },
+      },
+    },
   });
-  return profiles;
+
+  return profiles.map((profile) => ({
+    ...profile,
+    isFollowing: profile.following.length > 0,
+  }));
 };
 
 // Get users yaps(comments)
