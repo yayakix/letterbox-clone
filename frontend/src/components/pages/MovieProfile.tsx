@@ -14,6 +14,8 @@ const MovieProfile: React.FC = () => {
 
   const [isLiked, setIsLiked] = useState(false);
   const [isWatched, setIsWatched] = useState(false);
+  const [starRating, setStarRating] = useState<number | null>(0); // number 
+
 
   const [loading, setLoading] = useState(true);
   const { getToken } = useAuth();
@@ -30,9 +32,7 @@ const MovieProfile: React.FC = () => {
           'Content-Type': 'application/json',
         },
       });
-      console.log(response);
       if (!response.ok) throw new Error(`Failed to ${action} movie`);
-      console.log(`${action.charAt(0).toUpperCase() + action.slice(1)} movie successfully`);
     } catch (error) {
       console.error(`Error ${action} movie:`, error);
     }
@@ -78,6 +78,8 @@ const MovieProfile: React.FC = () => {
         }
         const data = await response.json();
         setMovie(data);
+        setStarRating(data.userRating ? data.userRating : 0);
+
       } catch (error) {
         console.error("Error fetching movie:", error);
         setMovie(null);
@@ -96,7 +98,6 @@ const MovieProfile: React.FC = () => {
       const data = await response.json();
       if (data.isWatched) setIsWatched(true);
       if (data.isLiked) setIsLiked(true);
-      console.log('likeorwatchdata', data);
     };
     isMovieWatchedOrLiked();
 
@@ -112,7 +113,30 @@ const MovieProfile: React.FC = () => {
   if (loading) return <div>Loading...</div>;
   if (!movie) return <div>Movie not found</div>
 
+  const handleRatingChange = async (newRating: number) => {
+    try {
+      const token = await getToken();
+      const response = await fetch(`${process.env.API_URL}/api/movies/rate/${movieId}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ newRating: newRating }),
+      });
+      console.log('response', response);
+      if (!response.ok) throw new Error(`Failed to update rating`);
+      console.log(`Rating updated successfully`);
+      setStarRating((newRating / 2));
+      console.log('starRating', starRating);
+    } catch (error) {
+      console.error(`Error updating rating:`, error);
+    }
+  };
 
+
+  const movieRating = movie.currentRating / 2;
+  console.log('movieRating', movieRating);
   return (
     <div className=" p-6 lg:px-48">
       <div className="flex mb-6">
@@ -122,7 +146,8 @@ const MovieProfile: React.FC = () => {
         <div className="flex-grow">
           <h1 className="text-gray-300 text-2xl font-bold mb-2">{movie.title}</h1>
           <p className="text-sm text-gray-600 mb-2">{movie.year} • Directed by {movie.directedBy}</p>
-          <span className="text-xl font-semibold text-yellow-500 flex flex-row items-center gap-2"> {movie.currentRating?.toFixed(1)} <Rating totalStars={10} rating={movie.currentRating} readOnly={true} readOnlyValue={movie.currentRating} disabled={true} /></span>
+          {/* average total rating */}
+          <span className="text-xl font-semibold text-yellow-500 flex flex-row items-center gap-2"> {movieRating?.toFixed(1)} <Rating totalStars={5} readOnly={true} readOnlyValue={movieRating} /></span>
           <p className="text-gray-500 mt-4">
             {movie.description}
           </p>
@@ -131,9 +156,9 @@ const MovieProfile: React.FC = () => {
           </p>
         </div>
         <div className="flex-shrink-0 ml-6 bg-gray-500 p-6 rounded-lg flex flex-col justify-center items-center w-1/6">
+          {/* user rating */}
           <div className="flex flex-col items-center relative h-2 w-24">
-
-            <Rating totalStars={5} />
+            <Rating totalStars={5} onRatingChange={handleRatingChange} readOnlyValue={starRating || 0} />
           </div>
           <span className="text-xl font-semibold text-slate-400 mb-1 mt-1">Rate</span>
           <button

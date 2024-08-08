@@ -8,6 +8,7 @@ export interface RatingProps {
     disabled?: boolean
     readOnly?: boolean;
     readOnlyValue?: number
+    onRatingChange?: (rating: number) => void;
 }
 
 const Rating: React.FC<RatingProps> = ({
@@ -16,9 +17,10 @@ const Rating: React.FC<RatingProps> = ({
     disabled = false,
     readOnly = false,
     readOnlyValue = 5,
+    onRatingChange,
     ...props
 }) => {
-    const defaultRating = readOnly ? readOnlyValue : 0;
+    const defaultRating = readOnlyValue || 0;
 
     const numberOfStars = totalStars
     const [rating, setRating] = useState(defaultRating);
@@ -28,6 +30,7 @@ const Rating: React.FC<RatingProps> = ({
         if (!disabled && !readOnly) {
             if (hoveredRating > 0)
                 setRating(hoveredRating);
+            onRatingChange?.(hoveredRating);
         }
     };
     const handleStarHover = (e: React.MouseEvent<HTMLSpanElement>, index: number) => {
