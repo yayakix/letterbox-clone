@@ -1,4 +1,5 @@
-import express from "express";
+import { NextFunction, Request, Response } from "express";
+
 declare global {
   interface Movie {
     id: string;
