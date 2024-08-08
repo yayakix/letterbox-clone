@@ -19,25 +19,119 @@ movieRouter.get("/", async (req, res) => {
   }
 });
 
-movieRouter.get("/search", ClerkExpressRequireAuth(), optionalUser, async (req, res) => {
-  const search = req.query.search;
-  try {
-    const movies = await client.film.findMany({
-      where: {
-        title: {
-          contains: search as string,
-          mode: "insensitive",
+movieRouter.get(
+  "/search",
+  ClerkExpressRequireAuth(),
+  optionalUser,
+  async (req, res) => {
+    const search = req.query.search;
+    try {
+      const movies = await client.film.findMany({
+        where: {
+          title: {
+            contains: search as string,
+            mode: "insensitive",
+          },
         },
-      },
-    });
-    res.status(200).json(movies);
-  } catch (error) {
-    console.error("Error fetching movies:", error);
-    res
-      .status(500)
-      .json({ error: "Internal server error", details: error.message });
+      });
+      res.status(200).json(movies);
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+      res
+        .status(500)
+        .json({ error: "Internal server error", details: error.message });
+    }
   }
-});
+);
+
+movieRouter.get(
+  "/filter",
+  ClerkExpressRequireAuth(),
+  optionalUser,
+  async (req, res) => {
+    const type = req.query.type;
+    const filter = req.query.filter;
+
+    if (type === "genre") {
+      try {
+        if (filter === "All") {
+          const movies = await client.film.findMany();
+          res.status(200).json(movies);
+        } else {
+          const movies = await client.film.findMany({
+            where: { genre: { has: filter as string } },
+          });
+          res.status(200).json(movies);
+        }
+      } catch (error) {
+        console.error("Error fetching movies:", error);
+        res
+          .status(500)
+          .json({ error: "Internal server error", details: error.message });
+      }
+    } else if (type === "year") {
+      try {
+        if (filter === "All") {
+          const movies = await client.film.findMany();
+          res.status(200).json(movies);
+        } else {
+          const movies = await client.film.findMany({
+            where: {
+              year: {
+                gte: parseInt(filter as string), // Year is greater than or equal to the input year
+                lte: parseInt(filter as string) + 10, // Year is less than or equal to the input year + 10
+              },
+            },
+          });
+          res.status(200).json(movies);
+        }
+      } catch (error) {
+        console.error("Error fetching movies:", error);
+        res
+          .status(500)
+          .json({ error: "Internal server error", details: error.message });
+      }
+    }
+    if (type === "rating" && filter === "Highest Rated") {
+      try {
+        const movies = await client.film.findMany({
+          where: {
+            currentRating: {
+              gte: 8,
+            },
+          },
+        });
+        res.status(200).json(movies);
+      } catch (error) {
+        console.error("Error fetching movies:", error);
+        res
+          .status(500)
+          .json({ error: "Internal server error", details: error.message });
+      }
+    }
+    if (type === "rating" && filter === "Lowest Rated") {
+      try {
+        const movies = await client.film.findMany({
+          where: {
+            currentRating: {
+              lte: 5,
+            },
+          },
+        });
+        res.status(200).json(movies);
+      } catch (error) {
+        console.error("Error fetching movies:", error);
+        res
+          .status(500)
+          .json({ error: "Internal server error", details: error.message });
+      }
+    }
+    if (type === "rating" && filter === "All") {
+      const movies = await client.film.findMany();
+      res.status(200).json(movies);
+    }
+  }
+);
 
 movieRouter.get(
   "/search",
