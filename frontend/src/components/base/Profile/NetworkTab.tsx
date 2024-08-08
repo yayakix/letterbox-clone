@@ -10,11 +10,6 @@ const NetworkTab = () => {
     const [everyone, setEveryone] = useState<any>([]);
     // const navigate = useNavigate()
 
-    const [refresh, setRefresh] = useState(false);
-    const handleRefresh = () => {
-        setRefresh(prev => !prev); // Toggle refresh state
-    };
-
     const tabs = [
         { id: 'following', label: 'Following' },
         { id: 'followers', label: 'Followers' },
@@ -54,26 +49,38 @@ const NetworkTab = () => {
     useEffect(() => {
         fetchNetworkData();
 
-    }, [refresh]);
+    }, []);
 
+    const toggleFollow = async (userId: string) => {
+        try {
+            const response = await fetch(`${process.env.API_URL}/api/profile/network/${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${await getToken()}`
+                }
+            });
+            const data = await response.json();
 
+            if (response.ok) {
+                // Update the local state
+                setEveryone(prevEveryone => prevEveryone.map(user =>
+                    user.id === userId ? { ...user, isFollowing: !user.isFollowing } : user
+                ));
 
-    const toggleFollow = async (unfollowUserId: string) => {
-        fetch(`${process.env.API_URL}/api/profile/network/${unfollowUserId}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${await getToken()}`
+                // Update following/followers lists
+                if (data.action === 'followed') {
+                    const userToAdd = everyone.find(user => user.id === userId);
+                    if (userToAdd) {
+                        setFollowing(prev => [...prev, userToAdd]);
+                    }
+                } else if (data.action === 'unfollowed') {
+                    setFollowing(prev => prev.filter(user => user.id !== userId));
+                }
             }
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('data', data);
-            })
-        handleRefresh()
+        } catch (error) {
+            console.error('Error toggling follow:', error);
+        }
     }
-
-
-
 
     return (
         <div className="text-slate-200">
@@ -100,36 +107,50 @@ const NetworkTab = () => {
             </div>
 
             <div className="mt-4 border border-gray-700 h-96 w-full overflow-y-auto">
-                {activeTab === 'following' && <div>{following.map((user: any) => (
-                    <div key={user.id} className='border border-gray-700 p-2 rounded-md w-full'>
-                        <div className='flex justify-between items-center'>
-                            <div className='flex items-center gap-2'>
-                                <img src={user.imageUrl} className='w-10 h-10 rounded-full'></img>
-                                {user.name}
-                            </div>
-                            <button className='bg-red-500 text-white p-2 rounded-md' onClick={() => toggleFollow(user.id)}>Unfollow</button>
-                        </div>
+                {activeTab === 'following' && (
+                    <div className="w-full">
+                        {following.map((user: any) => (
+                            user && user.name ? (
+                                <div key={user.id} className='border border-gray-700 p-2 rounded-md w-full'>
+                                    <div className='flex items-center gap-2'>
+                                        <img src={user.imageUrl} className='w-10 h-10 rounded-full' alt={user.name} />
+                                        {user.name}
+                                    </div>
+                                </div>
+                            ) : null
+                        ))}
                     </div>
-                ))}</div>}
-                {activeTab === 'followers' && <div>{followers.map((user: any) => (
-                    <div key={user.id} className='border border-gray-700 p-2 rounded-md w-full'>
-                        <div className='flex justify-between items-center'>
-                            <div className='flex items-center gap-2'>
-                                <img src={user.imageUrl} className='w-10 h-10 rounded-full'></img>
-                                {user.name}
-                            </div>
-                        </div>
+                )}
+                {activeTab === 'followers' && (
+                    <div className="w-full">
+                        {followers.map((user: any) => (
+                            user && user.name ? (
+                                <div key={user.id} className='border border-gray-700 p-2 rounded-md w-full'>
+                                    <div className='flex justify-between items-center'>
+                                        <div className='flex items-center gap-2'>
+                                            <img src={user.imageUrl} className='w-10 h-10 rounded-full' alt={user.name} />
+                                            {user.name}
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : null
+                        ))}
                     </div>
-                ))}</div>}
+                )}
                 {activeTab === 'blocked' && <div>You have not blocked anyone</div>}
                 {activeTab === 'everyone' && <div>{everyone.map((user: any) => (
                     <div key={user.id} className='border border-gray-700 p-2 rounded-md w-full'>
                         <div className='flex justify-between items-center'>
                             <div className='flex items-center gap-2'>
-                                <img src={user.imageUrl} className='w-10 h-10 rounded-full'></img>
+                                <img src={user.imageUrl} className='w-10 h-10 rounded-full' alt={user.name} />
                                 {user.name}
                             </div>
-                            <button className='bg-green-500 text-white p-2 rounded-md' onClick={() => toggleFollow(user.id)}>Follow</button>
+                            <button
+                                className={`text-white p-2 rounded-md ${user.isFollowing ? 'bg-red-500' : 'bg-green-500'}`}
+                                onClick={() => toggleFollow(user.id)}
+                            >
+                                {user.isFollowing ? 'Unfollow' : 'Follow'}
+                            </button>
                         </div>
                     </div>
                 ))}</div>}

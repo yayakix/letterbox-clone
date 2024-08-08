@@ -107,8 +107,6 @@ profileRouter.get("/network", async (req, res) => {
   try {
     const following = await profileClient.getFollowing(currentUser.id);
     const followers = await profileClient.getFollowers(currentUser.id);
-    console.log("following", following);
-    console.log("followers", followers);
     const network = { following, followers };
     res.json(network);
   } catch (error) {
