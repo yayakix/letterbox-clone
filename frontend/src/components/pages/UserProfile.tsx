@@ -4,6 +4,7 @@ import ProfileTabs from "../base/Profile/ProfileTabs";
 import ProfileProfileTab from "../base/Profile/ProfileProfileTab";
 import WatchedTab from "../base/Profile/WatchedTab";
 import NetworkTab from "../base/Profile/NetworkTab";
+import YapsTab from "../base/Profile/YapsTab";
 
 
 
@@ -66,9 +67,8 @@ const UserProfile = () => {
                 return <ProfileProfileTab likedFilms={likedFilms} />;
             case 'Watchlist':
                 return <WatchedTab watchedFilms={watchedFilms} />;
-            case 'Likes':
-                // return <ProfileFollowersTab />;
-                return <div>Followers Tab Content</div>;
+            case 'Reviews':
+                return <YapsTab />;
             case 'Network':
                 return <NetworkTab />;
             case 'Following':
