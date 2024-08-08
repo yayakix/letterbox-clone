@@ -1,260 +1,300 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 const initialMovies = [
-    {
-        title: "The Shawshank Redemption",
-        description: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
-        year: 1994,
-        directedBy: "Frank Darabont",
-        rating: 9,
-        genre: ["Drama"],
-        imageUrl: ""
-    },
-    {
-        title: "The Godfather",
-        description: "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
-        year: 1972,
-        directedBy: "Francis Ford Coppola",
-        rating: 9,
-        genre: ["Crime", "Drama"],
-        imageUrl: ""
-    },
-    {
-        title: "The Dark Knight",
-        description: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
-        year: 2008,
-        directedBy: "Christopher Nolan",
-        rating: 9,
-        genre: ["Action", "Crime", "Drama"],
-        imageUrl: ""
-    },
-    {
-        title: "12 Angry Men",
-        description: "A jury holdout attempts to prevent a miscarriage of justice by forcing his colleagues to reconsider the evidence.",
-        year: 1957,
-        directedBy: "Sidney Lumet",
-        rating: 9,
-        genre: ["Drama"],
-        imageUrl: ""
-    },
-    {
-        title: "Schindler's List",
-        description: "In German-occupied Poland during World War II, industrialist Oskar Schindler gradually becomes concerned for his Jewish workforce after witnessing their persecution by the Nazis.",
-        year: 1993,
-        directedBy: "Steven Spielberg",
-        rating: 9,
-        genre: ["Biography", "Drama", "History"],
-        imageUrl: ""
-    },
-    {
-        title: "The Lord of the Rings: The Return of the King",
-        description: "Gandalf and Aragorn lead the World of Men against Sauron's army to draw his gaze from Frodo and Sam as they approach Mount Doom with the One Ring.",
-        year: 2003,
-        directedBy: "Peter Jackson",
-        rating: 9,
-        genre: ["Action", "Adventure", "Drama"],
-        imageUrl: ""
-    },
-    {
-        title: "Pulp Fiction",
-        description: "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.",
-        year: 1994,
-        directedBy: "Quentin Tarantino",
-        rating: 8,
-        genre: ["Crime", "Drama"],
-        imageUrl: ""
-    },
-    {
-        title: "The Good, the Bad and the Ugly",
-        description: "A bounty hunting scam joins two men in an uneasy alliance against a third in a race to find a fortune in gold buried in a remote cemetery.",
-        year: 1966,
-        directedBy: "Sergio Leone",
-        rating: 8,
-        genre: ["Western"],
-        imageUrl: ""
-    },
-    {
-        title: "Fight Club",
-        description: "An insomniac office worker and a devil-may-care soapmaker form an underground fight club that evolves into something much, much more.",
-        year: 1999,
-        directedBy: "David Fincher",
-        rating: 8,
-        genre: ["Drama"],
-        imageUrl: ""
-    },
-    {
-        title: "Forrest Gump",
-        description: "The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal and other historical events unfold from the perspective of an Alabama man with an IQ of 75, whose only desire is to be reunited with his childhood sweetheart.",
-        year: 1994,
-        directedBy: "Robert Zemeckis",
-        rating: 8,
-        genre: ["Drama", "Romance"],
-        imageUrl: ""
-    },
-    {
-        title: "Inception",
-        description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
-        year: 2010,
-        directedBy: "Christopher Nolan",
-        rating: 8,
-        genre: ["Action", "Adventure", "Sci-Fi"],
-        imageUrl: ""
-    },
-    {
-        title: "The Matrix",
-        description: "A computer programmer discovers that reality as he knows it is a simulation created by machines to subjugate humanity.",
-        year: 1999,
-        directedBy: "Lana Wachowski, Lilly Wachowski",
-        rating: 8,
-        genre: ["Action", "Sci-Fi"],
-        imageUrl: ""
-    },
-    {
-        title: "Goodfellas",
-        description: "The story of Henry Hill and his life in the mob, covering his relationship with his wife Karen Hill and his mob partners Jimmy Conway and Tommy DeVito in the Italian-American crime syndicate.",
-        year: 1990,
-        directedBy: "Martin Scorsese",
-        rating: 8,
-        genre: ["Biography", "Crime", "Drama"],
-        imageUrl: ""
-    },
-    {
-        title: "One Flew Over the Cuckoo's Nest",
-        description: "A criminal pleads insanity and is admitted to a mental institution, where he rebels against the oppressive nurse and rallies up the scared patients.",
-        year: 1975,
-        directedBy: "Milos Forman",
-        rating: 8,
-        genre: ["Drama"],
-        imageUrl: ""
-    },
-    {
-        title: "Seven Samurai",
-        description: "A poor village under attack by bandits recruits seven unemployed samurai to help them defend themselves.",
-        year: 1954,
-        directedBy: "Akira Kurosawa",
-        rating: 8,
-        genre: ["Action", "Adventure", "Drama"],
-        imageUrl: ""
-    },
-    {
-        title: "Se7en",
-        description: "Two detectives, a rookie and a veteran, hunt a serial killer who uses the seven deadly sins as his motives.",
-        year: 1995,
-        directedBy: "David Fincher",
-        rating: 8,
-        genre: ["Crime", "Drama", "Mystery"],
-        imageUrl: ""
-    },
-    {
-        title: "The Silence of the Lambs",
-        description: "A young F.B.I. cadet must receive the help of an incarcerated and manipulative cannibal killer to help catch another serial killer, a madman who skins his victims.",
-        year: 1991,
-        directedBy: "Jonathan Demme",
-        rating: 8,
-        genre: ["Crime", "Drama", "Thriller"],
-        imageUrl: ""
-    },
-    {
-        title: "City of God",
-        description: "In the slums of Rio, two kids' paths diverge as one struggles to become a photographer and the other a kingpin.",
-        year: 2002,
-        directedBy: "Fernando Meirelles, Kátia Lund",
-        rating: 8,
-        genre: ["Crime", "Drama"],
-        imageUrl: ""
-    },
-    {
-        title: "Life Is Beautiful",
-        description: "When an open-minded Jewish librarian and his son become victims of the Holocaust, he uses a perfect mixture of will, humor, and imagination to protect his son from the dangers around their camp.",
-        year: 1997,
-        directedBy: "Roberto Benigni",
-        rating: 8,
-        genre: ["Comedy", "Drama", "Romance"],
-        imageUrl: ""
-    },
-    {
-        title: "Spirited Away",
-        description: "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches, and spirits, and where humans are changed into beasts.",
-        year: 2001,
-        directedBy: "Hayao Miyazaki",
-        rating: 8,
-        genre: ["Animation", "Adventure", "Family"],
-        imageUrl: ""
-    }
+  {
+    title: "The Shawshank Redemption",
+    description:
+      "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+    year: 1994,
+    directedBy: "Frank Darabont",
+    initialRating: 9,
+    currentRating: 9,
+    genre: ["Drama"],
+    imageUrl: "",
+  },
+  {
+    title: "The Godfather",
+    description:
+      "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
+    year: 1972,
+    directedBy: "Francis Ford Coppola",
+    initialRating: 9,
+    currentRating: 9,
+    genre: ["Crime", "Drama"],
+    imageUrl: "",
+  },
+  {
+    title: "The Dark Knight",
+    description:
+      "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+    year: 2008,
+    directedBy: "Christopher Nolan",
+    initialRating: 9,
+    currentRating: 9,
+    genre: ["Action", "Crime", "Drama"],
+    imageUrl: "",
+  },
+  {
+    title: "12 Angry Men",
+    description:
+      "A jury holdout attempts to prevent a miscarriage of justice by forcing his colleagues to reconsider the evidence.",
+    year: 1957,
+    directedBy: "Sidney Lumet",
+    initialRating: 9,
+    currentRating: 9,
+    genre: ["Drama"],
+    imageUrl: "",
+  },
+  {
+    title: "Schindler's List",
+    description:
+      "In German-occupied Poland during World War II, industrialist Oskar Schindler gradually becomes concerned for his Jewish workforce after witnessing their persecution by the Nazis.",
+    year: 1993,
+    directedBy: "Steven Spielberg",
+    initialRating: 9,
+    currentRating: 9,
+    genre: ["Biography", "Drama", "History"],
+    imageUrl: "",
+  },
+  {
+    title: "The Lord of the Rings: The Return of the King",
+    description:
+      "Gandalf and Aragorn lead the World of Men against Sauron's army to draw his gaze from Frodo and Sam as they approach Mount Doom with the One Ring.",
+    year: 2003,
+    directedBy: "Peter Jackson",
+    initialRating: 9,
+    currentRating: 9,
+    genre: ["Action", "Adventure", "Drama"],
+    imageUrl: "",
+  },
+  {
+    title: "Pulp Fiction",
+    description:
+      "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.",
+    year: 1994,
+    directedBy: "Quentin Tarantino",
+    initialRating: 8,
+    currentRating: 8,
+    genre: ["Crime", "Drama"],
+    imageUrl: "",
+  },
+  {
+    title: "The Good, the Bad and the Ugly",
+    description:
+      "A bounty hunting scam joins two men in an uneasy alliance against a third in a race to find a fortune in gold buried in a remote cemetery.",
+    year: 1966,
+    directedBy: "Sergio Leone",
+    initialRating: 8,
+    currentRating: 8,
+    genre: ["Western"],
+    imageUrl: "",
+  },
+  {
+    title: "Fight Club",
+    description:
+      "An insomniac office worker and a devil-may-care soapmaker form an underground fight club that evolves into something much, much more.",
+    year: 1999,
+    directedBy: "David Fincher",
+    initialRating: 8,
+    currentRating: 8,
+    genre: ["Drama"],
+    imageUrl: "",
+  },
+  {
+    title: "Forrest Gump",
+    description:
+      "The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal and other historical events unfold from the perspective of an Alabama man with an IQ of 75, whose only desire is to be reunited with his childhood sweetheart.",
+    year: 1994,
+    directedBy: "Robert Zemeckis",
+    initialRating: 8,
+    currentRating: 8,
+    genre: ["Drama", "Romance"],
+    imageUrl: "",
+  },
+  {
+    title: "Inception",
+    description:
+      "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+    year: 2010,
+    directedBy: "Christopher Nolan",
+    initialRating: 8,
+    currentRating: 8,
+    genre: ["Action", "Adventure", "Sci-Fi"],
+    imageUrl: "",
+  },
+  {
+    title: "The Matrix",
+    description:
+      "A computer programmer discovers that reality as he knows it is a simulation created by machines to subjugate humanity.",
+    year: 1999,
+    directedBy: "Lana Wachowski, Lilly Wachowski",
+    initialRating: 8,
+    currentRating: 8,
+    genre: ["Action", "Sci-Fi"],
+    imageUrl: "",
+  },
+  {
+    title: "Goodfellas",
+    description:
+      "The story of Henry Hill and his life in the mob, covering his relationship with his wife Karen Hill and his mob partners Jimmy Conway and Tommy DeVito in the Italian-American crime syndicate.",
+    year: 1990,
+    directedBy: "Martin Scorsese",
+    initialRating: 8,
+    currentRating: 8,
+    genre: ["Biography", "Crime", "Drama"],
+    imageUrl: "",
+  },
+  {
+    title: "One Flew Over the Cuckoo's Nest",
+    description:
+      "A criminal pleads insanity and is admitted to a mental institution, where he rebels against the oppressive nurse and rallies up the scared patients.",
+    year: 1975,
+    directedBy: "Milos Forman",
+    initialRating: 8,
+    currentRating: 8,
+    genre: ["Drama"],
+    imageUrl: "",
+  },
+  {
+    title: "Seven Samurai",
+    description:
+      "A poor village under attack by bandits recruits seven unemployed samurai to help them defend themselves.",
+    year: 1954,
+    directedBy: "Akira Kurosawa",
+    initialRating: 8,
+    currentRating: 8,
+    genre: ["Action", "Adventure", "Drama"],
+    imageUrl: "",
+  },
+  {
+    title: "Se7en",
+    description:
+      "Two detectives, a rookie and a veteran, hunt a serial killer who uses the seven deadly sins as his motives.",
+    year: 1995,
+    directedBy: "David Fincher",
+    initialRating: 8,
+    currentRating: 8,
+    genre: ["Crime", "Drama", "Mystery"],
+    imageUrl: "",
+  },
+  {
+    title: "The Silence of the Lambs",
+    description:
+      "A young F.B.I. cadet must receive the help of an incarcerated and manipulative cannibal killer to help catch another serial killer, a madman who skins his victims.",
+    year: 1991,
+    directedBy: "Jonathan Demme",
+    initialRating: 8,
+    currentRating: 8,
+    genre: ["Crime", "Drama", "Thriller"],
+    imageUrl: "",
+  },
+  {
+    title: "City of God",
+    description:
+      "In the slums of Rio, two kids' paths diverge as one struggles to become a photographer and the other a kingpin.",
+    year: 2002,
+    directedBy: "Fernando Meirelles, Kátia Lund",
+    initialRating: 8,
+    currentRating: 8,
+    genre: ["Crime", "Drama"],
+    imageUrl: "",
+  },
+  {
+    title: "Life Is Beautiful",
+    description:
+      "When an open-minded Jewish librarian and his son become victims of the Holocaust, he uses a perfect mixture of will, humor, and imagination to protect his son from the dangers around their camp.",
+    year: 1997,
+    directedBy: "Roberto Benigni",
+    initialRating: 8,
+    currentRating: 8,
+    genre: ["Comedy", "Drama", "Romance"],
+    imageUrl: "",
+  },
+  {
+    title: "Spirited Away",
+    description:
+      "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches, and spirits, and where humans are changed into beasts.",
+    year: 2001,
+    directedBy: "Hayao Miyazaki",
+    initialRating: 8,
+    currentRating: 8,
+    genre: ["Animation", "Adventure", "Family"],
+    imageUrl: "",
+  },
 ];
 
 const movieYaps = [
-    {
-        yap: "A timeless classic that never fails to inspire.",
-        filmTitle: "The Shawshank Redemption"
-    },
-    {
-        yap: "Marlon Brando's performance is unforgettable.",
-        filmTitle: "The Godfather"
-    },
-    // ... more yaps ...
+  {
+    yap: "A timeless classic that never fails to inspire.",
+    filmTitle: "The Shawshank Redemption",
+  },
+  {
+    yap: "Marlon Brando's performance is unforgettable.",
+    filmTitle: "The Godfather",
+  },
+  // ... more yaps ...
 ];
 
 async function main() {
-    // Find the existing user
-    const user = await prisma.user.findUnique({
-        where: {
-            clerkId: "user_2kFgS7bD3Gn9vHjaHXoWxPGdaI4"
-        }
+  // Find the existing user
+  const user = await prisma.user.findUnique({
+    where: {
+      clerkId: "user_2kFgS7bD3Gn9vHjaHXoWxPGdaI4",
+    },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  // Create a profile for the existing user if it doesn't exist
+  let profile = await prisma.profile.findUnique({
+    where: { userId: user.id },
+  });
+
+  if (!profile) {
+    profile = await prisma.profile.create({
+      data: {
+        name: "Test User",
+        userId: user.id,
+      },
+    });
+  }
+
+  // Create movies
+  for (const movie of initialMovies) {
+    await prisma.film.create({
+      data: movie,
+    });
+  }
+
+  // Create yaps
+  for (const yap of movieYaps) {
+    const film = await prisma.film.findFirst({
+      where: { title: yap.filmTitle },
     });
 
-    if (!user) {
-        throw new Error("User not found");
+    if (film) {
+      await prisma.yap.create({
+        data: {
+          yap: yap.yap,
+          filmId: film.id,
+          profileId: profile.id,
+        },
+      });
     }
+  }
 
-    // Create a profile for the existing user if it doesn't exist
-    let profile = await prisma.profile.findUnique({
-        where: { userId: user.id }
-    });
-
-    if (!profile) {
-        profile = await prisma.profile.create({
-            data: {
-                name: "Test User",
-                userId: user.id,
-            },
-        });
-    }
-
-    // Create movies
-    for (const movie of initialMovies) {
-        await prisma.film.create({
-            data: movie
-        });
-    }
-
-    // Create yaps
-    for (const yap of movieYaps) {
-        const film = await prisma.film.findFirst({
-            where: { title: yap.filmTitle }
-        });
-
-        if (film) {
-            await prisma.yap.create({
-                data: {
-                    yap: yap.yap,
-                    filmId: film.id,
-                    profileId: profile.id,
-                },
-            });
-        }
-    }
-
-    console.log('Seeding finished.')
+  console.log("Seeding finished.");
 }
 
 main()
-    .catch((e) => {
-        console.error(e)
-        process.exit(1)
-    })
-    .finally(async () => {
-        await prisma.$disconnect()
-    })
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

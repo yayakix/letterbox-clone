@@ -50,6 +50,8 @@ model Profile {
   following Follow[] @relation("Following")
   followers Follow[] @relation("Followers")
 
+  ratings Rating[] @relation("ProfileRatings")
+
   @@map("profile")
 }
 
@@ -58,20 +60,22 @@ model Film {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  title       String
-  description String
-  year        Int
-  directedBy  String
-  rating      Int
-  genre       String[]
-  imageUrl    String
+  title         String
+  description   String
+  year          Int
+  directedBy    String
+  initialRating Float
+  currentRating Float
+  genre         String[]
+  imageUrl      String
 
   // relationships
   watchedBy Profile[] @relation("Watched")
   likedBy   Profile[] @relation("Liked")
   yappedBy  Profile[] @relation("Yapped")
 
-  yaps Yap[] @relation("Yaps")
+  yaps    Yap[]    @relation("Yaps")
+  ratings Rating[] @relation("FilmRatings")
 
   @@map("film")
 }
@@ -106,4 +110,22 @@ model Follow {
   following   Profile @relation("Following", fields: [followingId], references: [id])
 
   @@map("follow")
+}
+
+model Rating {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  value Float
+
+  // relationships
+  filmId String
+  film   Film   @relation("FilmRatings", fields: [filmId], references: [id])
+
+  profileId String
+  profile   Profile @relation("ProfileRatings", fields: [profileId], references: [id])
+
+  @@unique([filmId, profileId])
+  @@map("rating")
 }

@@ -98,7 +98,7 @@ export default function Home() {
 				<div className="flex flex-wrap mt-4 w-7/12">
 					{movies.map((movie) => (
 						<div key={movie.id} className="w-1/6 h-1/8 flex flex-col items-center p-2">
-							<img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover" />
+							<a href={`/movie/${movie.id}`}><img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover" /></a>
 							<div className="flex flex-row w-full justify-evenly mt-1">
 								<button
 									className={`flex flex-col items-center transition-colors mb-4  text-green-500 hover:text-green-400`}
@@ -132,6 +132,6 @@ export default function Home() {
 					))}
 				</div>
 			</div>
-		</div>
+		</div >
 	);
 }

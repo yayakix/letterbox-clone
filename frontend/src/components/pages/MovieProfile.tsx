@@ -17,7 +17,7 @@ const MovieProfile: React.FC = () => {
 
   const [loading, setLoading] = useState(true);
   const { getToken } = useAuth();
-  const url = "https://a.ltrbxd.com/resized/sm/upload/7l/hn/46/uz/zGINvGjdlO6TJRu9wESQvWlOKVT-0-1000-0-1500-crop.jpg?v=8736d1c395"
+  const url = "https://static.vecteezy.com/system/resources/previews/004/141/669/original/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg"
 
   // Handle liking and watching movies
   const handleAction = async (action: 'watched' | 'liked') => {
@@ -122,7 +122,7 @@ const MovieProfile: React.FC = () => {
         <div className="flex-grow">
           <h1 className="text-gray-300 text-2xl font-bold mb-2">{movie.title}</h1>
           <p className="text-sm text-gray-600 mb-2">{movie.year} • Directed by {movie.directedBy}</p>
-          <span className="text-xl font-semibold text-yellow-500 flex flex-row items-center gap-2"> {movie.rating?.toFixed(1)} <Rating totalStars={10} rating={movie.rating} readOnly={true} readOnlyValue={movie.rating} disabled={true} /></span>
+          <span className="text-xl font-semibold text-yellow-500 flex flex-row items-center gap-2"> {movie.currentRating?.toFixed(1)} <Rating totalStars={10} rating={movie.currentRating} readOnly={true} readOnlyValue={movie.currentRating} disabled={true} /></span>
           <p className="text-gray-500 mt-4">
             {movie.description}
           </p>
@@ -130,12 +130,12 @@ const MovieProfile: React.FC = () => {
             Genres: {Array.isArray(movie.genre) ? movie.genre.join(', ') : 'Unknown'}
           </p>
         </div>
-        <div className="flex-shrink-0 ml-6 bg-gray-500 p-2 rounded-lg flex flex-col justify-center items-center w-1/6">
-          <span className="text-xl font-semibold text-slate-400 mb-2">Rate</span>
-          <div className="flex flex-col items-center relative h-6 w-24">
+        <div className="flex-shrink-0 ml-6 bg-gray-500 p-6 rounded-lg flex flex-col justify-center items-center w-1/6">
+          <div className="flex flex-col items-center relative h-2 w-24">
 
             <Rating totalStars={5} />
           </div>
+          <span className="text-xl font-semibold text-slate-400 mb-1 mt-1">Rate</span>
           <button
             className={`flex flex-col items-center transition-colors mb-4 ${isWatched ? 'text-yellow-500 hover:text-yellow-400' : 'text-slate-400 hover:text-slate-200'
               }`}
