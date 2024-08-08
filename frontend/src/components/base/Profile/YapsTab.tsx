@@ -4,7 +4,7 @@ import YapList from "../Comments/Comment";
 
 const YapsTab = () => {
     const { getToken } = useAuth();
-    const [yaps, setYaps] = useState([]);
+    const [yaps, setYaps] = useState<Yap[]>([]);
 
     const getYaps = async () => {
         fetch(`${process.env.API_URL}/api/profile/yaps`, {
@@ -18,7 +18,6 @@ const YapsTab = () => {
                 setYaps(data);
             })
             .catch(error => console.error('Error fetching yap data:', error));
-
     }
 
     useEffect(() => {
@@ -27,10 +26,10 @@ const YapsTab = () => {
     }, []);
     console.log('yaps', yaps)
     return (
-        <div className="flex flex-col overflow-y-auto">
-            {yaps.map((yap) => (
-                <div className="flex flex-row">
-                    <img className="w-16 h-full" src={yap.film.imageUrl} />
+        <div className="flex flex-col overflow-y-auto ">
+            {[...yaps].reverse().map((yap) => (
+                <div key={yap.id} className="flex flex-row w-full items-center">
+                    {yap.film && <a href={`/movie/${yap.film.id}`}><img className="w-16 " src={yap.film.imageUrl} alt={yap.film.title} /></a>}
                     <YapList yap={yap} />
                 </div>
             ))}

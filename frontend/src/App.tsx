@@ -14,9 +14,9 @@ export type Film = {
   description: string,
   year: number,
   directedBy: string,
-  rating: number,
-  genre: string[],
   imageUrl: string,
+  initialRating: number,
+  currentRating: number,
 }
 
 export default function App() {

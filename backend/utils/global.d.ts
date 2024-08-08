@@ -7,7 +7,8 @@ declare global {
     directedBy: string;
     year: number;
     description: string;
-    rating: number;
+    initialRating: number;
+    currentRating: number;
     createdAt: string;
     updatedAt: string;
     genre: string[];
@@ -39,4 +40,4 @@ declare global {
   }
 }
 
-export { };
+export {};
