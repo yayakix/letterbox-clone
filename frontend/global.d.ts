@@ -19,6 +19,10 @@ declare global {
         updatedAt: Date;
         filmId: string;
         profileId: string;
+        profile: {
+            name: string;
+            imageUrl: string;
+        };
     }
 
     interface MovieProfileProps {
