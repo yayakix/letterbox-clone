@@ -8,7 +8,6 @@ const NetworkTab = () => {
     const [followers, setFollowers] = useState<any>([]);
     const [following, setFollowing] = useState<any>([]);
     const [everyone, setEveryone] = useState<any>([]);
-    // const navigate = useNavigate()
 
     const tabs = [
         { id: 'following', label: 'Following' },
@@ -107,20 +106,30 @@ const NetworkTab = () => {
             </div>
 
             <div className="mt-4 border border-gray-700 h-96 w-full overflow-y-auto">
+                {/* following */}
                 {activeTab === 'following' && (
                     <div className="w-full">
                         {following.map((user: any) => (
                             user && user.name ? (
                                 <div key={user.id} className='border border-gray-700 p-2 rounded-md w-full'>
-                                    <div className='flex items-center gap-2'>
-                                        <img src={user.imageUrl} className='w-10 h-10 rounded-full' alt={user.name} />
-                                        {user.name}
+                                    <div className='flex items-center justify-between gap-2'>
+                                        <div className='flex items-center gap-2'>
+                                            <img src={user.imageUrl} className='w-10 h-10 rounded-full' alt={user.name} />
+                                            {user.name}
+                                        </div>
+                                        <button
+                                            className={`text-white p-2 rounded-md bg-red-500`}
+                                            onClick={() => toggleFollow(user.id)}
+                                        >
+                                            unfollow
+                                        </button>
                                     </div>
                                 </div>
                             ) : null
                         ))}
                     </div>
                 )}
+                {/* followers */}
                 {activeTab === 'followers' && (
                     <div className="w-full">
                         {followers.map((user: any) => (
@@ -137,7 +146,9 @@ const NetworkTab = () => {
                         ))}
                     </div>
                 )}
+                {/* blocked users */}
                 {activeTab === 'blocked' && <div>You have not blocked anyone</div>}
+                {/* show all users */}
                 {activeTab === 'everyone' && <div>{everyone.map((user: any) => (
                     <div key={user.id} className='border border-gray-700 p-2 rounded-md w-full'>
                         <div className='flex justify-between items-center'>
