@@ -42,4 +42,5 @@ export type Film = {
   imageUrl: string;
   initialRating: number;
   currentRating: number;
+  watchedBy?: { id: string }[];
 };
