@@ -1,4 +1,4 @@
-import type { Film } from "../../../types";
+import type { Film } from "../../../lib/services/users/types";
 
 const ProfileProfileTab = ({ likedFilms }: { likedFilms: Film[] }) => {
     return (
