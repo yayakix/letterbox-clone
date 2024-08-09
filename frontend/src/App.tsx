@@ -6,19 +6,6 @@ import { useAuth } from "@clerk/clerk-react";
 import Navbar from "./components/compound/Navbar.tsx";
 import EditProfile from "./components/base/Profile/EditProfile.tsx";
 
-export type Film = {
-  id: string,
-  createdAt: Date,
-  updatedAt: Date,
-  title: string,
-  description: string,
-  year: number,
-  directedBy: string,
-  imageUrl: string,
-  initialRating: number,
-  currentRating: number,
-}
-
 export default function App() {
 
   const { sessionId, actor, isSignedIn, isLoaded } = useAuth();

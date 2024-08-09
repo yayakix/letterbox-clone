@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Film } from "../../types";
+import { Film } from "../../lib/services/users/types";
 
 export default function Home() {
 
