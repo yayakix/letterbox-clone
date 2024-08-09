@@ -9,4 +9,5 @@ export type Film = {
   rating: number;
   genre: string[];
   imageUrl: string;
+  watchedBy?: { id: string }[];
 };
