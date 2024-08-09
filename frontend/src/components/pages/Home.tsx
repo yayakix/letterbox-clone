@@ -182,7 +182,7 @@ export default function Home() {
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
 										</svg>
 										<span className="text-xs">{movie.watchedCount || 0}</span>
-									</button>
+									</button >
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-yellow-500 hover:text-yellow-400`}
 									>
@@ -196,7 +196,7 @@ export default function Home() {
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
 										</svg>
 									</button>
-								</div>
+								</div >
 							</div >
 						))
 					) : (
@@ -218,7 +218,7 @@ export default function Home() {
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
 										</svg>
 										{/* <span className="text-xs">{movie.watchedCount || 0}</span> */}
-									</button>
+									</button >
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-yellow-500 hover:text-yellow-400`}
 									>
@@ -232,7 +232,7 @@ export default function Home() {
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
 										</svg>
 									</button>
-								</div>
+								</div >
 							</div >
 						))
 					)
