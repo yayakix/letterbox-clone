@@ -28,8 +28,6 @@
     "global.d.ts"
   ],
   "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
+ 
   ]
 }

@@ -7,7 +7,7 @@ const prisma = client;
 
 const optionalUser = async (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ) => {
   const userId = (req as Request & LooseAuthProp).auth?.userId;

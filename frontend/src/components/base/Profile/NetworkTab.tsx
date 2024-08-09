@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from "@clerk/clerk-react";
-// import { useNavigate } from 'react-router'
+import { UserConnections } from '../../../lib/services/users/types';
 
 const NetworkTab = () => {
     const { getToken } = useAuth();
     const [activeTab, setActiveTab] = useState('following');
-    const [followers, setFollowers] = useState<any>([]);
-    const [following, setFollowing] = useState<any>([]);
-    const [everyone, setEveryone] = useState<any>([]);
+    const [followers, setFollowers] = useState<UserConnections>([]);
+    const [following, setFollowing] = useState<UserConnections>([]);
+    const [everyone, setEveryone] = useState<UserConnections>([]);
+
 
     const tabs = [
         { id: 'following', label: 'Following' },
@@ -16,6 +17,9 @@ const NetworkTab = () => {
         { id: 'everyone', label: 'Everyone' },
     ];
     // fetch current followers/following
+    console.log('following', following);
+    console.log('followers', followers);
+
 
     const fetchNetworkData = async () => {
         fetch(`${process.env.API_URL}/api/profile/network`, {
@@ -62,9 +66,10 @@ const NetworkTab = () => {
 
             if (response.ok) {
                 // Update the local state
-                setEveryone(prevEveryone => prevEveryone.map(user =>
-                    user.id === userId ? { ...user, isFollowing: !user.isFollowing } : user
-                ));
+                setEveryone(prevEveryone => prevEveryone.map(user => {
+                    console.log('user', user);
+                    return user.id === userId ? { ...user, isFollowing: !user.isFollowing } : user
+                }));
 
                 // Update following/followers lists
                 if (data.action === 'followed') {
