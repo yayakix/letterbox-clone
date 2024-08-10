@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import { Film } from "../../lib/services/users/types";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
 
 export default function Home() {
 
+	const { isSignedIn } = useAuth();
 	const [year, setYear] = useState("All");
 	const [rating, setRating] = useState("Highest Rated");
 	const [genre, setGenre] = useState("All");
 	const [search, setSearch] = useState("");
 	const [movies, setMovies] = useState<Film[]>([]);
 	const [searchResults, setSearchResults] = useState<Film[]>([]);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		getAllMovies();
@@ -168,7 +171,13 @@ export default function Home() {
 					{searchResults.length > 0 ? (
 						searchResults.map((movie) => (
 							<div key={movie.id} className="w-1/6 h-1/8 flex flex-col items-center p-2">
-								<Link to={`/movie/${movie.id}`}><img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover" /></Link>
+								<a onClick={() => {
+									if (!isSignedIn) {
+										alert("Please sign in to view this movie");
+									} else {
+										navigate(`/movie/${movie.id}`);
+									}
+								}}><img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover" /></a>
 								<div className="flex flex-row w-full justify-evenly mt-1">
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-green-500 hover:text-green-400`}
@@ -204,7 +213,13 @@ export default function Home() {
 					) : (
 						movies.map((movie) => (
 							<div key={movie.id} className="w-1/6 h-1/8 flex flex-col items-center p-2">
-								<Link to={`/movie/${movie.id}`}><img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover" /></Link>
+								<a onClick={() => {
+									if (!isSignedIn) {
+										alert("Please sign in to view this movie");
+									} else {
+										navigate(`/movie/${movie.id}`);
+									}
+								}}><img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover" /></a>
 								<div className="flex flex-row w-full justify-evenly mt-1">
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-green-500 hover:text-green-400`}
