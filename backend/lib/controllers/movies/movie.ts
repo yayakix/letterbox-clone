@@ -4,12 +4,13 @@ import client from "../../../utils/client.ts";
 import optionalUser from "../middleware.ts";
 import ratingClient from "../ratings/ratingClient.ts";
 import profileClient from "../profile/profileClient.ts";
+import MovieService from "../../svc/Movie/service.ts";
 
 const movieRouter = express.Router();
 
 movieRouter.get("/", async (req, res) => {
   try {
-    const movies = await client.film.findMany();
+    const movies = await MovieService().getAllFilms();
     res.json(movies);
   } catch (error) {
     console.error("Error fetching movies:", error);
