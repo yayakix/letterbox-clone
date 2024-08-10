@@ -17,7 +17,7 @@ const PostComment: React.FC<PostCommentProps> = ({ filmId, onCommentPosted }) =>
 
         try {
             const token = await getToken();
-            const response = await fetch(`${process.env.API_URL}/api/profile/yaps/${filmId}`, {
+            const response = await fetch(`${process.env.VITE_API_URL}/api/profile/yaps/${filmId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

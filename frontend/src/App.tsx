@@ -8,8 +8,8 @@ import EditProfile from "./components/base/Profile/EditProfile.tsx";
 
 export default function App() {
 
-  const { sessionId, actor, isSignedIn, isLoaded } = useAuth();
-  console.log('isSignedIn', { sessionId, actor, isSignedIn, isLoaded })
+  const { isSignedIn, isLoaded } = useAuth();
+  console.log('isSignedIn', { isSignedIn, isLoaded })
 
   return (
     <div>
@@ -19,7 +19,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/movie/:id" element={<MovieProfile />} />
           <Route path="/profile" element={<UserProfile />} />
-          <Route path="/profile/edit" element={<EditProfile />} />
+          <Route path="/profile/edit" element={ <EditProfile />} />
 
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

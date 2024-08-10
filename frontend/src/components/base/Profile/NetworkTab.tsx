@@ -16,13 +16,9 @@ const NetworkTab = () => {
         { id: 'blocked', label: 'Blocked' },
         { id: 'everyone', label: 'Everyone' },
     ];
-    // fetch current followers/following
-    console.log('following', following);
-    console.log('followers', followers);
-
 
     const fetchNetworkData = async () => {
-        fetch(`${process.env.API_URL}/api/profile/network`, {
+        fetch(`${process.env.VITE_API_URL}/api/profile/network`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${await getToken()}`
@@ -36,7 +32,7 @@ const NetworkTab = () => {
             .catch(error => console.error('Error fetching profile data:', error));
 
         // fetch everyone
-        fetch(`${process.env.API_URL}/api/profile/all`, {
+        fetch(`${process.env.VITE_API_URL}/api/profile/all`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${await getToken()}`
@@ -56,7 +52,7 @@ const NetworkTab = () => {
 
     const toggleFollow = async (userId: string) => {
         try {
-            const response = await fetch(`${process.env.API_URL}/api/profile/network/${userId}`, {
+            const response = await fetch(`${process.env.VITE_API_URL}/api/profile/network/${userId}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${await getToken()}`
@@ -67,7 +63,6 @@ const NetworkTab = () => {
             if (response.ok) {
                 // Update the local state
                 setEveryone(prevEveryone => prevEveryone.map(user => {
-                    console.log('user', user);
                     return user.id === userId ? { ...user, isFollowing: !user.isFollowing } : user
                 }));
 

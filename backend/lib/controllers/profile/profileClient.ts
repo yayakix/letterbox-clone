@@ -2,7 +2,7 @@ import client from "../../../utils/client";
 
 // Get user profile
 export const getProfile = async (userId: string) => {
-  console.log("userId", userId);
+  
   const profile = await client.profile.findUnique({
     where: { userId },
     include: {

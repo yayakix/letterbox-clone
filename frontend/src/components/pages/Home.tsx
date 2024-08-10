@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Film } from "../../lib/services/users/types";
+import { Link } from "react-router-dom";
 
 export default function Home() {
 
@@ -15,13 +16,13 @@ export default function Home() {
 	}, [1]);
 
 	const getAllMovies = async () => {
-		const response = await fetch(`${process.env.API_URL}/api/movies`);
+		const response = await fetch(`${process.env.VITE_API_URL}/api/movies`);
 		const data = await response.json();
 		setMovies(data);
 	}
 
 	const getMoviesBySearch = async () => {
-		const response = await fetch(`${process.env.API_URL}/api/movies/search?search=${search}`);
+		const response = await fetch(`${process.env.VITE_API_URL}/api/movies/search?search=${search}`);
 		const data = await response.json();
 		setSearchResults(data);
 	}
@@ -33,6 +34,11 @@ export default function Home() {
 	const filterMovies = async (type: string, filter: string) => {
 		let filterValue = filter;
 
+		if (type === "year" && filter === "All") {
+			await getAllMovies();
+			return;
+		}
+
 		if (type === "year") {
 			filterValue = parseInt(filter).toString().slice(0, 4);
 		}
@@ -41,12 +47,8 @@ export default function Home() {
 			filterValue = makeCapitalCase(filter);
 		}
 
-		console.log("type", type);
-		console.log("filterValue", filterValue);
-
-		const response = await fetch(`${process.env.API_URL}/api/movies/filter?type=${type}&filter=${filterValue}`);
+		const response = await fetch(`${process.env.VITE_API_URL}/api/movies/filter?type=${type}&filter=${filterValue}`);
 		const data = await response.json();
-		console.log(data);
 		setMovies(data);
 	}
 
@@ -166,7 +168,7 @@ export default function Home() {
 					{searchResults.length > 0 ? (
 						searchResults.map((movie) => (
 							<div key={movie.id} className="w-1/6 h-1/8 flex flex-col items-center p-2">
-								<a href={`/movie/${movie.id}`}><img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover" /></a>
+								<Link to={`/movie/${movie.id}`}><img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover" /></Link>
 								<div className="flex flex-row w-full justify-evenly mt-1">
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-green-500 hover:text-green-400`}
@@ -202,7 +204,7 @@ export default function Home() {
 					) : (
 						movies.map((movie) => (
 							<div key={movie.id} className="w-1/6 h-1/8 flex flex-col items-center p-2">
-								<a href={`/movie/${movie.id}`}><img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover" /></a>
+								<Link to={`/movie/${movie.id}`}><img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover" /></Link>
 								<div className="flex flex-row w-full justify-evenly mt-1">
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-green-500 hover:text-green-400`}

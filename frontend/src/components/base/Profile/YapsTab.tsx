@@ -7,7 +7,7 @@ const YapsTab = () => {
     const [yaps, setYaps] = useState<Yap[]>([]);
 
     const getYaps = async () => {
-        fetch(`${process.env.API_URL}/api/profile/yaps`, {
+        fetch(`${process.env.VITE_API_URL}/api/profile/yaps`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${await getToken()}`
@@ -24,7 +24,7 @@ const YapsTab = () => {
         getYaps();
 
     }, []);
-    console.log('yaps', yaps)
+    
     return (
         <div className="flex flex-col overflow-y-auto ">
             {[...yaps].reverse().map((yap) => (
