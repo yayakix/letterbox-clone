@@ -5,6 +5,7 @@ import optionalUser from "../middleware.ts";
 import ratingClient from "../ratings/ratingClient.ts";
 import profileClient from "../profile/profileClient.ts";
 import MovieService from "../../svc/Movie/service.ts";
+import RatingService from "../../svc/Rating/service.ts";
 
 const movieRouter = express.Router();
 
@@ -255,21 +256,7 @@ movieRouter.get(
   async (req, res) => {
     try {
       const movieId = req.params.id;
-
-      const startTime = Date.now();
-      const movie = await client.film.findUnique({
-        where: { id: movieId },
-        include: {
-          ratings: {
-            where: { profileId: req.user.userId },
-            select: { value: true },
-          },
-        },
-      });
-      const endTime = Date.now();
-      console.log(`Database query took ${endTime - startTime}ms`);
-
-      console.log("Database response:", movie);
+      const movie = await MovieService().getFilmById(movieId, req.user.userId);
 
       if (!movie) {
         console.log("Movie not found in database");
@@ -281,7 +268,6 @@ movieRouter.get(
         movie.id,
         profile.id as string
       );
-      console.log("User rating:", userRating);
       const movieWithUserRating = {
         ...movie,
         userRating,
@@ -299,32 +285,15 @@ movieRouter.get(
   }
 );
 
+// Get yaps on a film
 movieRouter.get(
   `/yaps/:id/`,
   ClerkExpressRequireAuth(),
   optionalUser,
   async (req, res) => {
-    console.log("Request received for movie yaps, ID:", req.params.id);
-    console.log("hellllooooo");
     try {
       const movieId = req.params.id;
-      console.log("Attempting to find yaps for movie with ID:", movieId);
-
-      const yaps = await client.yap.findMany({
-        where: { filmId: movieId },
-        include: {
-          profile: {
-            select: {
-              name: true,
-              imageUrl: true,
-            },
-          },
-        },
-        orderBy: { createdAt: "desc" },
-      });
-
-      console.log(`Found ${yaps.length} yaps for movie`);
-
+      const yaps = await MovieService().getYapsOnFilm(movieId, req.user.userId);
       res.json(yaps);
     } catch (error) {
       console.error("Error fetching movie yaps:", error);
@@ -335,6 +304,7 @@ movieRouter.get(
   }
 );
 
+// Get user rating on a film
 movieRouter.get(
   "/rate/:id",
   ClerkExpressRequireAuth(),
@@ -343,7 +313,7 @@ movieRouter.get(
     const profile = await profileClient.getProfile(req.user.userId);
     const filmId = req.params.id;
     const profileId = profile.id;
-    const userRating = await ratingClient.getUserRating(
+    const userRating = await RatingService().getUserRating(
       filmId,
       profileId as string
     );
@@ -356,7 +326,6 @@ movieRouter.post(
   ClerkExpressRequireAuth(),
   optionalUser,
   async (req, res) => {
-    // console.log("Request received for movie ID:", req.params.id);
     const filmId = req.params.id;
     const profile = await profileClient.getProfile(req.user.userId);
     if (!profile.id) {
@@ -364,11 +333,8 @@ movieRouter.post(
     }
     const profileId = profile.id;
     const newRating = req.body.newRating;
-    console.log("new rating is here", newRating);
-
-    console.log("Updating movie rating to:", newRating);
-    await ratingClient.updateMovieRating(filmId, profileId, newRating);
-    const userRating = await ratingClient.getUserRating(filmId, profileId);
+    await RatingService().updateRating(filmId, profileId, newRating);
+    const userRating = await RatingService().getUserRating(filmId, profileId);
     res.json({ message: "Movie rating updated successfully", userRating });
   }
 );
