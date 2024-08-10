@@ -45,7 +45,6 @@ async function getUserRating(filmId: string, profileId: string) {
     },
     select: { value: true },
   });
-  console.log("User ratinggggg:", rating);
 
   return rating?.value || null;
 }

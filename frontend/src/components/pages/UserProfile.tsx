@@ -17,7 +17,7 @@ const UserProfile = () => {
     const { getToken } = useAuth();
 
     const fetchProfileData = async () => {
-        fetch(`${process.env.API_URL}/api/profile`, {
+        fetch(`${process.env.VITE_API_URL}/api/profile`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${await getToken()}`
@@ -28,7 +28,7 @@ const UserProfile = () => {
             .catch(error => console.error('Error fetching profile data:', error));
     }
     const fetchWatchedFilms = async () => {
-        fetch(`${process.env.API_URL}/api/profile/watched`, {
+        fetch(`${process.env.VITE_API_URL}/api/profile/watched`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${await getToken()}`
@@ -39,7 +39,7 @@ const UserProfile = () => {
             .catch(error => console.error('Error fetching profile data:', error));
     }
     const fetchLikedFilms = async () => {
-        fetch(`${process.env.API_URL}/api/profile/liked`, {
+        fetch(`${process.env.VITE_API_URL}/api/profile/liked`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${await getToken()}`
@@ -49,7 +49,6 @@ const UserProfile = () => {
             .then(data => setLikedFilms(data))
             .catch(error => console.error('Error fetching profile data:', error));
     }
-    // console.log('hello data,', profileData);
 
     useEffect(() => {
         fetchProfileData();

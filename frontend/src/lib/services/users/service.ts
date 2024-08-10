@@ -2,14 +2,14 @@ import { useUser, useClerk } from "@clerk/clerk-react";
 import axios from "axios";
 import { UserOutputDto, UserInputDto } from "./types";
 
-const API_URL = process.env.API_URL;
+const VITE_API_URL = process.env.VITE_API_URL;
 
 export const useUserService = () => {
   const { user } = useUser();
   const { signOut, openSignIn, session } = useClerk();
 
   const protectedAxios = axios.create({
-    baseURL: API_URL,
+    baseURL: VITE_API_URL,
   });
 
   protectedAxios.interceptors.request.use(async (config) => {

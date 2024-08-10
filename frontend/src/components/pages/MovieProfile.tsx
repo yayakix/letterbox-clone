@@ -25,7 +25,7 @@ const MovieProfile: React.FC = () => {
   const handleAction = async (action: 'watched' | 'liked') => {
     try {
       const token = await getToken();
-      const response = await fetch(`${process.env.API_URL}/api/profile/${action}/${movieId}`, {
+      const response = await fetch(`${process.env.VITE_API_URL}/api/profile/${action}/${movieId}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -45,7 +45,7 @@ const MovieProfile: React.FC = () => {
     if (!movieId) return;
     try {
       const token = await getToken();
-      const response = await fetch(`${process.env.API_URL}/api/movies/yaps/${movieId}`, {
+      const response = await fetch(`${process.env.VITE_API_URL}/api/movies/yaps/${movieId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -68,7 +68,7 @@ const MovieProfile: React.FC = () => {
     const fetchMovie = async () => {
       try {
         const token = await getToken();
-        const response = await fetch(`${process.env.API_URL}/api/movies/${movieId}`, {
+        const response = await fetch(`${process.env.VITE_API_URL}/api/movies/${movieId}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -90,7 +90,7 @@ const MovieProfile: React.FC = () => {
 
     const isMovieWatchedOrLiked = async () => {
       const token = await getToken();
-      const response = await fetch(`${process.env.API_URL}/api/profile/isWatchedOrLiked/${movieId}`, {
+      const response = await fetch(`${process.env.VITE_API_URL}/api/profile/isWatchedOrLiked/${movieId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -116,7 +116,7 @@ const MovieProfile: React.FC = () => {
   const handleRatingChange = async (newRating: number) => {
     try {
       const token = await getToken();
-      const response = await fetch(`${process.env.API_URL}/api/movies/rate/${movieId}`, {
+      const response = await fetch(`${process.env.VITE_API_URL}/api/movies/rate/${movieId}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -124,11 +124,9 @@ const MovieProfile: React.FC = () => {
         },
         body: JSON.stringify({ newRating: newRating }),
       });
-      console.log('response', response);
       if (!response.ok) throw new Error(`Failed to update rating`);
       console.log(`Rating updated successfully`);
       setStarRating((newRating / 2));
-      console.log('starRating', starRating);
     } catch (error) {
       console.error(`Error updating rating:`, error);
     }
@@ -136,7 +134,6 @@ const MovieProfile: React.FC = () => {
 
 
   const movieRating = movie.currentRating / 2;
-  console.log('movieRating', movieRating);
   return (
     <div className=" p-6 lg:px-48">
       <div className="flex mb-6">
