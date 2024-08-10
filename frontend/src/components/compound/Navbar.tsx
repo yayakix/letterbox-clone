@@ -1,7 +1,11 @@
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, SignInButton, UserButton, useAuth } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
 
 
 const Navbar = () => {
+	const navigate = useNavigate();
+	const { isSignedIn } = useAuth();
+    
     return (
         <div>
             <nav className="bg-black border-gray-200 text-white lg:px-48">
@@ -24,10 +28,22 @@ const Navbar = () => {
                                 <a href="/" className="block my-2 px-3 text-slate-400 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0">Home</a>
                             </li>
                             <li>
-                                <a href="/profile" className="block my-2 px-3 text-slate-400 rounded md:bg-transparent md:p-0" aria-current="page">Watchlist</a>
+                                <a onClick={() => {
+									if (!isSignedIn) {
+										alert("Please sign in to view your watchlist");
+									} else {
+										navigate(`/profile`);
+									}
+								}} className="block my-2 px-3 text-slate-400 rounded md:bg-transparent md:p-0" aria-current="page">Watchlist</a>
                             </li>
                             <li>
-                                <a href="/profile" className="block my-2 px-3 text-slate-400 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0">Profile</a>
+                                <a onClick={() => {
+									if (!isSignedIn) {
+										alert("Please sign in to view your profile");
+									} else {
+										navigate(`/profile`);
+									}
+								}} className="block my-2 px-3 text-slate-400 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0">Profile</a>
                             </li>
 
                         </ul>
