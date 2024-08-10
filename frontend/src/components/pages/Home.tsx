@@ -15,13 +15,13 @@ export default function Home() {
 	}, [1]);
 
 	const getAllMovies = async () => {
-		const response = await fetch("/api/movies");
+		const response = await fetch(`${process.env.API_URL}/api/movies`);
 		const data = await response.json();
 		setMovies(data);
 	}
 
 	const getMoviesBySearch = async () => {
-		const response = await fetch(`/api/movies/search?search=${search}`);
+		const response = await fetch(`${process.env.API_URL}/api/movies/search?search=${search}`);
 		const data = await response.json();
 		setSearchResults(data);
 	}
@@ -44,7 +44,7 @@ export default function Home() {
 		console.log("type", type);
 		console.log("filterValue", filterValue);
 
-		const response = await fetch(`/api/movies/filter?type=${type}&filter=${filterValue}`);
+		const response = await fetch(`${process.env.API_URL}/api/movies/filter?type=${type}&filter=${filterValue}`);
 		const data = await response.json();
 		console.log(data);
 		setMovies(data);
