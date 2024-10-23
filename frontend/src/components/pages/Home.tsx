@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
+import useUserStore from "../../state/user";
+import { useUser } from "@clerk/clerk-react";
 import { Film } from "../../lib/services/users/types";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
+import { defaultMovies } from "../../defaultMovies";
 
 export default function Home() {
-
-	const { isSignedIn } = useAuth();
+	const { user, loading } = useUserStore();
+	console.log("userrrr", user);
 	const [year, setYear] = useState("All");
 	const [rating, setRating] = useState("Highest Rated");
 	const [genre, setGenre] = useState("All");
@@ -19,8 +22,10 @@ export default function Home() {
 	}, [1]);
 
 	const getAllMovies = async () => {
+		console.log('true api url', process.env.VITE_API_URL);
 		const response = await fetch(`${process.env.VITE_API_URL}/api/movies`);
 		const data = await response.json();
+		console.log('data', data);
 		setMovies(data);
 	}
 
@@ -89,7 +94,7 @@ export default function Home() {
 							<option value="1880s">1880s</option>
 							<option value="1870s">1870s</option>
 						</select>
-						<select
+						{/* <select
 							name="rating"
 							id="rating-select"
 							className="bg-transparent border border-1 border-gray-600"
@@ -102,7 +107,7 @@ export default function Home() {
 							<option value="All">All</option>
 							<option value="Highest Rated">Highest Rated</option>
 							<option value="Lowest Rated">Lowest Rated</option>
-						</select >
+						</select > */}
 						<select
 							name="genre"
 							id="genre-select"
@@ -177,7 +182,7 @@ export default function Home() {
 									} else {
 										navigate(`/movie/${movie.id}`);
 									}
-								}}><img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover" /></a>
+								}}><img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover hover:scale-105 transition-all duration-300" /></a>
 								<div className="flex flex-row w-full justify-evenly mt-1">
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-green-500 hover:text-green-400`}
@@ -192,7 +197,7 @@ export default function Home() {
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
 										</svg>
-										<span className="text-xs">{movie.watchedCount || 0}</span>
+
 									</button >
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-yellow-500 hover:text-yellow-400`}
@@ -219,7 +224,7 @@ export default function Home() {
 									} else {
 										navigate(`/movie/${movie.id}`);
 									}
-								}}><img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover" /></a>
+								}}><img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover hover:scale-105 transition-all duration-300 hover:cursor-pointer" /></a>
 								<div className="flex flex-row w-full justify-evenly mt-1">
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-green-500 hover:text-green-400`}
@@ -234,7 +239,7 @@ export default function Home() {
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
 										</svg>
-										<span className="text-xs">{movie.watchedCount || 0}</span>
+										{/* <span className="text-xs">{movie.watchedCount || 0}</span> */}
 									</button >
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-yellow-500 hover:text-yellow-400`}

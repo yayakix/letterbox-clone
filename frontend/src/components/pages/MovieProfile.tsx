@@ -4,6 +4,7 @@ import YapList from "../base/Comments/Comment";
 import { useParams } from "react-router-dom";
 import PostComment from "../base/Comments/PostComment";
 import Rating from "../base/Rating/Rating";
+import { defaultMovies } from "../../defaultMovies";
 
 
 

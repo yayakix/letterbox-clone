@@ -24,6 +24,8 @@
     "composite": true
   },
   "include": [
+    "**/*.ts",
+    "**/*.tsx",
     "src",
     "global.d.ts"
   ],
