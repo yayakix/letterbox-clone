@@ -20,6 +20,7 @@ export const EP = {
     getMovieRatings: "/api/movies/rate/:id",
     postMovieRating: "/api/movies/rate/:id",
     getMovieComments: "/api/movies/yaps/:id",
+    postMovieComment: "/api/movies/yaps/:id",
   },
 };
 

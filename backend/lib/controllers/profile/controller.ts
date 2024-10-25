@@ -1,18 +1,27 @@
 import express from "express";
 import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
-import optionalUser from "../middleware";
-import "dotenv/config";
 import profileClient from "./profileClient";
+import { Request, Response, NextFunction } from "express";
+import optionalUser from "../middleware";
 
 const profileRouter = express.Router();
 profileRouter.use(ClerkExpressRequireAuth());
 profileRouter.use(optionalUser);
 
-// get user profile
-profileRouter.get("/", async (req, res) => {
-  if (!req.user) {
+// Middleware for checking authorization
+const requireAuth = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user?.userId) {
+    console.log("hit");
     return res.status(401).json({ error: "Unauthorized" });
   }
+  next();
+};
+
+// Use authorization middleware
+profileRouter.use(requireAuth);
+
+// User Profile
+profileRouter.get("/", async (req: Request, res: Response) => {
   try {
     const profile = await profileClient.getProfile(req.user.userId);
     res.json(profile);
@@ -21,154 +30,82 @@ profileRouter.get("/", async (req, res) => {
   }
 });
 
-// get all profiles
-profileRouter.get("/all", async (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  try {
-    const profiles = await profileClient.getAllProfiles(req.user.userId);
-    res.json(profiles);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// Get all comments a user has made
-profileRouter.get("/yaps", async (req, res) => {
-  if (!req.user?.userId) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  try {
-    const yaps = await profileClient.getYaps(req.user.userId);
-    res.json(yaps);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-// post a comment to a film
-profileRouter.post("/yaps/:filmId", async (req, res) => {
-  console.log(req.body);
-  console.log("hit");
-  if (!req.user?.userId) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  try {
-    const yap = await profileClient.postYap(
-      req.user.userId,
-      req.body.content,
-      req.params.filmId
-    );
-    res.json(yap);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// get all films a user has liked
-profileRouter.get("/liked", async (req, res) => {
-  if (!req.user?.userId) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  try {
-    const likedFilms = await profileClient.getLikedFilms(req.user.userId);
-    res.json(likedFilms);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// toggle liking a film
-profileRouter.post("/liked/:filmId", async (req, res) => {
-  if (!req.user?.userId) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  console.log("filmid:", req.params.filmId);
-  try {
-    const likedFilm = await profileClient.toggleFilmLike(
-      req.user.userId,
-      req.params.filmId
-    );
-    res.json(likedFilm);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// get network
-profileRouter.get("/network", async (req, res) => {
-  if (!req.user?.userId) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  const currentUser = await profileClient.getProfile(req.user.userId);
-  if (!currentUser.id) {
-    return res.status(401).json({ error: "Error getting current user" });
-  }
-  try {
-    const following = await profileClient.getFollowing(currentUser.id);
-    const followers = await profileClient.getFollowers(currentUser.id);
-    const network = { following, followers };
-    res.json(network);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// toggle follow a profile
-profileRouter.post("/network/:followingId", async (req, res) => {
-  if (!req.user?.userId) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  const currentUser = await profileClient.getProfile(req.user.userId);
-  if (!currentUser.id) {
-    return res.status(401).json({ error: "Error getting current user" });
-  }
-  const followingId = req.params.followingId;
-  const isFollowing = await profileClient.toggleFollow(
-    currentUser.id,
-    followingId
+// Comments (Yaps)
+profileRouter
+  .get("/yaps", async (req: Request, res: Response) => {
+    try {
+      const yaps = await profileClient.getYaps(req.user.userId);
+      res.json(yaps);
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  })
+  // Post a yap
+  .post(
+    "/yaps/:filmId",
+    async (req: Request<{ filmId: string }>, res: Response) => {
+      try {
+        const yap = await profileClient.postYap(
+          req.user.userId,
+          req.body.content,
+          req.params.filmId
+        );
+        res.json(yap);
+      } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+      }
+    }
   );
-  res.json(isFollowing);
-});
 
-// get all films a user has watched
-profileRouter.get("/watched", async (req, res) => {
-  if (!req.user?.userId) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  try {
-    const watchedFilms = await profileClient.getWatchedFilms(req.user.userId);
-    res.json(watchedFilms);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// watch a film
-profileRouter.post("/watched/:filmId", async (req, res) => {
-  if (!req.user?.userId) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  try {
-    const watchedFilm = await profileClient.toggleFilmWatched(
-      req.user.userId,
-      req.params.filmId
-    );
-    res.json(watchedFilm);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-profileRouter.get("/isWatchedOrLiked/:filmId", async (req, res) => {
-  if (!req.user?.userId) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  const isWatchedOrLiked = await profileClient.isMovieWatchedOrLiked(
-    req.user.userId,
-    req.params.filmId
+// Liked Films
+profileRouter
+  .get("/films/liked", async (req: Request, res: Response) => {
+    try {
+      const likedFilms = await profileClient.getLikedFilms(req.user.userId);
+      res.json(likedFilms);
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  })
+  .post(
+    "/films/liked/:filmId",
+    async (req: Request<{ filmId: string }>, res: Response) => {
+      try {
+        const likedFilm = await profileClient.toggleFilmLike(
+          req.user.userId,
+          req.params.filmId
+        );
+        res.json(likedFilm);
+      } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+      }
+    }
   );
-  res.json(isWatchedOrLiked);
-});
+
+// Network
+profileRouter
+  .get("/network", async (req: Request, res: Response) => {
+    try {
+      const following = await profileClient.getFollowing(req.user.userId);
+      const followers = await profileClient.getFollowers(req.user.userId);
+      res.json({ following, followers });
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  })
+  .post(
+    "/network/:followingId",
+    async (req: Request<{ followingId: string }>, res: Response) => {
+      try {
+        const isFollowing = await profileClient.toggleFollow(
+          req.user.userId,
+          req.params.followingId
+        );
+        res.json(isFollowing);
+      } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+      }
+    }
+  );
 
 export default profileRouter;

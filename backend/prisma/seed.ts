@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import "dotenv/config";
+import client from "../utils/client";
 
 const initialMovies = [
   {
@@ -164,7 +164,8 @@ const initialMovies = [
     directedBy: "Akira Kurosawa",
     rating: 8,
     genre: ["Action", "Adventure", "Drama"],
-    imageUrl: "",
+    imageUrl:
+      "https://m.media-amazon.com/images/M/MV5BZDg4MTYyYjktZGJiYy00ZGIwLWEzNTMtNTZkMjRhYTViMWE4XkEyXkFqcGc@._V1_.jpg",
   },
   {
     title: "Se7en",
@@ -222,57 +223,34 @@ const initialMovies = [
       "https://a.ltrbxd.com/resized/film-poster/5/1/9/2/1/51921-spirited-away-0-1000-0-1500-crop.jpg?v=a3ad463c55",
   },
 ];
-const movieYaps = [
-  {
-    yap: "A timeless classic that never fails to inspire.",
-    filmTitle: "The Shawshank Redemption",
-  },
-  {
-    yap: "Marlon Brando's performance is unforgettable.",
-    filmTitle: "The Godfather",
-  },
-  // ... more yaps ...
-];
+
 async function main() {
-  // Find the existing user
-  const user = await prisma.user.findUnique({
-    where: {
-      clerkId: "user_2kFgS7bD3Gn9vHjaHXoWxPGdaI4",
-    },
-  });
-  if (!user) {
-    throw new Error("User not found");
-  }
-  // Create a profile for the existing user if it doesn't exist
-  let profile = await prisma.profile.findUnique({
-    where: { userId: user.id },
-  });
-  if (!profile) {
-    profile = await prisma.profile.create({
-      data: {
-        name: "Test User",
-        userId: user.id,
-      },
-    });
-  }
-  // Update movies with imageUrl
+  console.log("Starting to seed movies...");
+
   for (const movie of initialMovies) {
-    await prisma.film.updateMany({
-      where: { title: movie.title },
+    await client.film.create({
       data: {
-        imageUrl: movie.imageUrl,
+        title: movie.title,
+        description: movie.description,
+        year: movie.year,
+        directedBy: movie.directedBy,
+        initialRating: movie.rating,
+        currentRating: movie.rating,
         genre: movie.genre,
+        imageUrl: movie.imageUrl,
       },
     });
   }
-  console.log("Movies updated with imageUrl.");
+
+  console.log(`Seeded ${initialMovies.length} movies.`);
   console.log("Seeding finished.");
 }
+
 main()
   .catch((e) => {
     console.error(e);
     process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect();
+    await client.$disconnect();
   });

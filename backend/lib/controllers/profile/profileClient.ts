@@ -2,7 +2,6 @@ import client from "../../../utils/client";
 
 // Get user profile
 export const getProfile = async (userId: string) => {
-  
   const profile = await client.profile.findUnique({
     where: { userId },
     include: {
@@ -16,7 +15,7 @@ export const getProfile = async (userId: string) => {
     ...profile,
   };
 };
-
+// not being used
 // get all profiles
 export const getAllProfiles = async (currentUserId: string) => {
   // get profile id

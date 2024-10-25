@@ -1,64 +1,61 @@
 import { useEffect, useState } from "react";
 import useUserStore from "../../state/user";
-import { useUser } from "@clerk/clerk-react";
-import { Film } from "../../lib/services/users/types";
+import { Film } from "../../lib/services/types";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@clerk/clerk-react";
-import { defaultMovies } from "../../defaultMovies";
+import useMoviesStore from "../../state/movies";
+// import { defaultMovies } from "../../defaultMovies"; use when offline
+import { MovieService } from "../../../services/MovieService"; // Import MovieService
 
 export default function Home() {
-	const { user, loading } = useUserStore();
-	console.log("userrrr", user);
+	const { user, userLoading, updateUser } = useUserStore(); // Use updateUser if needed
+	const movieService = MovieService(); // Initialize MovieService
+	const { movies, moviesLoading, updateMovie, getBySearch, getByFilter } = useMoviesStore();
+	const [searchResults, setSearchResults] = useState<Film[]>([]);
+
 	const [year, setYear] = useState("All");
 	const [rating, setRating] = useState("Highest Rated");
 	const [genre, setGenre] = useState("All");
 	const [search, setSearch] = useState("");
-	const [movies, setMovies] = useState<Film[]>([]);
-	const [searchResults, setSearchResults] = useState<Film[]>([]);
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		getAllMovies();
-	}, [1]);
-
-	const getAllMovies = async () => {
-		console.log('true api url', process.env.VITE_API_URL);
-		const response = await fetch(`${process.env.VITE_API_URL}/api/movies`);
-		const data = await response.json();
-		console.log('data', data);
-		setMovies(data);
-	}
 
 	const getMoviesBySearch = async () => {
-		const response = await fetch(`${process.env.VITE_API_URL}/api/movies/search?search=${search}`);
-		const data = await response.json();
-		setSearchResults(data);
-	}
+		try {
+			const response = await movieService.getBySearch(search);
+			setSearchResults(response.data.movies);
+		} catch (error) {
+			console.error("Error fetching movies by search:", error);
+		}
+	};
 
 	const makeCapitalCase = (str: string) => {
 		return str.charAt(0).toUpperCase() + str.slice(1);
 	}
 
 	const filterMovies = async (type: string, filter: string) => {
-		let filterValue = filter;
+		try {
+			let filterValue = filter;
 
-		if (type === "year" && filter === "All") {
-			await getAllMovies();
-			return;
+			if (type === "year" && filter === "All") {
+				const response = await movieService.getAllMovies();
+				setSearchResults(response.data.movies);
+				return;
+			}
+
+			if (type === "year") {
+				filterValue = parseInt(filter).toString().slice(0, 4);
+			}
+
+			if (type === "genre") {
+				filterValue = makeCapitalCase(filter);
+			}
+
+			const response = await movieService.getByFilter(filterValue);
+			setSearchResults(response.data.movies);
+		} catch (error) {
+			console.error("Error filtering movies:", error);
 		}
-
-		if (type === "year") {
-			filterValue = parseInt(filter).toString().slice(0, 4);
-		}
-
-		if (type === "genre") {
-			filterValue = makeCapitalCase(filter);
-		}
-
-		const response = await fetch(`${process.env.VITE_API_URL}/api/movies/filter?type=${type}&filter=${filterValue}`);
-		const data = await response.json();
-		setMovies(data);
-	}
+	};
 
 	return (
 		<div className="flex flex-col w-full h-full items-center bg-transparent">
@@ -152,14 +149,14 @@ export default function Home() {
 						}}
 						onKeyDown={(e) => {
 							if (e.key === "Enter") {
-								setMovies([]);
+								setSearchResults([]);
 								getMoviesBySearch();
 							}
 						}}
 						onBlur={() => {
 							setSearchResults([]);
 							setSearch("");
-							getAllMovies();
+							getBySearch(search);
 						}}
 					/>
 				</div>
@@ -177,8 +174,8 @@ export default function Home() {
 						searchResults.map((movie) => (
 							<div key={movie.id} className="w-1/6 h-1/8 flex flex-col items-center p-2">
 								<a onClick={() => {
-									if (!isSignedIn) {
-										alert("Please sign in to view this movie");
+									if (!user) {
+										alert("Please sign in to view this movie1");
 									} else {
 										navigate(`/movie/${movie.id}`);
 									}
@@ -219,8 +216,8 @@ export default function Home() {
 						movies.map((movie) => (
 							<div key={movie.id} className="w-1/6 h-1/8 flex flex-col items-center p-2">
 								<a onClick={() => {
-									if (!isSignedIn) {
-										alert("Please sign in to view this movie");
+									if (!user) {
+										alert("Please sign in to view this moview2");
 									} else {
 										navigate(`/movie/${movie.id}`);
 									}

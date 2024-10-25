@@ -1,4 +1,4 @@
-import type { Film } from "../../../lib/services/users/types";
+import type { Film } from "../../../lib/services/types";
 
 const WatchedTab = ({ watchedFilms }: { watchedFilms: Film[] }) => {
 

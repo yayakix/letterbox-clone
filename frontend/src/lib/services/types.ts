@@ -42,5 +42,40 @@ export type Film = {
   imageUrl: string;
   initialRating: number;
   currentRating: number;
-  watchedCount: number;
+  watchedCount?: number;
+  genre: string[];
+  yaps?: Yap[];
 };
+
+// or
+// export interface Film {
+//   id: string;
+//   createdAt: Date;
+//   updatedAt: Date;
+//   title: string;
+//   description: string;
+//   year: number;
+//   directedBy: string;
+//   initialRating: number;
+//   currentRating: number;
+//   genre: string[];
+//   imageUrl: string;
+// }
+
+export interface Yap {
+  id: string;
+  yap: string;
+  createdAt: Date;
+  updatedAt: Date;
+  filmId: string;
+  profileId: string;
+  profile: {
+    name: string;
+    imageUrl: string;
+  };
+}
+
+export interface UpdateData {
+  yapContent?: string;
+  ratingValue?: number;
+}

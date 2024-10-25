@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@clerk/clerk-react";
+import UserService from "../../../../services/UserService";
 
 interface PostCommentProps {
     filmId: string;
@@ -17,17 +18,12 @@ const PostComment: React.FC<PostCommentProps> = ({ filmId, onCommentPosted }) =>
 
         try {
             const token = await getToken();
-            const response = await fetch(`${process.env.VITE_API_URL}/api/profile/yaps/${filmId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ content: comment })
-            });
+            if (!token) return; // Ensure token is not null
+            const userService = UserService();
+            const response = await userService.postMovieComment(token, filmId, comment);
             if (response.ok) {
                 setCommment('');
-                onCommentPosted()
+                onCommentPosted();
             } else {
                 console.error('Failed to post comment');
             }

@@ -60,6 +60,8 @@ const optionalUser = async (
     });
     req.user = { userId: newUser.id };
   }
+  console.log("User ID: hit", req.user);
+
   next();
 };
 
