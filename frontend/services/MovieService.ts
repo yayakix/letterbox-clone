@@ -66,10 +66,24 @@ export const MovieService = (token: string) => ({
   updateMovie: async (
     filmId: string,
     updateData: UpdateData
-  ): Response<{ movies: Film[] }> => {
+  ): Response<{ movie: Film }> => {
     try {
-      const response = await api.post(`/api/movies/${filmId}`, updateData);
-      return { data: response.data, error: "" };
+      if (Object.keys(updateData).length === 0) {
+        const response = await api.get(`/api/movies/${filmId}`);
+        console.log("responseeee", response.data);
+        return { data: response.data, error: "" };
+      } else {
+        const response = await api.post(`/api/movies/${filmId}`, updateData);
+        return { data: response.data, error: "" };
+      }
+    } catch (error) {
+      return { data: null, error: error.message };
+    }
+  },
+  refreshMovie: async (filmId: string): Response<{ movie: Film }> => {
+    try {
+      const response = await api.get(`/api/movies/${filmId}`);
+      return { data: response.data, error: "unable to refresh movie" };
     } catch (error) {
       return { data: null, error: error.message };
     }

@@ -47,9 +47,10 @@ profileRouter
       try {
         const yap = await profileClient.postYap(
           req.user.userId,
-          req.body.content,
+          req.body.content.content,
           req.params.filmId
         );
+        console.log("did this fail ", yap);
         res.json(yap);
       } catch (error) {
         res.status(500).json({ error: "Internal server error" });

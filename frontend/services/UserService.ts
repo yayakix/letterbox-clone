@@ -50,8 +50,9 @@ const UserService = () => {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(content),
+          body: JSON.stringify({ content }),
         }
       );
       if (!response.ok) {

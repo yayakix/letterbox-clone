@@ -7,14 +7,17 @@ import Rating from "../base/Rating/Rating";
 import useMoviesStore from "../../state/movies";
 import { Film, Yap } from "../../lib/services/types";
 import UserService from "../../../services/UserService";
+import useMovieStore from "../../state/movie";
+import { MovieService } from "../../../services/MovieService";
 
 
 
 const MovieProfile: React.FC = () => {
   const params = useParams();
   const movieId = params.id;
-  const { movies, moviesLoading, updateMovieDetails, fetchMovieDetails } = useMoviesStore();
-  const [movie, setMovie] = useState<Film | null>();
+  if (!movieId) return;
+  const { movie, setMovie } = useMovieStore(movieId);
+  console.log('movie hereeee', movie)
 
   const [isLiked, setIsLiked] = useState(false);
   const [isWatched, setIsWatched] = useState(false);
@@ -27,35 +30,40 @@ const MovieProfile: React.FC = () => {
   const url = "https://static.vecteezy.com/system/resources/previews/004/141/669/original/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg"
 
   useEffect(() => {
-    const fetchMovie = async () => {
-      if (movieId) {
-        await fetchMovieDetails(movieId);
-      }
-      const currentMovie = movies.find(movie => movie.id === movieId);
-      setMovie(currentMovie);
-      setStarRating(currentMovie?.currentRating ? currentMovie?.currentRating / 2 : 0);
-      setYaps(currentMovie?.yaps || []);
-    }
+    setStarRating(movie?.currentRating ? movie?.currentRating / 2 : 0);
+    setYaps(movie?.yaps || []);
+  }, [movie]);
+  // useEffect(() => {
+  //   console.log('movieId', movieId)
+  // const fetchMovie = async () => {
+  //   if (movieId) {
+  //     await fetchMovieDetails(movieId);
+  //   }
+  //   console.log('movies should be here', movies)
+  //   const currentMovie = movies.find(movie => movie.id === movieId);
+  //   setMovie(currentMovie);
+  //   setStarRating(currentMovie?.currentRating ? currentMovie?.currentRating / 2 : 0);
+  //   setYaps(currentMovie?.yaps || []);
+  // }
 
 
-    const isMovieWatchedOrLiked = async () => {
-      const token = await getToken();
-      const response = await fetch(`${process.env.VITE_API_URL}/api/profile/isWatchedOrLiked/${movieId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      if (data.isWatched) setIsWatched(true);
-      if (data.isLiked) setIsLiked(true);
-    };
-    isMovieWatchedOrLiked();
+  //   const isMovieWatchedOrLiked = async () => {
+  //     const token = await getToken();
+  //     const response = await fetch(`${process.env.VITE_API_URL}/api/profile/isWatchedOrLiked/${movieId}`, {
+  //       headers: {
+  //         'Authorization': `Bearer ${token}`,
+  //       },
+  //     });
+  //     const data = await response.json();
+  //     if (data.isWatched) setIsWatched(true);
+  //     if (data.isLiked) setIsLiked(true);
+  //   };
+  //   isMovieWatchedOrLiked();
 
-    fetchMovie();
-  }, [movieId]);
+  //   fetchMovie();
+  // }, [movieId]);
   // Handle liking and watching movies
   // upd
-
 
 
   // const handleAction = async (action: 'watched' | 'liked') => {
@@ -73,24 +81,15 @@ const MovieProfile: React.FC = () => {
   //   }
   // };
 
-  // const fetchComments = async () => {
-  //   if (!movieId) return;
-  //   try {
-  //     const token = await getToken();
-  //     const response = await fetch(`${process.env.VITE_API_URL}/api/movies/yaps/${movieId}`, {
-  //       headers: {
-  //         'Authorization': `Bearer ${token}`,
-  //       },
-  //     });
-  //     if (!response.ok) {
-  //       throw new Error("Failed to fetch comments");
-  //     }
-  //     const data = await response.json();
-  //     setYaps(data);
-  //   } catch (error) {
-  //     console.error("Error fetching comments:", error);
-  //   }
-  // };
+  const fetchComments = async () => {
+    if (movieId) {
+      const movieService = MovieService(await getToken());
+      movieService.getMovieById(movieId).then((res) => {
+        setMovie(res.data);
+      });
+    }
+    console.log('fetching comments')
+  };
 
   // useEffect(() => {
   //   fetchComments();
@@ -117,7 +116,7 @@ const MovieProfile: React.FC = () => {
   // //     console.error(`Error updating rating:`, error);
   // //   }
   // // };
-  console.log('movie here', movie)
+  // console.log('movie here', movie)
   return (
     <div className=" p-6 lg:px-48">
       <div className="flex mb-6">
@@ -130,7 +129,7 @@ const MovieProfile: React.FC = () => {
           {movie?.currentRating && (
             <span className="text-xl font-semibold text-yellow-500 flex flex-row items-center gap-2">
               {starRating.toFixed(1)}
-              <Rating totalStars={5} readOnly={true} readOnlyValue={starRating} />
+              {starRating && <Rating totalStars={5} readOnly={true} readOnlyValue={starRating} />}
             </span>
           )}
           <p className="text-gray-500 mt-4">
@@ -196,7 +195,7 @@ const MovieProfile: React.FC = () => {
       <div className="mt-8 border-t border-gray-700 pt-6">
         <h2 className="text-xl font-semibold text-gray-300 mb-4">Comments</h2>
         <PostComment filmId={movie?.id}
-        // onCommentPosted={fetchComments} 
+          onCommentPosted={fetchComments}
         />
         {yaps.map((yap) => (
           <YapList key={yap.id} yap={yap} />

@@ -10,7 +10,7 @@ const app = express();
 app.use(
   cors({
     origin: "http://localhost:5173",
-    allowedHeaders: ["Authorization", "Content-Type"],
+    allowedHeaders: ["Authorization", "Content-Type", "Accept"],
   })
 );
 

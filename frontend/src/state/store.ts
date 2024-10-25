@@ -7,7 +7,9 @@ import { ConnectionUser } from "../lib/services/types";
 type StoreState = {
   user: ConnectionUser | null;
   movies: Film[];
+  movie: Film | null;
   setMovies: (data: Film[]) => void;
+  setMovie: (data: Film | null) => void;
   setUser: (user: ConnectionUser | null) => void;
   updateMovieDetails: (movie: Film) => void;
 };
@@ -15,7 +17,9 @@ type StoreState = {
 const useStore = create<StoreState>((set, get) => ({
   user: null,
   movies: [],
+  movie: null,
   setMovies: (movies: Film[]) => set({ movies }),
+  setMovie: (movie: Film | null) => set({ movie }),
   setUser: (user: ConnectionUser | null) => set({ user }),
   updateMovieDetails: (updatedMovie: Film) => {
     const { movies } = get();

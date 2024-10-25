@@ -20,13 +20,9 @@ const PostComment: React.FC<PostCommentProps> = ({ filmId, onCommentPosted }) =>
             const token = await getToken();
             if (!token) return; // Ensure token is not null
             const userService = UserService();
-            const response = await userService.postMovieComment(token, filmId, comment);
-            if (response.ok) {
-                setCommment('');
-                onCommentPosted();
-            } else {
-                console.error('Failed to post comment');
-            }
+            const response = await userService.postMovieComment(token, filmId, { content: comment });
+            console.log("responseeee gere", response);
+            onCommentPosted();
         } catch (error) {
             console.error('Error posting comment:', error);
         };
