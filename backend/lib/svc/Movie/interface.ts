@@ -24,8 +24,18 @@ export interface Yap {
     imageUrl: string;
   };
 }
+
+export interface UpdateData {
+  yapContent?: string;
+  ratingValue?: number;
+}
+
 export interface IFilmService {
   getAllFilms(): Promise<Film[]>;
   getFilmById(id: string, userId: string): Promise<Film>;
-  getYapsOnFilm(filmId: string, userId: string): Promise<Yap[]>;
+  updateFilm(
+    filmId: string,
+    userId: string,
+    updateData: UpdateData
+  ): Promise<Film>;
 }

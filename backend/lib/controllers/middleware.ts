@@ -19,7 +19,7 @@ const optionalUser = async (
   const clerkId = clerkUser.id;
 
   if (!clerkId) {
-    console.log("no clerkId");
+    console.error("no clerkId");
     return next();
   }
 
@@ -60,6 +60,7 @@ const optionalUser = async (
     });
     req.user = { userId: newUser.id };
   }
+
   next();
 };
 

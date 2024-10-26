@@ -7,7 +7,6 @@ const MovieService = (): IFilmService => ({
     return films;
   },
   getFilmById: async (filmId: string, userId: string) => {
-    const startTime = Date.now();
     const film = await client.film.findUnique({
       where: { id: filmId },
       include: {
@@ -15,31 +14,67 @@ const MovieService = (): IFilmService => ({
           where: { profileId: userId },
           select: { value: true },
         },
+        yaps: {
+          include: {
+            profile: {
+              select: {
+                name: true,
+                imageUrl: true,
+              },
+            },
+          },
+          orderBy: { createdAt: "desc" },
+        },
       },
     });
     if (!film) throw new Error(`Film with id ${filmId} not found`);
     return film;
   },
-  getYapsOnFilm: async (filmId: string, userId: string) => {
-    const yaps = await client.yap.findMany({
-      where: { filmId },
-      include: {
-        profile: {
-          select: {
-            name: true,
-            imageUrl: true,
+  updateFilm: async (
+    filmId: string,
+    userId: string,
+    updateData: { yapContent?: string; ratingValue?: number }
+  ) => {
+    const { yapContent, ratingValue } = updateData;
+
+    const updateOperations: any = {};
+
+    if (yapContent !== undefined) {
+      updateOperations.yaps = {
+        upsert: {
+          where: { filmId_userId: { filmId, userId } },
+          update: { content: yapContent },
+          create: {
+            content: yapContent,
+            profile: {
+              connect: { id: userId },
+            },
           },
         },
-      },
-      orderBy: { createdAt: "desc" },
+      };
+    }
+
+    if (ratingValue !== undefined) {
+      updateOperations.ratings = {
+        upsert: {
+          where: { filmId_userId: { filmId, userId } },
+          update: { value: ratingValue },
+          create: {
+            value: ratingValue,
+            profile: {
+              connect: { id: userId },
+            },
+          },
+        },
+      };
+    }
+
+    const updatedFilm = await client.film.update({
+      where: { id: filmId },
+      data: updateOperations,
     });
-    return yaps.map((yap) => ({
-      ...yap,
-      profile: {
-        ...yap.profile,
-        imageUrl: yap.profile.imageUrl || "",
-      },
-    }));
+
+    return updatedFilm;
   },
 });
 

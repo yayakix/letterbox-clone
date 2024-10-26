@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from "@clerk/clerk-react";
-import { UserConnections } from '../../../lib/services/users/types';
+import { UserConnections } from '../../../lib/services/types';
 
 const NetworkTab = () => {
     const { getToken } = useAuth();

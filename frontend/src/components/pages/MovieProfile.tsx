@@ -4,158 +4,152 @@ import YapList from "../base/Comments/Comment";
 import { useParams } from "react-router-dom";
 import PostComment from "../base/Comments/PostComment";
 import Rating from "../base/Rating/Rating";
+import useMoviesStore from "../../state/movies";
+import { Film, Yap } from "../../lib/services/types";
+import useMovieStore from "../../state/movie";
+import { MovieService } from "../../../services/MovieService";
+import useUserStore from "../../state/user";
+import UserService from "../../../services/UserService";
 
 
 
 const MovieProfile: React.FC = () => {
   const params = useParams();
   const movieId = params.id;
-  const [movie, setMovie] = useState<Movie | null>(null);
+  if (!movieId) return;
+  const { movie, setMovie } = useMovieStore(movieId);
+  const { user } = useUserStore();
+  console.log('user details here69 ', user)
 
   const [isLiked, setIsLiked] = useState(false);
   const [isWatched, setIsWatched] = useState(false);
-  const [starRating, setStarRating] = useState<number | null>(0); // number 
-
+  const [starRating, setStarRating] = useState<number>(0); // Initialize with a default value of 0
+  const [yaps, setYaps] = useState<Yap[]>([]);
 
   const [loading, setLoading] = useState(true);
   const { getToken } = useAuth();
+  // if movie image is not available, use this placeholder
   const url = "https://static.vecteezy.com/system/resources/previews/004/141/669/original/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg"
 
-  // Handle liking and watching movies
-  const handleAction = async (action: 'watched' | 'liked') => {
-    try {
-      const token = await getToken();
-      const response = await fetch(`${process.env.VITE_API_URL}/api/profile/${action}/${movieId}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      if (!response.ok) throw new Error(`Failed to ${action} movie`);
-    } catch (error) {
-      console.error(`Error ${action} movie:`, error);
-    }
-  };
-
-
-  const [yaps, setYaps] = useState<Yap[]>([]);
-
-  const fetchComments = async () => {
-    if (!movieId) return;
-    try {
-      const token = await getToken();
-      const response = await fetch(`${process.env.VITE_API_URL}/api/movies/yaps/${movieId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch comments");
-      }
-      const data = await response.json();
-      setYaps(data);
-    } catch (error) {
-      console.error("Error fetching comments:", error);
-    }
-  };
-
   useEffect(() => {
-    fetchComments();
-  }, [movieId, getToken]);
-
-  useEffect(() => {
-    const fetchMovie = async () => {
-      try {
-        const token = await getToken();
-        const response = await fetch(`${process.env.VITE_API_URL}/api/movies/${movieId}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) {
-          throw new Error("Movie not found");
-        }
-        const data = await response.json();
-        setMovie(data);
-        setStarRating(data.userRating ? data.userRating : 0);
-
-      } catch (error) {
-        console.error("Error fetching movie:", error);
-        setMovie(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const isMovieWatchedOrLiked = async () => {
-      const token = await getToken();
-      const response = await fetch(`${process.env.VITE_API_URL}/api/profile/isWatchedOrLiked/${movieId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      if (data.isWatched) setIsWatched(true);
-      if (data.isLiked) setIsLiked(true);
-    };
-    isMovieWatchedOrLiked();
-
-    fetchMovie();
-  }, [movieId, getToken]);
-
-  useEffect(() => {
-    if (movie) {
-      console.log("Movie data updated:", movie);
-    }
+    setStarRating(movie?.currentRating ? movie?.currentRating / 2 : 0);
+    setYaps(movie?.yaps || []);
+    const hasWatched = Boolean(user?.watchedFilms[movieId]);
+    setIsWatched(hasWatched);
+    const hasLiked = Boolean(user?.likedFilms[movieId]);
+    setIsLiked(hasLiked);
   }, [movie]);
 
-  if (loading) return <div>Loading...</div>;
-  if (!movie) return <div>Movie not found</div>
 
-  const handleRatingChange = async (newRating: number) => {
-    try {
-      const token = await getToken();
-      const response = await fetch(`${process.env.VITE_API_URL}/api/movies/rate/${movieId}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ newRating: newRating }),
-      });
-      if (!response.ok) throw new Error(`Failed to update rating`);
-      console.log(`Rating updated successfully`);
-      setStarRating((newRating / 2));
-    } catch (error) {
-      console.error(`Error updating rating:`, error);
+  //   const isMovieWatchedOrLiked = async () => {
+  //     const token = await getToken();
+  //     const response = await fetch(`${process.env.VITE_API_URL}/api/profile/isWatchedOrLiked/${movieId}`, {
+  //       headers: {
+  //         'Authorization': `Bearer ${token}`,
+  //       },
+  //     });
+  //     const data = await response.json();
+  //     if (data.isWatched) setIsWatched(true);
+  //     if (data.isLiked) setIsLiked(true);
+  //   };
+  //   isMovieWatchedOrLiked();
+
+  //   fetchMovie();
+  // }, [movieId]);
+  // Handle liking and watching movies
+  // upd
+
+
+  const handleAction = async (action: 'watched' | 'liked') => {
+    const token = await getToken();
+    const userService = UserService();
+    if (action === 'watched' && token) {
+      userService.watchMovie(token, movieId);
+
+      if (isWatched) {
+        console.log("User has watched this movie");
+      } else {
+        console.log("User hasn't watched this movie yet");
+      }
     }
+
+    if (action === 'liked' && token) {
+      userService.likeMovie(token, movieId);
+
+      if (isLiked) {
+        console.log("User has liked this movie");
+      } else {
+        console.log("User hasn't liked this movie yet");
+      }
+    }
+
   };
 
+  const fetchComments = async () => {
+    if (movieId) {
+      const token = await getToken();
+      if (token) {
+        const movieService = MovieService(token);
+        movieService.getMovieById(movieId).then((res) => {
+          setMovie(res.data);
+        });
+      }
+    }
+    console.log('fetching comments')
+  };
 
-  const movieRating = movie.currentRating / 2;
+  // useEffect(() => {
+  //   fetchComments();
+  // }, [movieId, getToken]);
+
+
+
+
+  // // const handleRatingChange = async (newRating: number) => {
+  // //   try {
+  // //     const token = await getToken();
+  // //     const response = await fetch(`${process.env.VITE_API_URL}/api/movies/rate/${movieId}`, {
+  // //       method: 'POST',
+  // //       headers: {
+  // //         'Authorization': `Bearer ${token}`,
+  // //         'Content-Type': 'application/json',
+  // //       },
+  // //       body: JSON.stringify({ newRating: newRating }),
+  // //     });
+  // //     if (!response.ok) throw new Error(`Failed to update rating`);
+  // //     console.log(`Rating updated successfully`);
+  // //     setStarRating((newRating / 2));
+  // //   } catch (error) {
+  // //     console.error(`Error updating rating:`, error);
+  // //   }
+  // // };
+  // console.log('movie here', movie)
   return (
     <div className=" p-6 lg:px-48">
       <div className="flex mb-6">
         <div className="flex-shrink-0 mr-6">
-          <img src={movie.imageUrl || url} alt={movie.title} className="w-64 h-auto object-cover rounded-lg" />
+          <img src={movie?.imageUrl || url} alt={movie?.title} className="w-64 h-auto object-cover rounded-lg" />
         </div>
         <div className="flex-grow">
-          <h1 className="text-gray-300 text-2xl font-bold mb-2">{movie.title}</h1>
-          <p className="text-sm text-gray-600 mb-2">{movie.year} • Directed by {movie.directedBy}</p>
-          {/* average total rating */}
-          <span className="text-xl font-semibold text-yellow-500 flex flex-row items-center gap-2"> {movieRating?.toFixed(1)} <Rating totalStars={5} readOnly={true} readOnlyValue={movieRating} /></span>
+          <h1 className="text-gray-300 text-2xl font-bold mb-2">{movie?.title}</h1>
+          <p className="text-sm text-gray-600 mb-2">{movie?.year} • Directed by {movie?.directedBy}</p>
+          {movie?.currentRating && (
+            <span className="text-xl font-semibold text-yellow-500 flex flex-row items-center gap-2">
+              {starRating.toFixed(1)}
+              {starRating && <Rating totalStars={5} readOnly={true} readOnlyValue={starRating} />}
+            </span>
+          )}
           <p className="text-gray-500 mt-4">
-            {movie.description}
+            {movie?.description}
           </p>
           <p className="text-sm text-gray-600 mt-4">
-            Genres: {Array.isArray(movie.genre) ? movie.genre.join(', ') : 'Unknown'}
+            Genres: {Array.isArray(movie?.genre) ? movie?.genre.join(', ') : 'Unknown'}
           </p>
         </div>
         <div className="flex-shrink-0 ml-6 bg-gray-500 p-6 rounded-lg flex flex-col justify-center items-center w-1/6">
           {/* user rating */}
           <div className="flex flex-col items-center relative h-2 w-24">
-            <Rating totalStars={5} onRatingChange={handleRatingChange} readOnlyValue={starRating || 0} />
+            {/* <Rating totalStars={5} onRatingChange={handleRatingChange} readOnlyValue={starRating || 0} /> */}
           </div>
           <span className="text-xl font-semibold text-slate-400 mb-1 mt-1">Rate</span>
           <button
@@ -205,12 +199,19 @@ const MovieProfile: React.FC = () => {
           </button>
         </div>
       </div>
+
       <div className="mt-8 border-t border-gray-700 pt-6">
         <h2 className="text-xl font-semibold text-gray-300 mb-4">Comments</h2>
-        <PostComment filmId={movie.id} onCommentPosted={fetchComments} />
-        {yaps.map((yap) => (
-          <YapList key={yap.id} yap={yap} />
-        ))}
+        <PostComment filmId={movie?.id}
+          onCommentPosted={fetchComments}
+        />
+        <br></br>
+        <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+
+          {yaps.map((yap) => (
+            <YapList key={yap.id} yap={yap} />
+          ))}
+        </div>
       </div>
     </div>
   )

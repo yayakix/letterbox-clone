@@ -1,59 +1,62 @@
 import { useEffect, useState } from "react";
-import { Film } from "../../lib/services/users/types";
+import useUserStore from "../../state/user";
+import { Film } from "../../lib/services/types";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@clerk/clerk-react";
+import useMoviesStore from "../../state/movies";
+// import { defaultMovies } from "../../defaultMovies"; use when offline
+import { MovieService } from "../../../services/MovieService"; // Import MovieService
 
 export default function Home() {
+	const { user, userLoading, updateUser } = useUserStore(); // Use updateUser if needed
+	console.log("user here55", user);
+	const movieService = MovieService(); // Initialize MovieService
+	const { movies, moviesLoading, updateMovie, getBySearch, getByFilter } = useMoviesStore();
+	const [searchResults, setSearchResults] = useState<Film[]>([]);
 
-	const { isSignedIn } = useAuth();
 	const [year, setYear] = useState("All");
 	const [rating, setRating] = useState("Highest Rated");
 	const [genre, setGenre] = useState("All");
 	const [search, setSearch] = useState("");
-	const [movies, setMovies] = useState<Film[]>([]);
-	const [searchResults, setSearchResults] = useState<Film[]>([]);
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		getAllMovies();
-	}, [1]);
-
-	const getAllMovies = async () => {
-		const response = await fetch(`${process.env.VITE_API_URL}/api/movies`);
-		const data = await response.json();
-		setMovies(data);
-	}
 
 	const getMoviesBySearch = async () => {
-		const response = await fetch(`${process.env.VITE_API_URL}/api/movies/search?search=${search}`);
-		const data = await response.json();
-		setSearchResults(data);
-	}
+		try {
+			const response = await movieService.getBySearch(search);
+			setSearchResults(response.data.movies);
+		} catch (error) {
+			console.error("Error fetching movies by search:", error);
+		}
+	};
 
 	const makeCapitalCase = (str: string) => {
 		return str.charAt(0).toUpperCase() + str.slice(1);
 	}
 
 	const filterMovies = async (type: string, filter: string) => {
-		let filterValue = filter;
+		try {
+			let filterValue = filter;
 
-		if (type === "year" && filter === "All") {
-			await getAllMovies();
-			return;
+			if (type === "year" && filter === "All") {
+				const response = await movieService.getAllMovies();
+				setSearchResults(response.data.movies);
+				return;
+			}
+
+			if (type === "year") {
+				filterValue = parseInt(filter).toString().slice(0, 4);
+			}
+
+			if (type === "genre") {
+				filterValue = makeCapitalCase(filter);
+			}
+
+			const response = await movieService.getByFilter(filterValue);
+			setSearchResults(response.data.movies);
+		} catch (error) {
+			console.error("Error filtering movies:", error);
 		}
-
-		if (type === "year") {
-			filterValue = parseInt(filter).toString().slice(0, 4);
-		}
-
-		if (type === "genre") {
-			filterValue = makeCapitalCase(filter);
-		}
-
-		const response = await fetch(`${process.env.VITE_API_URL}/api/movies/filter?type=${type}&filter=${filterValue}`);
-		const data = await response.json();
-		setMovies(data);
-	}
+	};
 
 	return (
 		<div className="flex flex-col w-full h-full items-center bg-transparent">
@@ -61,7 +64,7 @@ export default function Home() {
 				<div className="flex flex-row items-center justify-evenly gap-2" >
 					<h1 className="text-md font-Inter uppercase">Browse By</h1>
 					<div className="flex flex-row items-center gap-2">
-						<select
+						{/* <select
 							name="year"
 							id="year-select"
 							className="bg-transparent border border-1 border-gray-600"
@@ -88,8 +91,8 @@ export default function Home() {
 							<option value="1890s">1890s</option>
 							<option value="1880s">1880s</option>
 							<option value="1870s">1870s</option>
-						</select>
-						<select
+						</select> */}
+						{/* <select
 							name="rating"
 							id="rating-select"
 							className="bg-transparent border border-1 border-gray-600"
@@ -102,8 +105,8 @@ export default function Home() {
 							<option value="All">All</option>
 							<option value="Highest Rated">Highest Rated</option>
 							<option value="Lowest Rated">Lowest Rated</option>
-						</select >
-						<select
+						</select > */}
+						{/* <select
 							name="genre"
 							id="genre-select"
 							className="bg-transparent border border-1 border-gray-600"
@@ -133,12 +136,12 @@ export default function Home() {
 							<option value="thriller">Thriller</option>
 							<option value="war">War</option>
 							<option value="western">Western</option>
-						</select>
+						</select> */}
 					</div >
 				</div >
 				<div className="flex flex-row items-center gap-2">
 					<h1 className="text-md font-Inter uppercase">Find A Film</h1>
-					<input
+					{/* <input
 						type="text"
 						className="bg-transparent border border-1 border-gray-600 shadow-inner"
 						value={search}
@@ -156,7 +159,7 @@ export default function Home() {
 							setSearch("");
 							getAllMovies();
 						}}
-					/>
+					/> */}
 				</div>
 			</div >
 			<div className="flex flex-col items-center h-full w-full mt-12">
@@ -172,12 +175,12 @@ export default function Home() {
 						searchResults.map((movie) => (
 							<div key={movie.id} className="w-1/6 h-1/8 flex flex-col items-center p-2">
 								<a onClick={() => {
-									if (!isSignedIn) {
+									if (!user) {
 										alert("Please sign in to view this movie");
 									} else {
 										navigate(`/movie/${movie.id}`);
 									}
-								}}><img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover" /></a>
+								}}><img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover hover:scale-105 transition-all duration-300" /></a>
 								<div className="flex flex-row w-full justify-evenly mt-1">
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-green-500 hover:text-green-400`}
@@ -192,7 +195,7 @@ export default function Home() {
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
 										</svg>
-										<span className="text-xs">{movie.watchedCount || 0}</span>
+
 									</button >
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-yellow-500 hover:text-yellow-400`}
@@ -214,12 +217,12 @@ export default function Home() {
 						movies.map((movie) => (
 							<div key={movie.id} className="w-1/6 h-1/8 flex flex-col items-center p-2">
 								<a onClick={() => {
-									if (!isSignedIn) {
+									if (!user) {
 										alert("Please sign in to view this movie");
 									} else {
 										navigate(`/movie/${movie.id}`);
 									}
-								}}><img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover" /></a>
+								}}><img src={movie.imageUrl} alt="movie" className="w-full h-full object-cover hover:scale-105 transition-all duration-300 hover:cursor-pointer" /></a>
 								<div className="flex flex-row w-full justify-evenly mt-1">
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-green-500 hover:text-green-400`}
@@ -234,7 +237,7 @@ export default function Home() {
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
 										</svg>
-										<span className="text-xs">{movie.watchedCount || 0}</span>
+										{/* <span className="text-xs">{movie.watchedCount || 0}</span> */}
 									</button >
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-yellow-500 hover:text-yellow-400`}
