@@ -6,9 +6,10 @@ import PostComment from "../base/Comments/PostComment";
 import Rating from "../base/Rating/Rating";
 import useMoviesStore from "../../state/movies";
 import { Film, Yap } from "../../lib/services/types";
-import UserService from "../../../services/UserService";
 import useMovieStore from "../../state/movie";
 import { MovieService } from "../../../services/MovieService";
+import useUserStore from "../../state/user";
+import UserService from "../../../services/UserService";
 
 
 
@@ -17,7 +18,8 @@ const MovieProfile: React.FC = () => {
   const movieId = params.id;
   if (!movieId) return;
   const { movie, setMovie } = useMovieStore(movieId);
-  console.log('movie hereeee', movie)
+  const { user } = useUserStore();
+  console.log('user details here69 ', user)
 
   const [isLiked, setIsLiked] = useState(false);
   const [isWatched, setIsWatched] = useState(false);
@@ -32,19 +34,11 @@ const MovieProfile: React.FC = () => {
   useEffect(() => {
     setStarRating(movie?.currentRating ? movie?.currentRating / 2 : 0);
     setYaps(movie?.yaps || []);
+    const hasWatched = Boolean(user?.watchedFilms[movieId]);
+    setIsWatched(hasWatched);
+    const hasLiked = Boolean(user?.likedFilms[movieId]);
+    setIsLiked(hasLiked);
   }, [movie]);
-  // useEffect(() => {
-  //   console.log('movieId', movieId)
-  // const fetchMovie = async () => {
-  //   if (movieId) {
-  //     await fetchMovieDetails(movieId);
-  //   }
-  //   console.log('movies should be here', movies)
-  //   const currentMovie = movies.find(movie => movie.id === movieId);
-  //   setMovie(currentMovie);
-  //   setStarRating(currentMovie?.currentRating ? currentMovie?.currentRating / 2 : 0);
-  //   setYaps(currentMovie?.yaps || []);
-  // }
 
 
   //   const isMovieWatchedOrLiked = async () => {
@@ -66,27 +60,40 @@ const MovieProfile: React.FC = () => {
   // upd
 
 
-  // const handleAction = async (action: 'watched' | 'liked') => {
-  //   try {
-  //     const response = await fetch(`${process.env.VITE_API_URL}/api/profile/${action}/${movieId}`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Authorization': `Bearer ${token}`,
-  //         'Content-Type': 'application/json',
-  //       },
-  //     });
-  //     if (!response.ok) throw new Error(`Failed to ${action} movie`);
-  //   } catch (error) {
-  //     console.error(`Error ${action} movie:`, error);
-  //   }
-  // };
+  const handleAction = async (action: 'watched' | 'liked') => {
+    const token = await getToken();
+    const userService = UserService();
+    if (action === 'watched' && token) {
+      userService.watchMovie(token, movieId);
+
+      if (isWatched) {
+        console.log("User has watched this movie");
+      } else {
+        console.log("User hasn't watched this movie yet");
+      }
+    }
+
+    if (action === 'liked' && token) {
+      userService.likeMovie(token, movieId);
+
+      if (isLiked) {
+        console.log("User has liked this movie");
+      } else {
+        console.log("User hasn't liked this movie yet");
+      }
+    }
+
+  };
 
   const fetchComments = async () => {
     if (movieId) {
-      const movieService = MovieService(await getToken());
-      movieService.getMovieById(movieId).then((res) => {
-        setMovie(res.data);
-      });
+      const token = await getToken();
+      if (token) {
+        const movieService = MovieService(token);
+        movieService.getMovieById(movieId).then((res) => {
+          setMovie(res.data);
+        });
+      }
     }
     console.log('fetching comments')
   };
@@ -149,7 +156,7 @@ const MovieProfile: React.FC = () => {
             className={`flex flex-col items-center transition-colors mb-4 ${isWatched ? 'text-yellow-500 hover:text-yellow-400' : 'text-slate-400 hover:text-slate-200'
               }`}
             onClick={() => {
-              // handleAction('watched');
+              handleAction('watched');
               setIsWatched(!isWatched); // Toggle the watched state
             }}
           >
@@ -169,7 +176,7 @@ const MovieProfile: React.FC = () => {
             className={`flex flex-col items-center transition-colors mb-4 ${isLiked ? 'text-green-500 hover:text-green-400' : 'text-slate-400 hover:text-slate-200'
               }`}
             onClick={() => {
-              // handleAction('liked');
+              handleAction('liked');
               setIsLiked(!isLiked); // Toggle the liked state
             }}
           >

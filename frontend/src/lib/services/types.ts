@@ -24,17 +24,20 @@ export type ConnectionUser = {
   updatedAt: string;
   userId: string;
   imageUrl: string;
-  isFollowing?: boolean;
-  followers?: Follower[];
-  following?: Follower[];
+  followers: Follower[];
+  following: Follower[];
+  liked: Film[];
+  watched: Film[];
+  likedFilms: Film[];
+  watchedFilms: { [key: string]: Film };
 };
 
 export type UserConnections = ConnectionUser[];
 
 export type Film = {
   id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   title: string;
   description: string;
   year: number;
@@ -42,9 +45,7 @@ export type Film = {
   imageUrl: string;
   initialRating: number;
   currentRating: number;
-  watchedCount?: number;
   genre: string[];
-  yaps?: Yap[];
 };
 
 // or

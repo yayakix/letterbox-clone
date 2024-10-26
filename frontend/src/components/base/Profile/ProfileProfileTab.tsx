@@ -1,6 +1,8 @@
 import type { Film } from "../../../lib/services/types";
 
-const ProfileProfileTab = ({ likedFilms }: { likedFilms: Film[] }) => {
+const ProfileProfileTab = (props: any) => {
+    const { likedFilms } = props;
+    console.log('likedFilms here ', likedFilms)
     return (
         <div className="text-slate-200 ">
             <div className="text-sm text-slate-400 font-bold">FAVORITE FILMS</div>

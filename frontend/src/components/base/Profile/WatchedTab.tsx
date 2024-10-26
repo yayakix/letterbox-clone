@@ -1,6 +1,10 @@
 import type { Film } from "../../../lib/services/types";
 
-const WatchedTab = ({ watchedFilms }: { watchedFilms: Film[] }) => {
+interface WatchedTabProps {
+    watchedFilms: Film[];
+}
+
+const WatchedTab: React.FC<WatchedTabProps> = ({ watchedFilms }) => {
 
     return (
         <div className="text-slate-200">

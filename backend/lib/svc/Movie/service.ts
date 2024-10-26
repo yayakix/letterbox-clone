@@ -28,7 +28,6 @@ const MovieService = (): IFilmService => ({
       },
     });
     if (!film) throw new Error(`Film with id ${filmId} not found`);
-    console.log("film found", film);
     return film;
   },
   updateFilm: async (

@@ -15,7 +15,6 @@ app.use(
 );
 
 app.use(express.json());
-console.log(process.env.DATABASE_URL);
 
 // app.use("/api", userRouter);
 app.use("/api/movies", movieRouter);

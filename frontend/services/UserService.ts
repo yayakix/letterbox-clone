@@ -1,16 +1,17 @@
 import { ConnectionUser } from "../src/lib/services/types";
 
-export type User = {
-  id: string;
-  username: string;
-  email: string;
-};
+// export type User = {
+//   id: string;
+//   username: string;
+//   email: string;
+// };
 
 // type Response<T> = Promise<{ data: T; error: string }>;
 
 const UserService = () => {
   return {
     getCurrentUser: async (token: string) => {
+      console.log("trying to call getCurrentUser");
       const response = await fetch(`${process.env.VITE_API_URL}/api/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -57,6 +58,36 @@ const UserService = () => {
       );
       if (!response.ok) {
         throw new Error("Failed to post movie comment");
+      }
+      return response.json();
+    },
+    watchMovie: async (token: string, movieId: string) => {
+      const response = await fetch(
+        `${process.env.VITE_API_URL}/api/profile/watched/${movieId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to watch movie");
+      }
+      return response.json();
+    },
+    likeMovie: async (token: string, movieId: string) => {
+      const response = await fetch(
+        `${process.env.VITE_API_URL}/api/profile/films/liked/${movieId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to like movie");
       }
       return response.json();
     },

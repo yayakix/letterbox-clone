@@ -35,8 +35,6 @@ movieRouter.get(
   ClerkExpressRequireAuth(),
   optionalUser,
   async (req, res) => {
-    console.log("hello a anyone homeeeee");
-    console.log("Request received for movie:", req.params.id);
     try {
       const movieId = req.params.id;
 
@@ -44,7 +42,7 @@ movieRouter.get(
       const movie = await MovieService().getFilmById(movieId, req.user.userId);
 
       if (!movie) {
-        console.log("Movie not found in database");
+        console.error("Movie not found in database");
         return res.status(404).json({ error: "Movie not found" });
       }
 

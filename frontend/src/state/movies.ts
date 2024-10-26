@@ -84,6 +84,7 @@ const useMoviesStore = () => {
   return {
     movies,
     moviesLoading,
+    setMovies,
     updateMovie,
     getBySearch,
     getByFilter,

@@ -4,14 +4,10 @@ import { Film, UpdateData } from "../src/lib/services/types";
 // type inputs to apis
 type Response<T> = Promise<{ data: T; error: string }>;
 
-export const MovieService = (token: string) => ({
+export const MovieService = (token?: string) => ({
   getAllMovies: async (): Response<{ movies: Film[] }> => {
     try {
-      const response = await api.get("/api/movies", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.get("/api/movies", {});
       return { data: response.data, error: "" };
     } catch (error) {
       return { data: null, error: error.message };

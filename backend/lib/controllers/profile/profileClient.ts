@@ -7,12 +7,30 @@ export const getProfile = async (userId: string) => {
     include: {
       followers: true,
       following: true,
+      liked: true,
+      watched: true,
     },
   });
+
+  // Transform the watched films into a key-value object
+  const watchedFilmsMap =
+    profile?.watched?.reduce((acc, film) => {
+      acc[film.id] = film;
+      return acc;
+    }, {} as Record<string, any>) || {};
+
+  // Transform the liked films into a key-value object
+  const likedFilmsMap =
+    profile?.liked?.reduce((acc, film) => {
+      acc[film.id] = film;
+      return acc;
+    }, {} as Record<string, any>) || {};
 
   // Transform the data to a more convenient format
   return {
     ...profile,
+    likedFilms: likedFilmsMap,
+    watchedFilms: watchedFilmsMap,
   };
 };
 // not being used
@@ -93,7 +111,15 @@ export const getLikedFilms = async (userId: string) => {
       liked: true,
     },
   });
-  return likedFilms?.liked || [];
+
+  // Transform the array into a key-value object
+  const likedFilmsMap =
+    likedFilms?.liked?.reduce((acc, film) => {
+      acc[film.id] = film;
+      return acc;
+    }, {} as Record<string, any>) || {};
+
+  return likedFilmsMap;
 };
 
 // Add film to users liked list
@@ -190,7 +216,15 @@ export const getWatchedFilms = async (userId: string) => {
       watched: true,
     },
   });
-  return watchedFilms?.watched || [];
+
+  // Transform the array into a key-value object
+  const watchedFilmsMap =
+    watchedFilms?.watched?.reduce((acc, film) => {
+      acc[film.id] = film;
+      return acc;
+    }, {} as Record<string, any>) || {};
+
+  return watchedFilmsMap;
 };
 
 // Add film to users watched list

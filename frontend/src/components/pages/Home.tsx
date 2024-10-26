@@ -8,6 +8,7 @@ import { MovieService } from "../../../services/MovieService"; // Import MovieSe
 
 export default function Home() {
 	const { user, userLoading, updateUser } = useUserStore(); // Use updateUser if needed
+	console.log("user here55", user);
 	const movieService = MovieService(); // Initialize MovieService
 	const { movies, moviesLoading, updateMovie, getBySearch, getByFilter } = useMoviesStore();
 	const [searchResults, setSearchResults] = useState<Film[]>([]);
@@ -63,7 +64,7 @@ export default function Home() {
 				<div className="flex flex-row items-center justify-evenly gap-2" >
 					<h1 className="text-md font-Inter uppercase">Browse By</h1>
 					<div className="flex flex-row items-center gap-2">
-						<select
+						{/* <select
 							name="year"
 							id="year-select"
 							className="bg-transparent border border-1 border-gray-600"
@@ -90,7 +91,7 @@ export default function Home() {
 							<option value="1890s">1890s</option>
 							<option value="1880s">1880s</option>
 							<option value="1870s">1870s</option>
-						</select>
+						</select> */}
 						{/* <select
 							name="rating"
 							id="rating-select"
@@ -105,7 +106,7 @@ export default function Home() {
 							<option value="Highest Rated">Highest Rated</option>
 							<option value="Lowest Rated">Lowest Rated</option>
 						</select > */}
-						<select
+						{/* <select
 							name="genre"
 							id="genre-select"
 							className="bg-transparent border border-1 border-gray-600"
@@ -135,12 +136,12 @@ export default function Home() {
 							<option value="thriller">Thriller</option>
 							<option value="war">War</option>
 							<option value="western">Western</option>
-						</select>
+						</select> */}
 					</div >
 				</div >
 				<div className="flex flex-row items-center gap-2">
 					<h1 className="text-md font-Inter uppercase">Find A Film</h1>
-					<input
+					{/* <input
 						type="text"
 						className="bg-transparent border border-1 border-gray-600 shadow-inner"
 						value={search}
@@ -149,16 +150,16 @@ export default function Home() {
 						}}
 						onKeyDown={(e) => {
 							if (e.key === "Enter") {
-								setSearchResults([]);
+								setMovies([]);
 								getMoviesBySearch();
 							}
 						}}
 						onBlur={() => {
 							setSearchResults([]);
 							setSearch("");
-							getBySearch(search);
+							getAllMovies();
 						}}
-					/>
+					/> */}
 				</div>
 			</div >
 			<div className="flex flex-col items-center h-full w-full mt-12">
@@ -175,7 +176,7 @@ export default function Home() {
 							<div key={movie.id} className="w-1/6 h-1/8 flex flex-col items-center p-2">
 								<a onClick={() => {
 									if (!user) {
-										alert("Please sign in to view this movie1");
+										alert("Please sign in to view this movie");
 									} else {
 										navigate(`/movie/${movie.id}`);
 									}
@@ -217,7 +218,7 @@ export default function Home() {
 							<div key={movie.id} className="w-1/6 h-1/8 flex flex-col items-center p-2">
 								<a onClick={() => {
 									if (!user) {
-										alert("Please sign in to view this moview2");
+										alert("Please sign in to view this movie");
 									} else {
 										navigate(`/movie/${movie.id}`);
 									}

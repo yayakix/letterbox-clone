@@ -11,7 +11,6 @@ profileRouter.use(optionalUser);
 // Middleware for checking authorization
 const requireAuth = (req: Request, res: Response, next: NextFunction) => {
   if (!req.user?.userId) {
-    console.log("hit");
     return res.status(401).json({ error: "Unauthorized" });
   }
   next();
@@ -23,6 +22,7 @@ profileRouter.use(requireAuth);
 // User Profile
 profileRouter.get("/", async (req: Request, res: Response) => {
   try {
+    console.log("getting user id", req.user.userId);
     const profile = await profileClient.getProfile(req.user.userId);
     res.json(profile);
   } catch (error) {
@@ -50,7 +50,6 @@ profileRouter
           req.body.content.content,
           req.params.filmId
         );
-        console.log("did this fail ", yap);
         res.json(yap);
       } catch (error) {
         res.status(500).json({ error: "Internal server error" });
@@ -85,6 +84,30 @@ profileRouter
 
 // Network
 profileRouter
+  .get("/watched", async (req: Request, res: Response) => {
+    try {
+      const watchedFilms = await profileClient.getWatchedFilms(req.user.userId);
+      res.json(watchedFilms);
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  })
+  .post(
+    "/watched/:filmId",
+    async (req: Request<{ filmId: string }>, res: Response) => {
+      try {
+        const watchedFilm = await profileClient.toggleFilmWatched(
+          req.user.userId,
+          req.params.filmId
+        );
+        console.log("watched films", watchedFilm);
+
+        res.json(watchedFilm);
+      } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+      }
+    }
+  )
   .get("/network", async (req: Request, res: Response) => {
     try {
       const following = await profileClient.getFollowing(req.user.userId);
