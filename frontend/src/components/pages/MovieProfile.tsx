@@ -192,14 +192,19 @@ const MovieProfile: React.FC = () => {
           </button>
         </div>
       </div>
+
       <div className="mt-8 border-t border-gray-700 pt-6">
         <h2 className="text-xl font-semibold text-gray-300 mb-4">Comments</h2>
         <PostComment filmId={movie?.id}
           onCommentPosted={fetchComments}
         />
-        {yaps.map((yap) => (
-          <YapList key={yap.id} yap={yap} />
-        ))}
+        <br></br>
+        <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+
+          {yaps.map((yap) => (
+            <YapList key={yap.id} yap={yap} />
+          ))}
+        </div>
       </div>
     </div>
   )
