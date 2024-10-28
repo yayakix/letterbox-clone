@@ -3,14 +3,37 @@ import client from "../../../utils/client";
 // Get user profile
 async function updateMovieRating(
   filmId: string,
-  profileId: string,
+  userId: string,
   newRating: number
 ) {
-  // Add new rating
+  // First, get the profile ID from the clerk ID
+  const user = await client.profile.findUnique({
+    where: { userId },
+    select: { id: true },
+  });
+
+  if (!user) {
+    throw new Error(`User not found with userId: ${userId}`);
+  }
+
+  const profileId = user.id;
+
+  // Now proceed with the rating update using the correct profile ID
   await client.rating.upsert({
-    where: { filmId_profileId: { filmId, profileId } },
-    update: { value: newRating },
-    create: { filmId, profileId, value: newRating },
+    where: {
+      filmId_profileId: {
+        filmId,
+        profileId,
+      },
+    },
+    update: {
+      value: newRating,
+    },
+    create: {
+      filmId,
+      profileId,
+      value: newRating,
+    },
   });
 
   // Get film's initial rating
@@ -32,10 +55,11 @@ async function updateMovieRating(
   const averageRating = totalRatings / (ratings.length + 1);
 
   // Update film's current rating
-  await client.film.update({
+  const updatedFilm = await client.film.update({
     where: { id: filmId },
     data: { currentRating: averageRating },
   });
+  return updatedFilm;
 }
 
 async function getUserRating(filmId: string, profileId: string) {

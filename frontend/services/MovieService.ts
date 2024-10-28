@@ -65,11 +65,22 @@ export const MovieService = (token?: string) => ({
   ): Response<{ movie: Film }> => {
     try {
       if (Object.keys(updateData).length === 0) {
+        // get movie
         const response = await api.get(`/api/movies/${filmId}`);
-        console.log("responseeee", response.data);
         return { data: response.data, error: "" };
       } else {
-        const response = await api.post(`/api/movies/${filmId}`, updateData);
+        // update movie
+        const response = await api.post(
+          `/api/movies/${filmId}`,
+          { updateData },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log("response from post", response.data);
         return { data: response.data, error: "" };
       }
     } catch (error) {

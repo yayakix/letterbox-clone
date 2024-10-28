@@ -78,5 +78,5 @@ export interface Yap {
 
 export interface UpdateData {
   yapContent?: string;
-  ratingValue?: number;
+  newRating?: number;
 }

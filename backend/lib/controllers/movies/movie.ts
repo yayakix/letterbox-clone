@@ -193,7 +193,7 @@ movieRouter.patch(
     if (!profile.id) {
       return res.status(404).json({ error: "Profile id not found" });
     }
-    const profileId = profile.id;
+    const userId = req.user.userId;
     // Cast req.body to UpdateData
     const updateData: UpdateData = req.body;
 
@@ -213,17 +213,52 @@ movieRouter.patch(
       if (filteredData.newRating !== undefined) {
         await RatingService().updateRating(
           filmId,
-          profileId,
+          userId,
           filteredData.newRating
         );
       }
 
-      if (filteredData.yaps !== undefined) {
-        await MovieService().updateYaps(filmId, profileId, filteredData.yaps);
+      // Get the updated user rating
+      const userRating = await RatingService().getUserRating(filmId, userId);
+      res.json({ message: "Movie updated successfully", userRating });
+    } catch (error) {
+      console.error("Error updating movie:", error);
+      res
+        .status(500)
+        .json({ error: "Internal server error", details: error.message });
+    }
+  }
+);
+type UpdatedFilm = Awaited<
+  ReturnType<typeof ratingClient.updateMovieRating>
+> | null;
+
+// Update film
+movieRouter.post(
+  "/:id",
+  ClerkExpressRequireAuth(),
+  optionalUser,
+  async (req, res) => {
+    try {
+      const filmId = req.params.id;
+      const updateData: UpdateData = req.body.updateData;
+      let updatedFilm: UpdatedFilm = null;
+
+      console.log("update data", updateData);
+      if (updateData.newRating !== undefined) {
+        updatedFilm = await ratingClient.updateMovieRating(
+          filmId,
+          req.user?.userId,
+          updateData.newRating
+        );
+        console.log("movie updated successfully", updatedFilm);
       }
 
-      const userRating = await RatingService().getUserRating(filmId, profileId);
-      res.json({ message: "Movie updated successfully", userRating });
+      if (!updatedFilm) {
+        return res.status(400).json({ error: "No updates were performed" });
+      }
+
+      res.json(updatedFilm);
     } catch (error) {
       console.error("Error updating movie:", error);
       res

@@ -17,7 +17,7 @@ const MovieProfile: React.FC = () => {
   const params = useParams();
   const movieId = params.id;
   if (!movieId) return;
-  const { movie, setMovie } = useMovieStore(movieId);
+  const { movie, setMovie, refreshMovie, updateMovie } = useMovieStore(movieId);
   const { user } = useUserStore();
   console.log('user details here69 ', user)
 
@@ -103,7 +103,20 @@ const MovieProfile: React.FC = () => {
   // }, [movieId, getToken]);
 
 
+  const handleRatingChange = async (newRating: number) => {
+    if (movieId) {
+      const token = await getToken();
+      if (token) {
+        const movieService = MovieService(token);
+        movieService.updateMovie(movieId, { newRating: newRating }).then((res) => {
+          console.log('res from updateMovie', res)
+          setMovie(res.data);
+        });
+      }
+    }
 
+    console.log('newRating here ', newRating)
+  }
 
   // // const handleRatingChange = async (newRating: number) => {
   // //   try {
@@ -149,7 +162,7 @@ const MovieProfile: React.FC = () => {
         <div className="flex-shrink-0 ml-6 bg-gray-500 p-6 rounded-lg flex flex-col justify-center items-center w-1/6">
           {/* user rating */}
           <div className="flex flex-col items-center relative h-2 w-24">
-            {/* <Rating totalStars={5} onRatingChange={handleRatingChange} readOnlyValue={starRating || 0} /> */}
+            <Rating totalStars={5} onRatingChange={handleRatingChange} readOnlyValue={starRating || 0} />
           </div>
           <span className="text-xl font-semibold text-slate-400 mb-1 mt-1">Rate</span>
           <button
@@ -202,9 +215,11 @@ const MovieProfile: React.FC = () => {
 
       <div className="mt-8 border-t border-gray-700 pt-6">
         <h2 className="text-xl font-semibold text-gray-300 mb-4">Comments</h2>
-        <PostComment filmId={movie?.id}
-          onCommentPosted={fetchComments}
-        />
+        {movie?.id && (
+          <PostComment filmId={movie?.id}
+            onCommentPosted={fetchComments}
+          />
+        )}
         <br></br>
         <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
 
