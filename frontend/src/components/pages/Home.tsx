@@ -8,10 +8,10 @@ import { MovieService } from "../../../services/MovieService"; // Import MovieSe
 
 export default function Home() {
 	const { user, userLoading, updateUser } = useUserStore(); // Use updateUser if needed
-	console.log("user here55", user);
 	const movieService = MovieService(); // Initialize MovieService
 	const { movies, moviesLoading, updateMovie, getBySearch, getByFilter } = useMoviesStore();
 	const [searchResults, setSearchResults] = useState<Film[]>([]);
+	const [allMovies, setAllMovies] = useState<Film[]>([]);
 
 	const [year, setYear] = useState("All");
 	const [rating, setRating] = useState("Highest Rated");
@@ -57,6 +57,13 @@ export default function Home() {
 			console.error("Error filtering movies:", error);
 		}
 	};
+	useEffect(() => {
+		console.log('movies here', movies)
+		movieService.getAllMovies().then((res) => {
+			console.log('res from getAllMovies', res)
+			setAllMovies(res.data);
+		})
+	}, [])
 
 	return (
 		<div className="flex flex-col w-full h-full items-center bg-transparent">
@@ -214,7 +221,7 @@ export default function Home() {
 							</div >
 						))
 					) : (
-						movies.map((movie) => (
+						allMovies.map((movie) => (
 							<div key={movie.id} className="w-1/6 h-1/8 flex flex-col items-center p-2">
 								<a onClick={() => {
 									if (!user) {

@@ -46,22 +46,8 @@ export type Film = {
   initialRating: number;
   currentRating: number;
   genre: string[];
+  yaps?: Yap[];
 };
-
-// or
-// export interface Film {
-//   id: string;
-//   createdAt: Date;
-//   updatedAt: Date;
-//   title: string;
-//   description: string;
-//   year: number;
-//   directedBy: string;
-//   initialRating: number;
-//   currentRating: number;
-//   genre: string[];
-//   imageUrl: string;
-// }
 
 export interface Yap {
   id: string;

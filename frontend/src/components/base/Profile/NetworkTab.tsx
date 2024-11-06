@@ -8,8 +8,6 @@ const NetworkTab = () => {
     const [followers, setFollowers] = useState<UserConnections>([]);
     const [following, setFollowing] = useState<UserConnections>([]);
     const [everyone, setEveryone] = useState<UserConnections>([]);
-
-
     const tabs = [
         { id: 'following', label: 'Following' },
         { id: 'followers', label: 'Followers' },
@@ -30,9 +28,8 @@ const NetworkTab = () => {
                 setFollowing(data.following);
             })
             .catch(error => console.error('Error fetching profile data:', error));
-
         // fetch everyone
-        fetch(`${process.env.VITE_API_URL}/api/profile/all`, {
+        fetch(`${process.env.VITE_API_URL}/api/profile/network/all`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${await getToken()}`
@@ -59,13 +56,11 @@ const NetworkTab = () => {
                 }
             });
             const data = await response.json();
-
             if (response.ok) {
                 // Update the local state
                 setEveryone(prevEveryone => prevEveryone.map(user => {
                     return user.id === userId ? { ...user, isFollowing: !user.isFollowing } : user
                 }));
-
                 // Update following/followers lists
                 if (data.action === 'followed') {
                     const userToAdd = everyone.find(user => user.id === userId);
@@ -151,6 +146,7 @@ const NetworkTab = () => {
                 {/* show all users */}
                 {activeTab === 'everyone' && <div>{everyone.map((user: any) => (
                     <div key={user.id} className='border border-gray-700 p-2 rounded-md w-full'>
+                        {console.log('user to follow here', user)}
                         <div className='flex justify-between items-center'>
                             <div className='flex items-center gap-2'>
                                 <img src={user.imageUrl} className='w-10 h-10 rounded-full' alt={user.name} />

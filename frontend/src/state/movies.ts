@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useStore from "./store";
 import { MovieService } from "../../services/MovieService";
-import { UpdateData } from "../lib/services/types";
+import { Film, UpdateData } from "../lib/services/types";
 import { useAuth } from "@clerk/clerk-react";
 
 /**
@@ -29,7 +29,8 @@ const useMoviesStore = () => {
         if (token) {
           const movieService = MovieService(token);
           const moviesData = await movieService.getAllMovies();
-          setMovies(moviesData.data);
+          console.log("checking the moviesData here", moviesData.data);
+          setMovies(moviesData.data as Film[]);
         } else {
           console.error("Token is required for fetching movies");
         }
@@ -45,29 +46,29 @@ const useMoviesStore = () => {
 
   //   posting yaps, updating ratings, etc
   const updateMovie = async (filmId: string, updateData: UpdateData) => {
-    const token = await getToken();
+    const token = (await getToken()) || undefined;
     const movieService = MovieService(token);
     const moviesData = await movieService.updateMovie(filmId, updateData);
-    setMovies(moviesData.data.movies);
+    setMovies(moviesData.data);
   };
 
   const getBySearch = async (search: string) => {
-    const token = await getToken();
+    const token = (await getToken()) || undefined;
     const movieService = MovieService(token);
     const moviesData = await movieService.getBySearch(search);
-    setMovies(moviesData.data.movies);
+    setMovies(moviesData.data);
   };
 
   const getByFilter = async (filter: string) => {
-    const token = await getToken();
+    const token = (await getToken()) || undefined;
     const movieService = MovieService(token);
     const moviesData = await movieService.getByFilter(filter);
-    setMovies(moviesData.data.movies);
+    setMovies(moviesData.data);
   };
 
   const fetchMovieDetails = async (movieId: string) => {
     try {
-      const token = await getToken();
+      const token = (await getToken()) || undefined;
       if (!token) {
         console.error("Token is required");
         return;
@@ -75,7 +76,7 @@ const useMoviesStore = () => {
       const movieService = MovieService(token);
       const movieDetails = await movieService.getMovieById(movieId);
       console.log("fetchMovieDetails movieDetails hereeeee", movieDetails.data);
-      updateMovieDetails(movieDetails.data); // Pass the Film object directly
+      updateMovieDetails(movieDetails.data as Film);
     } catch (error) {
       console.error("Error fetching movie details:", error);
     }

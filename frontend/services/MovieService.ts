@@ -1,20 +1,19 @@
 import api from "../network/api";
 import { Film, UpdateData } from "../src/lib/services/types";
 
-// type inputs to apis
-type Response<T> = Promise<{ data: T; error: string }>;
-
 export const MovieService = (token?: string) => ({
-  getAllMovies: async (): Response<{ movies: Film[] }> => {
+  getAllMovies: async (): Promise<{ data: Film[]; error: string }> => {
     try {
       const response = await api.get("/api/movies", {});
       return { data: response.data, error: "" };
     } catch (error) {
-      return { data: null, error: error.message };
+      return { data: [], error: (error as Error).message };
     }
   },
 
-  getMovieById: async (id: string): Response<{ movie: Film }> => {
+  getMovieById: async (
+    id: string
+  ): Promise<{ data: Film | null; error: string }> => {
     try {
       const response = await api.get(`/api/movies/${id}`, {
         headers: {
@@ -23,11 +22,13 @@ export const MovieService = (token?: string) => ({
       });
       return { data: response.data, error: "" };
     } catch (error) {
-      return { data: null, error: error.message };
+      return { data: null, error: (error as Error).message };
     }
   },
 
-  getBySearch: async (search: string): Response<{ movies: Film[] }> => {
+  getBySearch: async (
+    search: string
+  ): Promise<{ data: Film[]; error: string }> => {
     try {
       const response = await api.get(
         `/api/movies/search?search=${encodeURIComponent(search)}`,
@@ -39,11 +40,13 @@ export const MovieService = (token?: string) => ({
       );
       return { data: response.data, error: "" };
     } catch (error) {
-      return { data: null, error: error.message };
+      return { data: [], error: (error as Error).message };
     }
   },
 
-  getByFilter: async (filter: string): Response<{ movies: Film[] }> => {
+  getByFilter: async (
+    filter: string
+  ): Promise<{ data: Film[]; error: string }> => {
     try {
       const response = await api.get(
         `/api/movies/filter?filter=${encodeURIComponent(filter)}`,
@@ -55,14 +58,14 @@ export const MovieService = (token?: string) => ({
       );
       return { data: response.data, error: "" };
     } catch (error) {
-      return { data: null, error: error.message };
+      return { data: [], error: (error as Error).message };
     }
   },
 
   updateMovie: async (
     filmId: string,
     updateData: UpdateData
-  ): Response<{ movie: Film }> => {
+  ): Promise<{ data: Film[]; error: string }> => {
     try {
       if (Object.keys(updateData).length === 0) {
         // get movie
@@ -84,15 +87,17 @@ export const MovieService = (token?: string) => ({
         return { data: response.data, error: "" };
       }
     } catch (error) {
-      return { data: null, error: error.message };
+      return { data: [], error: (error as Error).message };
     }
   },
-  refreshMovie: async (filmId: string): Response<{ movie: Film }> => {
+  refreshMovie: async (
+    filmId: string
+  ): Promise<{ data: Film[]; error: string }> => {
     try {
       const response = await api.get(`/api/movies/${filmId}`);
       return { data: response.data, error: "unable to refresh movie" };
     } catch (error) {
-      return { data: null, error: error.message };
+      return { data: [], error: (error as Error).message };
     }
   },
 });

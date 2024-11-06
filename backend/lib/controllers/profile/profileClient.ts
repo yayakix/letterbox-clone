@@ -169,31 +169,48 @@ export const getFollowers = async (userId: string) => {
 
 // toggle follow a profile
 export const toggleFollow = async (followerId: string, followingId: string) => {
-  // Check if the follow relationship already exists
-  const existingFollow = await client.follow.findFirst({
-    where: {
-      followerId,
-      followingId,
-    },
-  });
+  try {
+    // Validate that IDs are different
+    if (followerId === followingId) {
+      throw new Error("Cannot follow yourself");
+    }
 
-  if (existingFollow) {
-    // If the relationship exists, delete it (unfollow)
-    await client.follow.delete({
+    // Check if the follow relationship already exists
+    const existingFollow = await client.follow.findFirst({
       where: {
-        id: existingFollow.id,
+        AND: [{ followerId }, { followingId }],
       },
     });
-    return { action: "unfollowed" };
-  } else {
-    // If the relationship doesn't exist, create it (follow)
-    await client.follow.create({
-      data: {
-        followerId,
-        followingId,
-      },
-    });
-    return { action: "followed" };
+
+    if (existingFollow) {
+      await client.follow.delete({
+        where: {
+          id: existingFollow.id,
+        },
+      });
+      return { action: "unfollowed" };
+    } else {
+      // Verify both profiles exist before creating relationship
+      const [follower, following] = await Promise.all([
+        client.profile.findUnique({ where: { id: followerId } }),
+        client.profile.findUnique({ where: { id: followingId } }),
+      ]);
+
+      if (!follower || !following) {
+        throw new Error("One or both profiles not found");
+      }
+
+      await client.follow.create({
+        data: {
+          followerId,
+          followingId,
+        },
+      });
+      return { action: "followed" };
+    }
+  } catch (error) {
+    console.error("Toggle follow error:", error);
+    throw error;
   }
 };
 

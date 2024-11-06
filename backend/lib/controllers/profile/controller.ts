@@ -108,6 +108,14 @@ profileRouter
       }
     }
   )
+  .get("/network/all", async (req: Request, res: Response) => {
+    try {
+      const profiles = await profileClient.getAllProfiles(req.user.userId);
+      res.json(profiles);
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  })
   .get("/network", async (req: Request, res: Response) => {
     try {
       const following = await profileClient.getFollowing(req.user.userId);
@@ -118,13 +126,15 @@ profileRouter
     }
   })
   .post(
-    "/network/:followingId",
-    async (req: Request<{ followingId: string }>, res: Response) => {
+    "/network/:followingUserId",
+    async (req: Request<{ followingUserId: string }>, res: Response) => {
       try {
+        console.log("following user", req.params.followingUserId);
         const isFollowing = await profileClient.toggleFollow(
           req.user.userId,
-          req.params.followingId
+          req.params.followingUserId
         );
+        console.log("is following", isFollowing);
         res.json(isFollowing);
       } catch (error) {
         res.status(500).json({ error: "Internal server error" });
