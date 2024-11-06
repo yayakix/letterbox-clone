@@ -4,29 +4,23 @@ import YapList from "../base/Comments/Comment";
 import { useParams } from "react-router-dom";
 import PostComment from "../base/Comments/PostComment";
 import Rating from "../base/Rating/Rating";
-import useMoviesStore from "../../state/movies";
-import { Film, Yap } from "../../lib/services/types";
+import { Yap } from "../../lib/services/types";
 import useMovieStore from "../../state/movie";
 import { MovieService } from "../../../services/MovieService";
 import useUserStore from "../../state/user";
 import UserService from "../../../services/UserService";
 
-
-
 const MovieProfile: React.FC = () => {
   const params = useParams();
   const movieId = params.id;
   if (!movieId) return;
-  const { movie, setMovie, refreshMovie, updateMovie } = useMovieStore(movieId);
+  const { movie, setMovie } = useMovieStore(movieId);
   const { user } = useUserStore();
-  console.log('user details here69 ', user)
 
   const [isLiked, setIsLiked] = useState(false);
   const [isWatched, setIsWatched] = useState(false);
   const [starRating, setStarRating] = useState<number>(0); // Initialize with a default value of 0
   const [yaps, setYaps] = useState<Yap[]>([]);
-
-  const [loading, setLoading] = useState(true);
   const { getToken } = useAuth();
   // if movie image is not available, use this placeholder
   const url = "https://static.vecteezy.com/system/resources/previews/004/141/669/original/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg"
@@ -34,31 +28,11 @@ const MovieProfile: React.FC = () => {
   useEffect(() => {
     setStarRating(movie?.currentRating ? movie?.currentRating / 2 : 0);
     setYaps(movie?.yaps || []);
-    const hasWatched = Boolean(user?.watchedFilms[movieId]);
+    const hasWatched = Boolean(user?.watchedFilms?.[movieId as keyof typeof user.watchedFilms]);
     setIsWatched(hasWatched);
-    const hasLiked = Boolean(user?.likedFilms[movieId]);
+    const hasLiked = Boolean(user?.likedFilms?.[movieId as keyof typeof user.likedFilms]);
     setIsLiked(hasLiked);
   }, [movie]);
-
-
-  //   const isMovieWatchedOrLiked = async () => {
-  //     const token = await getToken();
-  //     const response = await fetch(`${process.env.VITE_API_URL}/api/profile/isWatchedOrLiked/${movieId}`, {
-  //       headers: {
-  //         'Authorization': `Bearer ${token}`,
-  //       },
-  //     });
-  //     const data = await response.json();
-  //     if (data.isWatched) setIsWatched(true);
-  //     if (data.isLiked) setIsLiked(true);
-  //   };
-  //   isMovieWatchedOrLiked();
-
-  //   fetchMovie();
-  // }, [movieId]);
-  // Handle liking and watching movies
-  // upd
-
 
   const handleAction = async (action: 'watched' | 'liked') => {
     const token = await getToken();
@@ -75,12 +49,6 @@ const MovieProfile: React.FC = () => {
 
     if (action === 'liked' && token) {
       userService.likeMovie(token, movieId);
-
-      if (isLiked) {
-        console.log("User has liked this movie");
-      } else {
-        console.log("User hasn't liked this movie yet");
-      }
     }
 
   };
@@ -95,48 +63,20 @@ const MovieProfile: React.FC = () => {
         });
       }
     }
-    console.log('fetching comments')
   };
-
-  // useEffect(() => {
-  //   fetchComments();
-  // }, [movieId, getToken]);
-
 
   const handleRatingChange = async (newRating: number) => {
     if (movieId) {
       const token = await getToken();
       if (token) {
         const movieService = MovieService(token);
-        movieService.updateMovie(movieId, { newRating: newRating }).then((res) => {
-          console.log('res from updateMovie', res)
-          setMovie(res.data);
+        movieService.updateMovie(movieId, { newRating: (newRating * 2) }).then((res) => {
+          setMovie(res.data[0]);
         });
       }
     }
 
-    console.log('newRating here ', newRating)
   }
-
-  // // const handleRatingChange = async (newRating: number) => {
-  // //   try {
-  // //     const token = await getToken();
-  // //     const response = await fetch(`${process.env.VITE_API_URL}/api/movies/rate/${movieId}`, {
-  // //       method: 'POST',
-  // //       headers: {
-  // //         'Authorization': `Bearer ${token}`,
-  // //         'Content-Type': 'application/json',
-  // //       },
-  // //       body: JSON.stringify({ newRating: newRating }),
-  // //     });
-  // //     if (!response.ok) throw new Error(`Failed to update rating`);
-  // //     console.log(`Rating updated successfully`);
-  // //     setStarRating((newRating / 2));
-  // //   } catch (error) {
-  // //     console.error(`Error updating rating:`, error);
-  // //   }
-  // // };
-  // console.log('movie here', movie)
   return (
     <div className=" p-6 lg:px-48">
       <div className="flex mb-6">

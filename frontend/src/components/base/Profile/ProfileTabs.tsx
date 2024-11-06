@@ -7,7 +7,7 @@ interface ProfileTabsProps {
 const ProfileTabs: React.FC<ProfileTabsProps> = ({ onTabChange }) => {
     const [activeTab, setActiveTab] = useState('Profile');
 
-    const tabs = ['Profile', 'Watchlist', 'Network', 'Reviews'];
+    const tabs = ['Liked', 'Watchlist', 'Network', 'Reviews'];
 
     const handleTabClick = (tab: string) => {
         setActiveTab(tab);
@@ -38,9 +38,7 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ onTabChange }) => {
                 <li>
                     <a className="inline-block p-4 text-gray-400 rounded-t-lg cursor-not-allowed ">Tags</a>
                 </li>
-                <li>
-                    <a className="inline-block p-4 text-gray-400 rounded-t-lg cursor-not-allowed ">Reviews</a>
-                </li>
+
             </ul>
         </div>
     );

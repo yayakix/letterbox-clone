@@ -15,7 +15,7 @@ const UserProfile = () => {
     const [profileData, setProfileData] = useState<any>(null);
     const [likedFilms, setLikedFilms] = useState<any>([]);
     const [watchedFilms, setWatchedFilms] = useState<any>([]);
-    const [currentTab, setCurrentTab] = useState<string>('Profile');
+    const [currentTab, setCurrentTab] = useState<string>('Liked');
 
     useEffect(() => {
         setProfileData(user);
@@ -30,7 +30,7 @@ const UserProfile = () => {
     const renderTabContent = () => {
         console.log('likedFilms here33333 ', likedFilms)
         switch (currentTab) {
-            case 'Profile':
+            case 'Liked':
                 return <ProfileProfileTab likedFilms={likedFilms || []} />;
             case 'Watchlist':
                 return <WatchedTab watchedFilms={watchedFilms} />;

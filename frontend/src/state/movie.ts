@@ -47,18 +47,17 @@ const useMovieStore = (movieId: string) => {
 
   //   posting yaps, updating ratings, etc
   const refreshMovie = async (filmId: string, updateData: UpdateData) => {
-    const token = await getToken();
+    const token = (await getToken()) || undefined;
     const movieService = MovieService(token);
     const movieData = await movieService.refreshMovie(filmId);
-    console.log("refreshed movieData", movieData);
-    setMovie(movieData.data);
+    setMovie(movieData.data[0]);
   };
 
   const updateMovie = async (filmId: string, updateData: UpdateData) => {
-    const token = await getToken();
+    const token = (await getToken()) || undefined;
     const movieService = MovieService(token);
     const movieData = await movieService.updateMovie(filmId, updateData);
-    setMovie(movieData.data);
+    setMovie(movieData.data[0]);
   };
 
   return {
