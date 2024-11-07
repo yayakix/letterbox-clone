@@ -170,7 +170,7 @@ export default function Home() {
 				<div className="flex flex-col items-center w-7/12">
 					<div className="flex flex-row items-end justify-between w-full">
 						<h1 className="text-sm font-Inter uppercase">Popular Films this Week</h1>
-						<h2 className="text-xs font-Inter">More</h2>
+						{/* <h2 className="text-xs font-Inter">More</h2> */}
 					</div>
 					<hr className="my-4 border-t border-gray-600 w-full" />
 				</div>
