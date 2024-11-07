@@ -1,3 +1,4 @@
+
 // Vite + Express App with Clerk Integration
 ## General
 - If you selected yes to the database question: docker is running, it just isn't shown in the terminal
@@ -9,6 +10,8 @@
 - Note that a git repo has been initialized in the root directory of your project!
 ## Frontend
 #### Notes
+https://letterboxd-clone-yaya.netlify.app/
+
 - If you want to use process.env.[secret], you will need to define it in the vite.config.ts file under where I've defined the API_URL.
 - IF USING SHADCN: to add a new component run `npx shadcn-ui@latest add <component_name>`
 #### To run frontend:
@@ -23,6 +26,7 @@
 2. Add this to your package.json: "proxy": "backend url",
 ## Backend
 #### Notes
+https://letterbox-clone-be.onrender.com/
 - I added a user with auth object to the request object in the backend by declaring it in the global.d.ts file.
   You may need to go into the ./utils/global.d.ts file and delete a line, then add it back in and save the file in order for
   the global type to be recognized.
