@@ -24,10 +24,23 @@ const UserService = () => {
       }
       return response.json();
     },
-    // May need to update the user data sent to the backend,
-    // may make this a put request
 
-    updateUser: async (token: string, userData: ConnectionUser) => {
+    updateUser: async (token: string, userData?: ConnectionUser) => {
+      // If no userData provided, just fetch current user data
+      if (!userData) {
+        return await fetch(`${process.env.VITE_API_URL}/api/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }).then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to fetch user data");
+          }
+          return response.json();
+        });
+      }
+
+      // If userData provided, proceed with update
       const response = await fetch(`${process.env.VITE_API_URL}/api/profile`, {
         method: "POST",
         headers: {

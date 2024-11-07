@@ -49,7 +49,7 @@ const useUserStore = () => {
     }
   }, [getToken, isSignedIn, setUser]);
 
-  const updateUser = async (userData: ConnectionUser) => {
+  const updateUser = async (userData: ConnectionUser | undefined) => {
     if (!user) {
       return;
     }
@@ -58,7 +58,13 @@ const useUserStore = () => {
       throw new Error("No token received");
     }
     const userService = UserService();
+
+    // First perform the update
     await userService.updateUser(token, userData);
+
+    // Then fetch the latest user data
+    const freshUserData = await userService.getCurrentUser(token);
+    setUser(freshUserData);
   };
 
   return { user, userLoading, updateUser };

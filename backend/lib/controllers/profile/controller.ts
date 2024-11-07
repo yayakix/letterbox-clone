@@ -121,8 +121,18 @@ profileRouter
   })
   .get("/network", async (req: Request, res: Response) => {
     try {
-      const following = await profileClient.getFollowing(req.user.userId);
-      const followers = await profileClient.getFollowers(req.user.userId);
+      // First get the profile associated with the user
+      const profile = await profileClient.getProfile(req.user.userId);
+
+      if (!profile.id) {
+        throw new Error("Profile ID not found");
+      }
+
+      const following = await profileClient.getFollowing(profile.id);
+      const followers = await profileClient.getFollowers(profile.id);
+
+      console.log("following", following);
+      console.log("followers", followers);
       res.json({ following, followers });
     } catch (error) {
       res.status(500).json({ error: "Internal server error" });
@@ -132,7 +142,6 @@ profileRouter
     "/network/:followingUserId",
     async (req: Request<{ followingUserId: string }>, res: Response) => {
       try {
-        console.log("following user", req.params.followingUserId);
         const isFollowing = await profileClient.toggleFollow(
           req.user.userId,
           req.params.followingUserId

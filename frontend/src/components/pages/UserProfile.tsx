@@ -6,9 +6,6 @@ import NetworkTab from "../base/Profile/NetworkTab";
 import YapsTab from "../base/Profile/YapsTab";
 import useUserStore from "../../state/user";
 
-
-
-
 const UserProfile = () => {
     const { user } = useUserStore();
 
@@ -16,6 +13,7 @@ const UserProfile = () => {
     const [likedFilms, setLikedFilms] = useState<any>([]);
     const [watchedFilms, setWatchedFilms] = useState<any>([]);
     const [currentTab, setCurrentTab] = useState<string>('Liked');
+
 
     useEffect(() => {
         setProfileData(user);
@@ -44,6 +42,7 @@ const UserProfile = () => {
                 return <div>Invalid tab</div>;
         }
     };
+    console.log('profile data here', profileData)
 
     return (
         <div className="lg:px-48">

@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from "@clerk/clerk-react";
 import { UserConnections } from '../../../lib/services/types';
+import useUserStore from '../../../state/user';
 
 const NetworkTab = () => {
     const { getToken } = useAuth();
+    const { updateUser } = useUserStore();
     const [activeTab, setActiveTab] = useState('following');
     const [followers, setFollowers] = useState<UserConnections>([]);
     const [following, setFollowing] = useState<UserConnections>([]);
@@ -16,35 +18,40 @@ const NetworkTab = () => {
     ];
 
     const fetchNetworkData = async () => {
-        fetch(`${process.env.VITE_API_URL}/api/profile/network`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${await getToken()}`
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                setFollowers(data.followers);
-                setFollowing(data.following);
-            })
-            .catch(error => console.error('Error fetching profile data:', error));
-        // fetch everyone
-        fetch(`${process.env.VITE_API_URL}/api/profile/network/all`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${await getToken()}`
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                setEveryone(data);
-            })
-            .catch(error => console.error('Error fetching everyone:', error));
+        try {
+            // First fetch network data
+            const networkResponse = await fetch(`${process.env.VITE_API_URL}/api/profile/network`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${await getToken()}`
+                }
+            });
+            const networkData = await networkResponse.json();
+            console.log('Network data:', networkData); // Debug log
+
+            // Update followers and following
+            setFollowers(networkData.followers || []);
+            setFollowing(networkData.following || []);
+
+            // Then fetch everyone
+            const everyoneResponse = await fetch(`${process.env.VITE_API_URL}/api/profile/network/all`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${await getToken()}`
+                }
+            });
+            const everyoneData = await everyoneResponse.json();
+            setEveryone(everyoneData || []);
+
+        } catch (error) {
+            console.error('Error fetching network data:', error);
+        }
     }
 
     useEffect(() => {
         fetchNetworkData();
 
+        console.log('Following list:', following);
     }, []);
 
     const toggleFollow = async (userId: string) => {
@@ -61,6 +68,7 @@ const NetworkTab = () => {
                 setEveryone(prevEveryone => prevEveryone.map(user => {
                     return user.id === userId ? { ...user, isFollowing: !user.isFollowing } : user
                 }));
+
                 // Update following/followers lists
                 if (data.action === 'followed') {
                     const userToAdd = everyone.find(user => user.id === userId);
@@ -70,6 +78,12 @@ const NetworkTab = () => {
                 } else if (data.action === 'unfollowed') {
                     setFollowing(prev => prev.filter(user => user.id !== userId));
                 }
+
+                // Update the global user state
+                await updateUser(undefined);
+
+                // Refresh the network data
+                await fetchNetworkData();
             }
         } catch (error) {
             console.error('Error toggling follow:', error);
@@ -104,23 +118,22 @@ const NetworkTab = () => {
                 {/* following */}
                 {activeTab === 'following' && (
                     <div className="w-full">
-                        {following.map((user: any) => (
-                            user && user.name ? (
-                                <div key={user.id} className='border border-gray-700 p-2 rounded-md w-full'>
-                                    <div className='flex items-center justify-between gap-2'>
-                                        <div className='flex items-center gap-2'>
-                                            <img src={user.imageUrl} className='w-10 h-10 rounded-full' alt={user.name} />
-                                            {user.name}
-                                        </div>
-                                        <button
-                                            className={`text-white p-2 rounded-md bg-red-500`}
-                                            onClick={() => toggleFollow(user.id)}
-                                        >
-                                            unfollow
-                                        </button>
+                        <div className="text-sm text-gray-400">Following count: {following.length}</div>
+                        {following.length > 0 && following.map((user: any) => (
+                            <div key={user.id} className='border border-gray-700 p-2 rounded-md w-full'>
+                                <div className='flex items-center justify-between gap-2'>
+                                    <div className='flex items-center gap-2'>
+                                        <img src={user.imageUrl} className='w-10 h-10 rounded-full' alt={user.name} />
+                                        <span>{user.name || 'Unnamed User'}</span>
                                     </div>
+                                    <button
+                                        className={`text-white p-2 rounded-md bg-red-500`}
+                                        onClick={() => toggleFollow(user.id)}
+                                    >
+                                        unfollow
+                                    </button>
                                 </div>
-                            ) : null
+                            </div>
                         ))}
                     </div>
                 )}
