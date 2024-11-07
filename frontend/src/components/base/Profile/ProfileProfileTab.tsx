@@ -1,4 +1,3 @@
-import type { Film } from "../../../lib/services/types";
 
 const ProfileProfileTab = (props: any) => {
     const { likedFilms } = props;

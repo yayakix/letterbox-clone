@@ -1,3 +1,4 @@
+import { CommentContent } from "../src/components/base/Comments/PostComment";
 import { ConnectionUser } from "../src/lib/services/types";
 
 // export type User = {
@@ -42,7 +43,7 @@ const UserService = () => {
     postMovieComment: async (
       token: string,
       movieId: string,
-      content: string
+      content: CommentContent
     ) => {
       console.log("postMovieComment content", content);
       const response = await fetch(

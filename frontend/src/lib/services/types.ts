@@ -30,6 +30,7 @@ export type ConnectionUser = {
   watched: Film[];
   likedFilms: Film[];
   watchedFilms: { [key: string]: Film };
+  isFollowing?: boolean;
 };
 
 export type UserConnections = ConnectionUser[];

@@ -146,7 +146,6 @@ const NetworkTab = () => {
                 {/* show all users */}
                 {activeTab === 'everyone' && <div>{everyone.map((user: any) => (
                     <div key={user.id} className='border border-gray-700 p-2 rounded-md w-full'>
-                        {console.log('user to follow here', user)}
                         <div className='flex justify-between items-center'>
                             <div className='flex items-center gap-2'>
                                 <img src={user.imageUrl} className='w-10 h-10 rounded-full' alt={user.name} />

@@ -7,9 +7,9 @@ import useMoviesStore from "../../state/movies";
 import { MovieService } from "../../../services/MovieService"; // Import MovieService
 
 export default function Home() {
-	const { user, userLoading, updateUser } = useUserStore(); // Use updateUser if needed
+	const { user } = useUserStore(); // Use updateUser if needed
 	const movieService = MovieService(); // Initialize MovieService
-	const { movies, moviesLoading, updateMovie, getBySearch, getByFilter } = useMoviesStore();
+	const { movies } = useMoviesStore();
 	const [searchResults, setSearchResults] = useState<Film[]>([]);
 	const [allMovies, setAllMovies] = useState<Film[]>([]);
 
@@ -23,7 +23,7 @@ export default function Home() {
 	const getMoviesBySearch = async () => {
 		try {
 			const response = await movieService.getBySearch(search);
-			setSearchResults(response.data.movies);
+			setSearchResults(response.data);
 		} catch (error) {
 			console.error("Error fetching movies by search:", error);
 		}
@@ -39,7 +39,7 @@ export default function Home() {
 
 			if (type === "year" && filter === "All") {
 				const response = await movieService.getAllMovies();
-				setSearchResults(response.data.movies);
+				setSearchResults(response.data);
 				return;
 			}
 
@@ -52,7 +52,7 @@ export default function Home() {
 			}
 
 			const response = await movieService.getByFilter(filterValue);
-			setSearchResults(response.data.movies);
+			setSearchResults(response.data);
 		} catch (error) {
 			console.error("Error filtering movies:", error);
 		}
@@ -71,7 +71,7 @@ export default function Home() {
 				<div className="flex flex-row items-center justify-evenly gap-2" >
 					<h1 className="text-md font-Inter uppercase">Browse By</h1>
 					<div className="flex flex-row items-center gap-2">
-						{/* <select
+						<select
 							name="year"
 							id="year-select"
 							className="bg-transparent border border-1 border-gray-600"
@@ -98,8 +98,8 @@ export default function Home() {
 							<option value="1890s">1890s</option>
 							<option value="1880s">1880s</option>
 							<option value="1870s">1870s</option>
-						</select> */}
-						{/* <select
+						</select>
+						<select
 							name="rating"
 							id="rating-select"
 							className="bg-transparent border border-1 border-gray-600"
@@ -112,8 +112,8 @@ export default function Home() {
 							<option value="All">All</option>
 							<option value="Highest Rated">Highest Rated</option>
 							<option value="Lowest Rated">Lowest Rated</option>
-						</select > */}
-						{/* <select
+						</select >
+						<select
 							name="genre"
 							id="genre-select"
 							className="bg-transparent border border-1 border-gray-600"
@@ -143,12 +143,12 @@ export default function Home() {
 							<option value="thriller">Thriller</option>
 							<option value="war">War</option>
 							<option value="western">Western</option>
-						</select> */}
+						</select>
 					</div >
 				</div >
 				<div className="flex flex-row items-center gap-2">
 					<h1 className="text-md font-Inter uppercase">Find A Film</h1>
-					{/* <input
+					<input
 						type="text"
 						className="bg-transparent border border-1 border-gray-600 shadow-inner"
 						value={search}
@@ -157,16 +157,18 @@ export default function Home() {
 						}}
 						onKeyDown={(e) => {
 							if (e.key === "Enter") {
-								setMovies([]);
+								setSearchResults([]);
 								getMoviesBySearch();
 							}
 						}}
 						onBlur={() => {
 							setSearchResults([]);
 							setSearch("");
-							getAllMovies();
+							movieService.getAllMovies().then((res) => {
+								setAllMovies(res.data);
+							})
 						}}
-					/> */}
+					/>
 				</div>
 			</div >
 			<div className="flex flex-col items-center h-full w-full mt-12">

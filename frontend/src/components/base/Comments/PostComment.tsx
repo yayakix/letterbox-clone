@@ -7,31 +7,36 @@ interface PostCommentProps {
     onCommentPosted: () => void;
 }
 
+export interface CommentContent {
+    content: string;
+}
+
 const PostComment: React.FC<PostCommentProps> = ({ filmId, onCommentPosted }) => {
-    const [comment, setCommment] = useState('');
+    const [comment, setComment] = useState<string>('');
     const { getToken } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!comment.trim()) return;
 
-
         try {
             const token = await getToken();
-            if (!token) return; // Ensure token is not null
+            if (!token) return;
             const userService = UserService();
-            const response = await userService.postMovieComment(token, filmId, { content: comment });
-            console.log("responseeee gere", response);
+            const commentData: CommentContent = { content: comment };
+            await userService.postMovieComment(token, filmId, commentData);
+            setComment('');
             onCommentPosted();
         } catch (error) {
             console.error('Error posting comment:', error);
-        };
-    }
+        }
+    };
+
     return (
         <form onSubmit={handleSubmit} className="mt-4">
             <textarea
                 value={comment}
-                onChange={(e) => setCommment(e.target.value)}
+                onChange={(e) => setComment(e.target.value)}
                 placeholder="Yap Away!"
                 className="w-full p-2 text-gray-700 border rounded-lg focus:outline-none focus:border-gray-500"
                 rows={3}

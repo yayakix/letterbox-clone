@@ -46,7 +46,7 @@ const useMovieStore = (movieId: string) => {
   }, []);
 
   //   posting yaps, updating ratings, etc
-  const refreshMovie = async (filmId: string, updateData: UpdateData) => {
+  const refreshMovie = async (filmId: string) => {
     const token = (await getToken()) || undefined;
     const movieService = MovieService(token);
     const movieData = await movieService.refreshMovie(filmId);
