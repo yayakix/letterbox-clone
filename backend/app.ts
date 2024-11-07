@@ -9,7 +9,10 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "https://letterboxd-clone-yaya.netlify.app",
+    ],
     allowedHeaders: ["Authorization", "Content-Type", "Accept"],
   })
 );
