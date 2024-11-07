@@ -16,12 +16,8 @@ import { useAuth } from "@clerk/clerk-react";
 
 const useMovieStore = (movieId: string) => {
   const { movie, setMovie, user } = useStore();
-
   const [movieLoading, setMovieLoading] = useState(true);
   const { getToken } = useAuth();
-
-  // fetch movie details
-  console.log("user details here33 ", user);
 
   useEffect(() => {
     const fetchMovies = async () => {

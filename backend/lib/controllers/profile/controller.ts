@@ -26,7 +26,6 @@ profileRouter.use(requireAuth);
 // User Profile
 profileRouter.get("/", async (req: Request, res: Response) => {
   try {
-    console.log("getting user id", req.user.userId);
     const profile = await profileClient.getProfile(req.user.userId);
     res.json(profile);
   } catch (error) {

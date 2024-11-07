@@ -65,7 +65,7 @@ export const MovieService = (token?: string) => ({
   updateMovie: async (
     filmId: string,
     updateData: UpdateData
-  ): Promise<{ data: Film[]; error: string }> => {
+  ): Promise<{ data: Film | Film[]; error: string }> => {
     try {
       if (Object.keys(updateData).length === 0) {
         // get movie
@@ -83,8 +83,7 @@ export const MovieService = (token?: string) => ({
             },
           }
         );
-        console.log("response from post", response.data);
-        return { data: response.data, error: "" };
+        return { data: response.data as Film, error: "" };
       }
     } catch (error) {
       return { data: [], error: (error as Error).message };

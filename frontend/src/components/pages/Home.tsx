@@ -58,9 +58,7 @@ export default function Home() {
 		}
 	};
 	useEffect(() => {
-		console.log('movies here', movies)
 		movieService.getAllMovies().then((res) => {
-			console.log('res from getAllMovies', res)
 			setAllMovies(res.data);
 		})
 	}, [])

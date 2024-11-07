@@ -4,7 +4,7 @@ import YapList from "../base/Comments/Comment";
 import { useParams } from "react-router-dom";
 import PostComment from "../base/Comments/PostComment";
 import Rating from "../base/Rating/Rating";
-import { Yap } from "../../lib/services/types";
+import { Film, Yap } from "../../lib/services/types";
 import useMovieStore from "../../state/movie";
 import { MovieService } from "../../../services/MovieService";
 import useUserStore from "../../state/user";
@@ -39,12 +39,6 @@ const MovieProfile: React.FC = () => {
     const userService = UserService();
     if (action === 'watched' && token) {
       userService.watchMovie(token, movieId);
-
-      if (isWatched) {
-        console.log("User has watched this movie");
-      } else {
-        console.log("User hasn't watched this movie yet");
-      }
     }
 
     if (action === 'liked' && token) {
@@ -71,7 +65,7 @@ const MovieProfile: React.FC = () => {
       if (token) {
         const movieService = MovieService(token);
         movieService.updateMovie(movieId, { newRating: (newRating * 2) }).then((res) => {
-          setMovie(res.data[0]);
+          setMovie(res.data as Film);
         });
       }
     }

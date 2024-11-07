@@ -28,7 +28,6 @@ const UserProfile = () => {
     }
 
     const renderTabContent = () => {
-        console.log('likedFilms here33333 ', likedFilms)
         switch (currentTab) {
             case 'Liked':
                 return <ProfileProfileTab likedFilms={likedFilms || []} />;

@@ -20,28 +20,15 @@ const useUserStore = () => {
   const { getToken, isSignedIn } = useAuth();
 
   useEffect(() => {
-    console.log("useEffect running");
-
     const fetchUser = async () => {
-      console.log("fetchUser function called");
       try {
-        console.log("Attempting to get token");
         const token = await getToken();
-        console.log("Token received:", token ? "Token exists" : "No token");
-
         if (!token) {
-          console.log("No token received");
           setUserLoading(false);
           return;
         }
-
-        console.log("Initializing UserService");
         const userService = UserService();
-        console.log("UserService initialized:", userService);
-
-        console.log("Calling userService.getCurrentUser");
         const userData = await userService.getCurrentUser(token);
-        console.log("User data received:", userData);
         setUser(userData);
       } catch (error) {
         console.error("Error in fetchUser:", error);
@@ -56,10 +43,8 @@ const useUserStore = () => {
     };
 
     if (isSignedIn) {
-      console.log("User is signed in, calling fetchUser");
       fetchUser();
     } else {
-      console.log("User is not signed in");
       setUserLoading(false);
     }
   }, [getToken, isSignedIn, setUser]);

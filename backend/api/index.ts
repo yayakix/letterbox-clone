@@ -1,6 +1,6 @@
 import app from "../app";
 
-const PORT = 3009;
+const PORT = process.env.PORT || 3009;
 
 app.get("/", (_req, res) => {
   res.send("Letterbox clone API");

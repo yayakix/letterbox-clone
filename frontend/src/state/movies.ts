@@ -29,7 +29,6 @@ const useMoviesStore = () => {
         if (token) {
           const movieService = MovieService(token);
           const moviesData = await movieService.getAllMovies();
-          console.log("checking the moviesData here", moviesData.data);
           setMovies(moviesData.data as Film[]);
         } else {
           console.error("Token is required for fetching movies");
@@ -75,7 +74,6 @@ const useMoviesStore = () => {
       }
       const movieService = MovieService(token);
       const movieDetails = await movieService.getMovieById(movieId);
-      console.log("fetchMovieDetails movieDetails hereeeee", movieDetails.data);
       updateMovieDetails(movieDetails.data as Film);
     } catch (error) {
       console.error("Error fetching movie details:", error);

@@ -18,22 +18,18 @@ const RatingService = (): IRatingService => ({
   // cm2s9m7vh0000ijz8r3xqluq9
   updateRating: async (filmId: string, userId: string, newRating: number) => {
     // Get profile id first
-    console.log("update rating step 1", userId);
-
     const profile = await client.profile.findUnique({
       where: { userId },
       select: { id: true },
     });
 
     if (!profile) throw new Error("Profile not found");
-    console.log("update rating step 2", profile);
     // Add new rating
     await client.rating.upsert({
       where: { filmId_profileId: { filmId, profileId: profile.id } },
       update: { value: newRating },
       create: { filmId, profileId: profile.id, value: newRating },
     });
-    console.log("update rating step 3");
 
     // Get film's initial rating
     const film = await client.film.findUnique({
