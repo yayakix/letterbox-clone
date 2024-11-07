@@ -4,6 +4,10 @@ import profileClient from "./profileClient";
 import { Request, Response, NextFunction } from "express";
 import optionalUser from "../middleware";
 
+interface AuthenticatedRequest extends Request {
+  user: { userId: string };
+}
+
 const profileRouter = express.Router();
 profileRouter.use(ClerkExpressRequireAuth());
 profileRouter.use(optionalUser);
