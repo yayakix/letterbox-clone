@@ -11,6 +11,19 @@ export const MovieService = (token?: string) => ({
     }
   },
 
+  getByFilter: async (
+    filter: string
+  ): Promise<{ data: Film[]; error: string }> => {
+    try {
+      const response = await api.get(
+        `/api/movies/filter?filter=${encodeURIComponent(filter)}`
+      );
+      return { data: response.data, error: "" };
+    } catch (error) {
+      return { data: [], error: (error as Error).message };
+    }
+  },
+
   getMovieById: async (
     id: string
   ): Promise<{ data: Film | null; error: string }> => {
@@ -32,24 +45,6 @@ export const MovieService = (token?: string) => ({
     try {
       const response = await api.get(
         `/api/movies/search?search=${encodeURIComponent(search)}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      return { data: response.data, error: "" };
-    } catch (error) {
-      return { data: [], error: (error as Error).message };
-    }
-  },
-
-  getByFilter: async (
-    filter: string
-  ): Promise<{ data: Film[]; error: string }> => {
-    try {
-      const response = await api.get(
-        `/api/movies/filter?filter=${encodeURIComponent(filter)}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

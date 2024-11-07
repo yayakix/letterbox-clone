@@ -16,47 +16,46 @@ export default function Home() {
 	const [genre, setGenre] = useState("All");
 	const [search, setSearch] = useState("");
 	const navigate = useNavigate();
-	console.log("defaultMovies", defaultMovies);
 
-	const getMoviesBySearch = async () => {
-		try {
-			const response = await movieService.getBySearch(search);
-			setSearchResults(response.data);
-		} catch (error) {
-			console.error("Error fetching movies by search:", error);
-			setSearchResults(defaultMovies); // Fallback to default movies
+	useEffect(() => {
+		// Apply all filters whenever any filter changes
+		let result = [...allMovies];
+
+		// Apply year filter
+		if (year !== "All") {
+			const decade = parseInt(year);
+			result = result.filter(movie =>
+				Math.floor(movie.year / 10) * 10 === decade
+			);
 		}
-	};
 
-	const makeCapitalCase = (str: string) => {
-		return str.charAt(0).toUpperCase() + str.slice(1);
-	}
-
-	const filterMovies = async (type: string, filter: string) => {
-		try {
-			let filterValue = filter;
-
-			if (type === "year" && filter === "All") {
-				const response = await movieService.getAllMovies();
-				setSearchResults(response.data);
-				return;
-			}
-
-			if (type === "year") {
-				filterValue = parseInt(filter).toString().slice(0, 4);
-			}
-
-			if (type === "genre") {
-				filterValue = makeCapitalCase(filter);
-			}
-
-			const response = await movieService.getByFilter(filterValue);
-			setSearchResults(response.data);
-		} catch (error) {
-			console.error("Error filtering movies:", error);
-			setSearchResults(defaultMovies); // Fallback to default movies
+		// Apply genre filter
+		if (genre !== "All" && genre !== "all") {
+			const normalizedGenre = genre.charAt(0).toUpperCase() + genre.slice(1).toLowerCase();
+			result = result.filter(movie =>
+				movie.genre.includes(normalizedGenre)
+			);
 		}
-	};
+
+		// Apply rating filter
+		if (rating !== "All") {
+			result.sort((a, b) =>
+				rating === "Highest Rated"
+					? b.currentRating - a.currentRating
+					: a.currentRating - b.currentRating
+			);
+		}
+
+		// Apply search filter if exists
+		if (search) {
+			result = result.filter(movie =>
+				movie.title.toLowerCase().includes(search.toLowerCase())
+			);
+		}
+
+		setSearchResults(result);
+	}, [year, rating, genre, search, allMovies]);
+
 	useEffect(() => {
 		movieService.getAllMovies()
 			.then((res) => {
@@ -90,10 +89,7 @@ export default function Home() {
 							id="year-select"
 							className="bg-transparent border border-1 border-gray-600"
 							value={year}
-							onChange={(e) => {
-								setYear(e.target.value);
-								filterMovies("year", e.target.value);
-							}}
+							onChange={(e) => setYear(e.target.value)}
 						>
 							<option value="All">All</option>
 							<option value="2020s">2020s</option>
@@ -118,10 +114,7 @@ export default function Home() {
 							id="rating-select"
 							className="bg-transparent border border-1 border-gray-600"
 							value={rating}
-							onChange={(e) => {
-								setRating(e.target.value);
-								filterMovies("rating", e.target.value);
-							}}
+							onChange={(e) => setRating(e.target.value)}
 						>
 							<option value="All">All</option>
 							<option value="Highest Rated">Highest Rated</option>
@@ -132,10 +125,7 @@ export default function Home() {
 							id="genre-select"
 							className="bg-transparent border border-1 border-gray-600"
 							value={genre}
-							onChange={(e) => {
-								setGenre(e.target.value)
-								filterMovies("genre", e.target.value)
-							}}
+							onChange={(e) => setGenre(e.target.value)}
 						>
 							<option value="all">All</option>
 							<option value="action">Action</option>
@@ -166,22 +156,13 @@ export default function Home() {
 						type="text"
 						className="bg-transparent border border-1 border-gray-600 shadow-inner"
 						value={search}
-						onChange={(e) => {
-							setSearch(e.target.value);
-						}}
+						onChange={(e) => setSearch(e.target.value)}
 						onKeyDown={(e) => {
 							if (e.key === "Enter") {
 								setSearchResults([]);
-								getMoviesBySearch();
 							}
 						}}
-						onBlur={() => {
-							setSearchResults([]);
-							setSearch("");
-							movieService.getAllMovies().then((res) => {
-								setAllMovies(res.data);
-							})
-						}}
+						onBlur={() => setSearch("")}
 					/>
 				</div>
 			</div >
@@ -208,7 +189,7 @@ export default function Home() {
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-green-500 hover:text-green-400`}
 									>
-										<svg
+										{/* <svg
 											className="w-4 h-4 mb-1"
 											fill="none"
 											stroke="currentColor"
@@ -217,13 +198,13 @@ export default function Home() {
 										>
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-										</svg>
+										</svg> */}
 
 									</button >
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-yellow-500 hover:text-yellow-400`}
 									>
-										<svg
+										{/* <svg
 											className="w-4 h-4 mb-1"
 											fill={"currentColor"}
 											stroke="currentColor"
@@ -231,7 +212,7 @@ export default function Home() {
 											xmlns="http://www.w3.org/2000/svg"
 										>
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-										</svg>
+										</svg> */}
 									</button>
 								</div >
 							</div >
@@ -250,7 +231,7 @@ export default function Home() {
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-green-500 hover:text-green-400`}
 									>
-										<svg
+										{/* <svg
 											className="w-4 h-4 mb-1"
 											fill="none"
 											stroke="currentColor"
@@ -259,13 +240,13 @@ export default function Home() {
 										>
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-										</svg>
+										</svg> */}
 										{/* <span className="text-xs">{movie.watchedCount || 0}</span> */}
 									</button >
 									<button
 										className={`flex flex-col items-center transition-colors mb-4  text-yellow-500 hover:text-yellow-400`}
 									>
-										<svg
+										{/* <svg
 											className="w-4 h-4 mb-1"
 											fill={"currentColor"}
 											stroke="currentColor"
@@ -273,7 +254,7 @@ export default function Home() {
 											xmlns="http://www.w3.org/2000/svg"
 										>
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-										</svg>
+										</svg> */}
 									</button>
 								</div >
 							</div >
