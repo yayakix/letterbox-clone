@@ -2,14 +2,12 @@ import { useEffect, useState } from "react";
 import useUserStore from "../../state/user";
 import { Film } from "../../lib/services/types";
 import { useNavigate } from "react-router-dom";
-import useMoviesStore from "../../state/movies";
-// import { defaultMovies } from "../../defaultMovies"; use when offline
+import { defaultMovies } from "../../defaultMovies"; // use when offline
 import { MovieService } from "../../../services/MovieService"; // Import MovieService
 
 export default function Home() {
 	const { user } = useUserStore(); // Use updateUser if needed
 	const movieService = MovieService(); // Initialize MovieService
-	const { movies } = useMoviesStore();
 	const [searchResults, setSearchResults] = useState<Film[]>([]);
 	const [allMovies, setAllMovies] = useState<Film[]>([]);
 
@@ -18,7 +16,7 @@ export default function Home() {
 	const [genre, setGenre] = useState("All");
 	const [search, setSearch] = useState("");
 	const navigate = useNavigate();
-
+	console.log("defaultMovies", defaultMovies);
 
 	const getMoviesBySearch = async () => {
 		try {
@@ -26,6 +24,7 @@ export default function Home() {
 			setSearchResults(response.data);
 		} catch (error) {
 			console.error("Error fetching movies by search:", error);
+			setSearchResults(defaultMovies); // Fallback to default movies
 		}
 	};
 
@@ -55,13 +54,30 @@ export default function Home() {
 			setSearchResults(response.data);
 		} catch (error) {
 			console.error("Error filtering movies:", error);
+			setSearchResults(defaultMovies); // Fallback to default movies
 		}
 	};
 	useEffect(() => {
-		movieService.getAllMovies().then((res) => {
-			setAllMovies(res.data);
-		})
-	}, [])
+		movieService.getAllMovies()
+			.then((res) => {
+				if (res.data && res.data.length > 0) {
+					setAllMovies(res.data);
+				} else {
+					setAllMovies(defaultMovies); // Set default movies if response is empty
+				}
+			})
+			.catch((error) => {
+				console.error("Error fetching all movies:", error);
+				setAllMovies(defaultMovies); // Fallback to default movies
+			});
+	}, []);
+
+	console.log("allMovies", allMovies);
+
+	useEffect(() => {
+		console.log("defaultMovies content:", defaultMovies);
+		console.log("allMovies content:", allMovies);
+	}, [allMovies]);
 
 	return (
 		<div className="flex flex-col w-full h-full items-center bg-transparent">

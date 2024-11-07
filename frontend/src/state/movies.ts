@@ -48,7 +48,7 @@ const useMoviesStore = () => {
     const token = (await getToken()) || undefined;
     const movieService = MovieService(token);
     const moviesData = await movieService.updateMovie(filmId, updateData);
-    setMovies(moviesData.data);
+    setMovies(moviesData.data as Film[]);
   };
 
   const getBySearch = async (search: string) => {

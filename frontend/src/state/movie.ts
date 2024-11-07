@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useStore from "./store";
 import { MovieService } from "../../services/MovieService";
-import { UpdateData } from "../lib/services/types";
+import { Film, UpdateData } from "../lib/services/types";
 import { useAuth } from "@clerk/clerk-react";
 
 /**
@@ -53,7 +53,7 @@ const useMovieStore = (movieId: string) => {
     const token = (await getToken()) || undefined;
     const movieService = MovieService(token);
     const movieData = await movieService.updateMovie(filmId, updateData);
-    setMovie(movieData.data[0]);
+    setMovie(movieData.data as Film);
   };
 
   return {
