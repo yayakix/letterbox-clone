@@ -1,8 +1,8 @@
-import app from "./app";
+import app from "../app";
 
 const PORT = 3009;
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.send("Letterbox clone API");
 });
 
