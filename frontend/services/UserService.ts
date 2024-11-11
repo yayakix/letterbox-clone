@@ -1,18 +1,9 @@
 import { CommentContent } from "../src/components/base/Comments/PostComment";
 import { ConnectionUser } from "../src/lib/services/types";
 
-// export type User = {
-//   id: string;
-//   username: string;
-//   email: string;
-// };
-
-// type Response<T> = Promise<{ data: T; error: string }>;
-
 const UserService = () => {
   return {
     getCurrentUser: async (token: string) => {
-      console.log("trying to call getCurrentUser");
       const response = await fetch(`${process.env.VITE_API_URL}/api/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -58,7 +49,6 @@ const UserService = () => {
       movieId: string,
       content: CommentContent
     ) => {
-      console.log("postMovieComment content", content);
       const response = await fetch(
         `${process.env.VITE_API_URL}/api/profile/yaps/${movieId}`,
         {

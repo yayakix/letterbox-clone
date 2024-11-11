@@ -42,7 +42,6 @@ const UserProfile = () => {
                 return <div>Invalid tab</div>;
         }
     };
-    console.log('profile data here', profileData)
 
     return (
         <div className="lg:px-48">

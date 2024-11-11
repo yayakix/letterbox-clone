@@ -27,7 +27,6 @@ const NetworkTab = () => {
                 }
             });
             const networkData = await networkResponse.json();
-            console.log('Network data:', networkData); // Debug log
 
             // Update followers and following
             setFollowers(networkData.followers || []);
@@ -51,7 +50,6 @@ const NetworkTab = () => {
     useEffect(() => {
         fetchNetworkData();
 
-        console.log('Following list:', following);
     }, []);
 
     const toggleFollow = async (userId: string) => {

@@ -71,13 +71,6 @@ export default function Home() {
 			});
 	}, []);
 
-	console.log("allMovies", allMovies);
-
-	useEffect(() => {
-		console.log("defaultMovies content:", defaultMovies);
-		console.log("allMovies content:", allMovies);
-	}, [allMovies]);
-
 	return (
 		<div className="flex flex-col w-full h-full items-center bg-transparent">
 			<div className="flex flex-row items-center justify-between w-7/12 mt-6">
