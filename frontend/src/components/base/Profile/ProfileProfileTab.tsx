@@ -12,9 +12,9 @@ const ProfileProfileTab = (props: any) => {
             {/* show favorite films */}
             <div className="text-sm text-slate-400 ">Recent likes</div>
 
-            <div className="grid grid-cols-4 mt-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 md:mt-2 mt-0">
                 {likedFilms.map((film: any) => (
-                    <div key={film.id} className="w-40 h-56 border border-slate-700 rounded-lg">
+                    <div key={film.id} className="w-40 h-56 border border-slate-700 rounded-lg m-2">
                         <a href={`/movie/${film.id}`}>
                             <img src={film.imageUrl} alt={film.title} className="w-full h-full object-cover rounded-lg" />
                         </a>

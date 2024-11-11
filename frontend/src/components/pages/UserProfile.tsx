@@ -44,7 +44,7 @@ const UserProfile = () => {
     };
 
     return (
-        <div className="lg:px-48">
+        <div className="lg:px-48 px-4">
             {user && (
                 <div className="relative flex flex-col w-full min-w-0 mb-6 break-words rounded-2xl ">
                     <div className="pt-9 flex-auto min-h-[70px] pb-0 bg-transparent">

@@ -72,10 +72,10 @@ const MovieProfile: React.FC = () => {
 
   }
   return (
-    <div className=" p-6 lg:px-48">
-      <div className="flex mb-6">
-        <div className="flex-shrink-0 mr-6">
-          <img src={movie?.imageUrl || url} alt={movie?.title} className="w-64 h-auto object-cover rounded-lg" />
+    <div className="p-6 lg:px-48">
+      <div className="flex flex-col lg:flex-row mb-6">
+        <div className="flex-shrink-0 lg:mr-6 mb-6 lg:mb-0">
+          <img src={movie?.imageUrl || url} alt={movie?.title} className="w-48 mx-auto lg:w-64 h-auto object-cover rounded-lg" />
         </div>
         <div className="flex-grow">
           <h1 className="text-gray-300 text-2xl font-bold mb-2">{movie?.title}</h1>
@@ -93,7 +93,7 @@ const MovieProfile: React.FC = () => {
             Genres: {Array.isArray(movie?.genre) ? movie?.genre.join(', ') : 'Unknown'}
           </p>
         </div>
-        <div className="flex-shrink-0 ml-6 bg-gray-500 p-6 rounded-lg flex flex-col justify-center items-center w-1/6">
+        <div className="flex-shrink-0 lg:ml-6 mt-6 lg:mt-0 bg-gray-500 p-6 rounded-lg flex flex-col justify-center items-center lg:w-1/6">
           {/* user rating */}
           <div className="flex flex-col items-center relative h-2 w-24">
             <Rating totalStars={5} onRatingChange={handleRatingChange} readOnlyValue={starRating || 0} />

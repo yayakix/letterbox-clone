@@ -170,7 +170,7 @@ export default function Home() {
 				<div className="flex flex-wrap mt-4 md:w-7/12 w-full px-4">
 					{searchResults.length > 0 ? (
 						searchResults.map((movie) => (
-							<div key={movie.id} className="w-1/6 h-1/8 flex flex-col items-center p-2">
+							<div key={movie.id} className="w-1/3 md:w-1/6 h-1/8 flex flex-col items-center p-2">
 								<a onClick={() => {
 									if (!user) {
 										alert("Please sign in to view this movie");
@@ -212,7 +212,7 @@ export default function Home() {
 						))
 					) : (
 						allMovies.map((movie) => (
-							<div key={movie.id} className="w-1/6 h-1/8 flex flex-col items-center p-2">
+							<div key={movie.id} className="w-1/3 md:w-1/6 h-1/8 flex flex-col items-center p-2">
 								<a onClick={() => {
 									if (!user) {
 										alert("Please sign in to view this movie");

@@ -11,7 +11,7 @@ const WatchedTab: React.FC<WatchedTabProps> = ({ watchedFilms }) => {
             <div className="text-sm text-slate-400 font-bold">WATCHED</div>
             <div className="border-b border-slate-700 my-2"></div>
 
-            <div className="grid grid-cols-4 gap-4 mt-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 md:mt-2 mt-0">
                 {watchedFilms.length > 0 ? (
                     watchedFilms.map((film, index) => (
                         <a href={`/movie/${film.id}`} key={index} className="cursor-pointer my-1">
