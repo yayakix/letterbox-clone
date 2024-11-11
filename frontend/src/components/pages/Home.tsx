@@ -73,10 +73,10 @@ export default function Home() {
 
 	return (
 		<div className="flex flex-col w-full h-full items-center bg-transparent">
-			<div className="flex flex-row items-center justify-between w-7/12 mt-6">
-				<div className="flex flex-row items-center justify-evenly gap-2" >
+			<div className="flex flex-row items-center justify-between md:w-7/12 w-full md:mt-6 mt-4 px-4 gap-2">
+				<div className="flex flex-row items-center justify-evenly" >
 					<h1 className="text-md font-Inter uppercase">Browse By</h1>
-					<div className="flex flex-row items-center gap-2">
+					<div className="flex flex-row items-center md:gap-2 gap-0">
 						<select
 							name="year"
 							id="year-select"
@@ -105,18 +105,18 @@ export default function Home() {
 						<select
 							name="rating"
 							id="rating-select"
-							className="bg-transparent border border-1 border-gray-600"
+							className="bg-transparent border border-1 border-gray-600 md:block hidden"
 							value={rating}
 							onChange={(e) => setRating(e.target.value)}
 						>
-							<option value="All">All</option>
-							<option value="Highest Rated">Highest Rated</option>
-							<option value="Lowest Rated">Lowest Rated</option>
+							<option value="All" className="md:block hidden">All</option>
+							<option value="Highest Rated" className="md:block hidden">Highest Rated</option>
+							<option value="Lowest Rated" className="md:block hidden">Lowest Rated</option>
 						</select >
 						<select
 							name="genre"
 							id="genre-select"
-							className="bg-transparent border border-1 border-gray-600"
+							className="bg-transparent border border-1 border-gray-600 md:block hidden"
 							value={genre}
 							onChange={(e) => setGenre(e.target.value)}
 						>
@@ -143,7 +143,7 @@ export default function Home() {
 						</select>
 					</div >
 				</div >
-				<div className="flex flex-row items-center gap-2">
+				<div className="flex flex-row items-center gap-2 md:block hidden">
 					<h1 className="text-md font-Inter uppercase">Find A Film</h1>
 					<input
 						type="text"
@@ -159,15 +159,15 @@ export default function Home() {
 					/>
 				</div>
 			</div >
-			<div className="flex flex-col items-center h-full w-full mt-12">
-				<div className="flex flex-col items-center w-7/12">
-					<div className="flex flex-row items-end justify-between w-full">
+			<div className="flex flex-col items-center h-full w-full md:mt-12 mt-4">
+				<div className="flex flex-col items-center md:w-7/12 w-full px-4">
+					<div className="flex flex-row items-end justify-between w-full gap-2">
 						<h1 className="text-sm font-Inter uppercase">Popular Films this Week</h1>
 						{/* <h2 className="text-xs font-Inter">More</h2> */}
 					</div>
 					<hr className="my-4 border-t border-gray-600 w-full" />
 				</div>
-				<div className="flex flex-wrap mt-4 w-7/12">
+				<div className="flex flex-wrap mt-4 md:w-7/12 w-full px-4">
 					{searchResults.length > 0 ? (
 						searchResults.map((movie) => (
 							<div key={movie.id} className="w-1/6 h-1/8 flex flex-col items-center p-2">
